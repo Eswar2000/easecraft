@@ -8,7 +8,7 @@ By participating, you agree to follow the [Code of Conduct](CODE_OF_CONDUCT.md).
 
 ## Current Stage
 
-Easecraft is in the repository-foundation stage. The Next.js docs explorer and Vite consumer fixture are scaffolded, while package source remains to be implemented.
+Easecraft is in the repository-foundation stage. The token package, Next.js docs explorer, and Vite consumer fixture are implemented, while the React motion package remains to be built.
 
 The immediate focus is Phase 0 of the [project proposal](PROPOSAL.md#phase-0-product-and-repository-foundation): confirming the remaining public identifiers, establishing shared quality checks, and proving a local package can be consumed by an example application.
 
@@ -52,7 +52,7 @@ pnpm test
 pnpm build
 ```
 
-`pnpm dev` starts both applications and prints their local URLs. The format, lint, and typecheck commands run real Prettier, ESLint, and strict TypeScript checks. The build command produces both applications while package builds remain placeholders; test commands remain placeholders until their toolchain is configured.
+`pnpm dev` starts the token build watcher and both applications. The format, lint, and typecheck commands run real Prettier, ESLint, and strict TypeScript checks. The build command produces both applications and `easecraft-tokens`; the React and registry builds remain placeholders. The test command runs real token tests while remaining workspace tests are placeholders.
 
 ## Making Changes
 

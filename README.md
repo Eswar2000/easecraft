@@ -6,7 +6,7 @@ Easecraft is an open-source motion design system planned for React. It will comb
 
 ## Project Status
 
-Easecraft is currently in the **repository-foundation stage**. The Next.js component explorer and Vite consumer fixture are scaffolded and buildable; package source has not been implemented or published yet.
+Easecraft is currently in the **repository-foundation stage**. The framework-independent token package, Next.js component explorer, and Vite consumer fixture are implemented and buildable; the React motion package has not been implemented or published yet.
 
 The complete product scope, architecture, delivery plan, and initial backlog are documented in the [project proposal](PROPOSAL.md).
 
@@ -23,6 +23,8 @@ Easecraft will use unscoped npm package names.
 
 These names were unregistered on npm when checked on 2026-07-25. They are planned identifiers, not reserved names, until their first publication.
 
+`easecraft-tokens` is the first implemented package. The Vite fixture consumes its workspace export as an external application would; all packages remain private and unpublished during foundation work.
+
 ## Development
 
 The workspace currently requires Node.js 24 or newer and Corepack. Install dependencies and run the repository checks from the root:
@@ -38,7 +40,7 @@ pnpm test
 pnpm build
 ```
 
-`pnpm dev` starts the docs explorer and Vite consumer fixture and prints their local URLs. `pnpm lint` runs shared type-aware ESLint rules, including React Hooks and JSX accessibility checks where applicable. `pnpm typecheck` runs TypeScript 6 with shared strict settings, and `pnpm format:check` validates code and configuration files with Prettier. `pnpm build` builds both applications while package builds remain placeholders; test tasks remain placeholders until their toolchain is added.
+`pnpm dev` starts the token build watcher, docs explorer, and Vite consumer fixture and prints the application URLs. `pnpm lint` runs shared type-aware ESLint rules, including React Hooks and JSX accessibility checks where applicable. `pnpm typecheck` runs TypeScript 6 with shared strict settings, and `pnpm format:check` validates code and configuration files with Prettier. `pnpm build` builds both applications and `easecraft-tokens`; the React and registry builds remain placeholders. `pnpm test` runs the token tests while remaining workspace tests are placeholders.
 
 ## What Easecraft Will Provide
 

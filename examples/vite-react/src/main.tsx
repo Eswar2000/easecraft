@@ -1,12 +1,19 @@
+import { defaultMotionTokens } from "easecraft-tokens";
 import { StrictMode, useState } from "react";
 import { createRoot } from "react-dom/client";
 
 import "./styles.css";
 
 const motionTokens = [
-  { label: "duration.normal", value: "300ms" },
-  { label: "easing.enter", value: "out(3)" },
-  { label: "distance.medium", value: "12px" },
+  {
+    label: "duration.normal",
+    value: `${defaultMotionTokens.duration.normal.toString()}ms`,
+  },
+  { label: "easing.enter", value: defaultMotionTokens.easing.enter },
+  {
+    label: "distance.medium",
+    value: `${defaultMotionTokens.distance.medium.toString()}px`,
+  },
 ] as const;
 
 function App() {

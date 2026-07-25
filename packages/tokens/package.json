@@ -5,14 +5,33 @@
   "description": "Framework-independent motion tokens for Easecraft.",
   "license": "MIT",
   "type": "module",
+  "sideEffects": false,
+  "files": [
+    "dist"
+  ],
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    }
+  },
   "scripts": {
-    "build": "node -e \"console.log('easecraft-tokens: build placeholder')\"",
+    "build": "vite build",
+    "dev": "vite build --watch",
     "lint": "eslint . --max-warnings 0",
-    "test": "node -e \"console.log('easecraft-tokens: test placeholder')\"",
+    "test": "vitest run",
+    "test:watch": "vitest",
     "typecheck": "tsc --noEmit --project tsconfig.json"
   },
   "devDependencies": {
     "easecraft-eslint-config": "workspace:*",
-    "easecraft-typescript-config": "workspace:*"
+    "easecraft-typescript-config": "workspace:*",
+    "vite": "8.1.5",
+    "vite-plugin-dts": "5.0.3",
+    "vitest": "4.1.10"
   }
 }
