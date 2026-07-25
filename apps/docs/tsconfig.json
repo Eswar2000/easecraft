@@ -1,0 +1,4 @@
+{
+  "extends": "easecraft-typescript-config/react.json",
+  "include": ["**/*.ts", "**/*.tsx", ".next/types/**/*.ts"]
+}

@@ -1,0 +1,16 @@
+{
+  "name": "easecraft-typescript-config",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Shared strict TypeScript configurations for Easecraft.",
+  "license": "MIT",
+  "files": [
+    "base.json",
+    "react.json",
+    "empty.d.ts"
+  ],
+  "exports": {
+    "./base.json": "./base.json",
+    "./react.json": "./react.json"
+  }
+}

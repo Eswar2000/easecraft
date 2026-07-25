@@ -36,7 +36,7 @@ pnpm test
 pnpm build
 ```
 
-The package tasks are placeholders at this stage. They verify workspace discovery and Turborepo orchestration until the TypeScript, testing, and build toolchains are added.
+`pnpm typecheck` runs TypeScript 7 with shared strict settings across every source workspace. The lint, test, and build tasks remain placeholders until those toolchains and package implementations are added.
 
 ## What Easecraft Will Provide
 

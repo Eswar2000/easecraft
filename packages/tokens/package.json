@@ -9,6 +9,9 @@
     "build": "node -e \"console.log('easecraft-tokens: build placeholder')\"",
     "lint": "node -e \"console.log('easecraft-tokens: lint placeholder')\"",
     "test": "node -e \"console.log('easecraft-tokens: test placeholder')\"",
-    "typecheck": "node -e \"console.log('easecraft-tokens: typecheck placeholder')\""
+    "typecheck": "tsc --noEmit --project tsconfig.json"
+  },
+  "devDependencies": {
+    "easecraft-typescript-config": "workspace:*"
   }
 }

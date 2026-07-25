@@ -10,7 +10,7 @@ By participating, you agree to follow the [Code of Conduct](CODE_OF_CONDUCT.md).
 
 Easecraft is in the repository-foundation stage. The pnpm and Turborepo workspace is initialized, while package source and applications remain to be implemented.
 
-The immediate focus is Phase 0 of the [project proposal](PROPOSAL.md#phase-0-product-and-repository-foundation): confirming the remaining public identifiers, creating the workspace, establishing quality checks, and proving a local package can be consumed by an example application.
+The immediate focus is Phase 0 of the [project proposal](PROPOSAL.md#phase-0-product-and-repository-foundation): confirming the remaining public identifiers, establishing shared quality checks, and proving a local package can be consumed by an example application.
 
 Useful contributions at this stage include:
 
@@ -50,7 +50,7 @@ pnpm test
 pnpm build
 ```
 
-These commands currently execute placeholder package tasks to verify workspace discovery and orchestration. They will run the real toolchains as each package and application is implemented.
+`pnpm typecheck` runs the real shared strict TypeScript configuration. The lint, test, and build commands currently execute placeholders to verify workspace discovery and orchestration until their toolchains are configured.
 
 ## Making Changes
 
