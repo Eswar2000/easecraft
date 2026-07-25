@@ -249,11 +249,6 @@ h2 {
   border-radius: 6px;
   background: #fff;
   box-shadow: 12px 12px 0 var(--yellow);
-  animation: specimen-enter 600ms cubic-bezier(0.16, 1, 0.3, 1) both;
-}
-
-.motion-specimen[data-reduced-motion="true"] {
-  animation: specimen-fade 120ms linear both;
 }
 
 .specimen-index {
@@ -348,26 +343,6 @@ h2 {
   font-family: "IBM Plex Mono", monospace;
   font-size: 9px;
   font-weight: 500;
-}
-
-@keyframes specimen-enter {
-  from {
-    opacity: 0;
-    transform: translateY(18px) scale(0.98);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-}
-
-@keyframes specimen-fade {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
 }
 
 @media (prefers-reduced-motion: reduce) {

@@ -1,5 +1,5 @@
-import { MotionProvider, useMotionConfig } from "easecraft";
-import { StrictMode, useState } from "react";
+import { MotionProvider, useAnime, useMotionConfig, type AnimeSetup } from "easecraft";
+import { StrictMode, useCallback, useState } from "react";
 import { createRoot } from "react-dom/client";
 
 import "./styles.css";
@@ -9,9 +9,40 @@ interface FixtureProps {
   readonly setReduceMotion: (reduceMotion: boolean) => void;
 }
 
+function MotionSpecimen() {
+  const setupAnimation = useCallback<AnimeSetup<HTMLDivElement>>(
+    ({ animate, reducedMotion, root, tokens }) => {
+      animate(root, {
+        duration: reducedMotion ? tokens.duration.instant : tokens.duration.slow,
+        ease: reducedMotion ? "linear" : tokens.easing.enter,
+        opacity: [0, 1],
+        scale: reducedMotion ? 1 : [0.98, 1],
+        y: reducedMotion ? 0 : [18, 0],
+      });
+
+      return undefined;
+    },
+    [],
+  );
+  const rootRef = useAnime(setupAnimation);
+  const { reducedMotion } = useMotionConfig();
+
+  return (
+    <div ref={rootRef} className="motion-specimen" data-reduced-motion={reducedMotion}>
+      <span className="specimen-index">01</span>
+      <p>Motion should explain what changed.</p>
+      <div className="timeline" aria-hidden="true">
+        <span />
+        <span />
+        <span />
+      </div>
+    </div>
+  );
+}
+
 function Fixture({ reduceMotion, setReduceMotion }: FixtureProps) {
   const [replayKey, setReplayKey] = useState(0);
-  const { reducedMotion, tokens } = useMotionConfig();
+  const { tokens } = useMotionConfig();
   const motionTokens = [
     {
       label: "duration.normal",
@@ -76,15 +107,7 @@ function Fixture({ reduceMotion, setReduceMotion }: FixtureProps) {
               <span>300</span>
               <span>450</span>
             </div>
-            <div key={replayKey} className="motion-specimen" data-reduced-motion={reducedMotion}>
-              <span className="specimen-index">01</span>
-              <p>Motion should explain what changed.</p>
-              <div className="timeline" aria-hidden="true">
-                <span />
-                <span />
-                <span />
-              </div>
-            </div>
+            <MotionSpecimen key={replayKey} />
           </div>
 
           <aside className="token-panel" aria-labelledby="token-title">

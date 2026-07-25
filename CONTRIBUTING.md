@@ -8,9 +8,9 @@ By participating, you agree to follow the [Code of Conduct](CODE_OF_CONDUCT.md).
 
 ## Current Stage
 
-Easecraft is in the motion-foundation stage. The token package, `MotionProvider`, reduced-motion hooks, Next.js docs explorer, and Vite consumer fixture are implemented. Anime.js lifecycle integration is the next package milestone.
+Easecraft is in the motion-foundation stage. The token package, `MotionProvider`, reduced-motion hooks, scoped Anime.js lifecycle integration, Next.js docs explorer, and Vite consumer fixture are implemented. The first low-level `Motion` primitive is the next package milestone.
 
-The immediate package focus is [Phase 1](PROPOSAL.md#phase-1-motion-foundation): Anime.js lifecycle integration and the first motion primitives. Remaining Phase 0 repository work includes public identifiers, CI, preview deployment, and architecture decision records.
+The immediate package focus is [Phase 1](PROPOSAL.md#phase-1-motion-foundation): the first motion and presence primitives. Remaining Phase 0 repository work includes public identifiers, CI, preview deployment, and architecture decision records.
 
 Useful contributions at this stage include:
 

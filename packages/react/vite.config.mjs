@@ -21,6 +21,8 @@ export default defineConfig({
     minify: false,
     rollupOptions: {
       external: (id) =>
+        id === "animejs" ||
+        id.startsWith("animejs/") ||
         id === "easecraft-tokens" ||
         id === "react" ||
         id.startsWith("react/") ||

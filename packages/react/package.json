@@ -28,6 +28,7 @@
     "typecheck": "tsc --noEmit --project tsconfig.json"
   },
   "dependencies": {
+    "animejs": "4.5.0",
     "easecraft-tokens": "workspace:*"
   },
   "peerDependencies": {
