@@ -11,13 +11,17 @@
   "scripts": {
     "build": "turbo run build",
     "dev": "turbo run dev",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
     "lint": "turbo run lint",
     "test": "turbo run test",
     "test:e2e": "turbo run test:e2e",
     "typecheck": "turbo run typecheck"
   },
   "devDependencies": {
+    "eslint": "9.39.2",
+    "prettier": "3.9.6",
     "turbo": "2.10.6",
-    "typescript": "7.0.2"
+    "typescript": "6.0.3"
   }
 }

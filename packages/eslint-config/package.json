@@ -1,0 +1,27 @@
+{
+  "name": "easecraft-eslint-config",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Shared flat ESLint configurations for Easecraft.",
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "lint": "eslint base.js react.js eslint.config.js --max-warnings 0"
+  },
+  "exports": {
+    ".": "./base.js",
+    "./react": "./react.js"
+  },
+  "dependencies": {
+    "@eslint/js": "9.39.2",
+    "eslint-plugin-jsx-a11y": "6.10.2",
+    "eslint-plugin-react": "7.37.5",
+    "eslint-plugin-react-hooks": "7.1.1",
+    "globals": "17.7.0",
+    "typescript-eslint": "8.65.0"
+  },
+  "peerDependencies": {
+    "eslint": ">=9.39.2 <10.0.0",
+    "typescript": ">=6.0.3 <6.1.0"
+  }
+}

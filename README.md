@@ -30,13 +30,14 @@ The workspace currently requires Node.js 24 or newer and Corepack. Install depen
 ```bash
 corepack enable
 pnpm install
+pnpm format:check
 pnpm lint
 pnpm typecheck
 pnpm test
 pnpm build
 ```
 
-`pnpm typecheck` runs TypeScript 7 with shared strict settings across every source workspace. The lint, test, and build tasks remain placeholders until those toolchains and package implementations are added.
+`pnpm lint` runs shared type-aware ESLint rules, including React Hooks and JSX accessibility checks where applicable. `pnpm typecheck` runs TypeScript 6 with shared strict settings, and `pnpm format:check` validates code and configuration files with Prettier. The test and build tasks remain placeholders until those toolchains and package implementations are added.
 
 ## What Easecraft Will Provide
 

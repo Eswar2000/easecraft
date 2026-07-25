@@ -1,0 +1,11 @@
+.next/
+.turbo/
+.vercel/
+**/*.md
+coverage/
+dist/
+node_modules/
+out/
+playwright-report/
+pnpm-lock.yaml
+test-results/

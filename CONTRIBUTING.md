@@ -44,13 +44,14 @@ git switch -c docs/short-description
 Development currently requires Node.js 24 or newer. Run the available repository checks from the root:
 
 ```bash
+pnpm format:check
 pnpm lint
 pnpm typecheck
 pnpm test
 pnpm build
 ```
 
-`pnpm typecheck` runs the real shared strict TypeScript configuration. The lint, test, and build commands currently execute placeholders to verify workspace discovery and orchestration until their toolchains are configured.
+The format, lint, and typecheck commands run real Prettier, ESLint, and strict TypeScript checks. The test and build commands currently execute placeholders to verify workspace discovery and orchestration until their toolchains are configured.
 
 ## Making Changes
 
