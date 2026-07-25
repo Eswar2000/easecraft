@@ -8,7 +8,7 @@ By participating, you agree to follow the [Code of Conduct](CODE_OF_CONDUCT.md).
 
 ## Current Stage
 
-Easecraft is in the repository-foundation stage. The pnpm and Turborepo workspace is initialized, while package source and applications remain to be implemented.
+Easecraft is in the repository-foundation stage. The Next.js docs explorer and Vite consumer fixture are scaffolded, while package source remains to be implemented.
 
 The immediate focus is Phase 0 of the [project proposal](PROPOSAL.md#phase-0-product-and-repository-foundation): confirming the remaining public identifiers, establishing shared quality checks, and proving a local package can be consumed by an example application.
 
@@ -44,6 +44,7 @@ git switch -c docs/short-description
 Development currently requires Node.js 24 or newer. Run the available repository checks from the root:
 
 ```bash
+pnpm dev
 pnpm format:check
 pnpm lint
 pnpm typecheck
@@ -51,7 +52,7 @@ pnpm test
 pnpm build
 ```
 
-The format, lint, and typecheck commands run real Prettier, ESLint, and strict TypeScript checks. The test and build commands currently execute placeholders to verify workspace discovery and orchestration until their toolchains are configured.
+`pnpm dev` starts both applications and prints their local URLs. The format, lint, and typecheck commands run real Prettier, ESLint, and strict TypeScript checks. The build command produces both applications while package builds remain placeholders; test commands remain placeholders until their toolchain is configured.
 
 ## Making Changes
 

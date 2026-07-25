@@ -6,7 +6,7 @@ Easecraft is an open-source motion design system planned for React. It will comb
 
 ## Project Status
 
-Easecraft is currently in the **repository-foundation stage**. The pnpm and Turborepo workspace is initialized, but package source, applications, and production builds have not been implemented or published yet.
+Easecraft is currently in the **repository-foundation stage**. The Next.js component explorer and Vite consumer fixture are scaffolded and buildable; package source has not been implemented or published yet.
 
 The complete product scope, architecture, delivery plan, and initial backlog are documented in the [project proposal](PROPOSAL.md).
 
@@ -30,6 +30,7 @@ The workspace currently requires Node.js 24 or newer and Corepack. Install depen
 ```bash
 corepack enable
 pnpm install
+pnpm dev
 pnpm format:check
 pnpm lint
 pnpm typecheck
@@ -37,7 +38,7 @@ pnpm test
 pnpm build
 ```
 
-`pnpm lint` runs shared type-aware ESLint rules, including React Hooks and JSX accessibility checks where applicable. `pnpm typecheck` runs TypeScript 6 with shared strict settings, and `pnpm format:check` validates code and configuration files with Prettier. The test and build tasks remain placeholders until those toolchains and package implementations are added.
+`pnpm dev` starts the docs explorer and Vite consumer fixture and prints their local URLs. `pnpm lint` runs shared type-aware ESLint rules, including React Hooks and JSX accessibility checks where applicable. `pnpm typecheck` runs TypeScript 6 with shared strict settings, and `pnpm format:check` validates code and configuration files with Prettier. `pnpm build` builds both applications while package builds remain placeholders; test tasks remain placeholders until their toolchain is added.
 
 ## What Easecraft Will Provide
 
