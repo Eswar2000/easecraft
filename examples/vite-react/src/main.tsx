@@ -2,6 +2,7 @@ import {
   Motion,
   MotionProvider,
   Presence,
+  TextReveal,
   useAnime,
   useMotionConfig,
   type AnimeSetup,
@@ -47,7 +48,9 @@ function PresenceSpecimen({ complete, state }: PresenceRenderProps) {
   return (
     <div className="motion-specimen" data-presence-state={state} ref={rootRef}>
       <span className="specimen-index">01</span>
-      <p>Motion should explain what changed.</p>
+      <TextReveal as="p" distance="small" duration="normal" split="words" stagger="tight">
+        Motion should explain what changed.
+      </TextReveal>
       <div className="timeline" aria-hidden="true">
         <span />
         <span />

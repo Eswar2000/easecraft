@@ -1,5 +1,6 @@
 "use client";
 
+import { MotionProvider, TextReveal } from "easecraft";
 import { useDeferredValue, useState } from "react";
 
 const categories = ["All", "Text", "Layout", "Overlay", "Feedback"] as const;
@@ -13,7 +14,7 @@ interface ComponentDemo {
   kind: "text" | "number" | "list" | "tabs" | "dialog" | "toast";
   name: string;
   slug: string;
-  status: "Foundation" | "Planned";
+  status: "Implemented" | "Planned";
 }
 
 const componentDemos = [
@@ -23,7 +24,7 @@ const componentDemos = [
     kind: "text",
     name: "Text Reveal",
     slug: "text-reveal",
-    status: "Foundation",
+    status: "Implemented",
   },
   {
     category: "Feedback",
@@ -69,15 +70,18 @@ const componentDemos = [
 
 interface PreviewProps {
   kind: ComponentDemo["kind"];
+  reducedMotion: boolean;
 }
 
-function Preview({ kind }: PreviewProps) {
+function Preview({ kind, reducedMotion }: PreviewProps) {
   switch (kind) {
     case "text":
       return (
-        <p className="preview-copy">
-          <span>Motion</span> <span>with</span> <span>purpose.</span>
-        </p>
+        <MotionProvider reducedMotion={reducedMotion ? "always" : "never"}>
+          <TextReveal as="p" className="preview-copy" duration="slow" stagger="tight">
+            Motion with purpose.
+          </TextReveal>
+        </MotionProvider>
       );
     case "number":
       return (
@@ -231,12 +235,20 @@ export function ComponentExplorer() {
                 </div>
                 <div className="preview-frame">
                   <div className="preview-content" key={`${demo.slug}-${replayKey.toString()}`}>
-                    <Preview kind={demo.kind} />
+                    <Preview kind={demo.kind} reducedMotion={reducedMotion} />
                   </div>
                 </div>
                 <div className="card-copy">
                   <div>
-                    <h2>{demo.name}</h2>
+                    <h2>
+                      {demo.slug === "text-reveal" ? (
+                        <a className="component-title-link" href="/components/text-reveal">
+                          {demo.name}
+                        </a>
+                      ) : (
+                        demo.name
+                      )}
+                    </h2>
                     <p>{demo.description}</p>
                   </div>
                   <span className="component-slug">/{demo.slug}</span>

@@ -6,7 +6,7 @@ Easecraft is an open-source motion design system planned for React. It will comb
 
 ## Project Status
 
-Easecraft is currently in the **motion-foundation stage**. The token package, `MotionProvider`, reduced-motion hooks, scoped Anime.js lifecycle integration, `Motion`, `Presence`, the Next.js component explorer, and Vite consumer fixture are implemented and buildable; no npm package has been published yet.
+Easecraft is currently in the **first-component stage**. The motion foundation and `TextReveal` vertical slice are implemented across the package, tests, consumer fixture, and interactive documentation; no npm package has been published yet.
 
 The complete product scope, architecture, delivery plan, and initial backlog are documented in the [project proposal](PROPOSAL.md).
 
@@ -23,7 +23,7 @@ Easecraft will use unscoped npm package names.
 
 These names were unregistered on npm when checked on 2026-07-25. They are planned identifiers, not reserved names, until their first publication.
 
-`easecraft-tokens` and the first `easecraft` React APIs are implemented. The Vite fixture consumes `MotionProvider`, `Motion`, and `Presence` through the public workspace export as an external application would; all packages remain private and unpublished during foundation work.
+`easecraft-tokens` and the first `easecraft` React APIs are implemented. The Vite fixture consumes `MotionProvider`, `Motion`, `Presence`, and `TextReveal` through the public workspace export as an external application would; all packages remain private and unpublished during foundation work.
 
 ## Development
 
@@ -59,7 +59,7 @@ The proposed first release includes five foundations, five hooks, and eight high
 - Hooks: `useAnime`, `useTimeline`, `usePresence`, `useReducedMotion`, and `useScrollProgress`
 - Components: `TextReveal`, `NumberTicker`, `StaggeredList`, `AnimatedTabs`, `MotionDialog`, `ToastStack`, `FilterGrid`, and `ScrollReveal`
 
-`TextReveal` is planned as the first vertical slice to prove the package API, Anime.js lifecycle integration, reduced-motion behavior, documentation, tests, and consumer build before the catalog expands.
+`TextReveal` is the first completed vertical slice, proving the package API, Anime.js lifecycle integration, reduced-motion behavior, accessible output, documentation, tests, and consumer build before the catalog expands.
 
 ## Principles
 

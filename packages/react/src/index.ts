@@ -22,6 +22,17 @@ export {
   type PresenceState,
 } from "./presence.js";
 export {
+  TextReveal,
+  type TextRevealDistance,
+  type TextRevealDuration,
+  type TextRevealEasing,
+  type TextRevealPreset,
+  type TextRevealProps,
+  type TextRevealSplit,
+  type TextRevealStagger,
+  type TextRevealTagName,
+} from "./text-reveal.js";
+export {
   useAnime,
   type AnimeSetup,
   type AnimeSetupContext,

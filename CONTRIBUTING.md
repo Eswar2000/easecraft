@@ -8,9 +8,9 @@ By participating, you agree to follow the [Code of Conduct](CODE_OF_CONDUCT.md).
 
 ## Current Stage
 
-Easecraft is in the motion-foundation stage. The token package, `MotionProvider`, reduced-motion hooks, scoped Anime.js lifecycle integration, `Motion`, `Presence`, the Next.js docs explorer, and Vite consumer fixture are implemented. `TextReveal` is the next complete package-and-documentation vertical slice.
+Easecraft has completed its motion foundation and first `TextReveal` vertical slice across package code, tests, consumer usage, and interactive documentation. `NumberTicker` is the next planned high-level component.
 
-The immediate package focus is the first `TextReveal` vertical slice: public API, accessible text output, reduced motion, documentation, tests, and consumer usage. Remaining Phase 0 repository work includes public identifiers, CI, preview deployment, and architecture decision records.
+The immediate package focus is `NumberTicker` and reusable component acceptance patterns. Remaining Phase 0 repository work includes public identifiers, CI, preview deployment, and architecture decision records.
 
 Useful contributions at this stage include:
 
