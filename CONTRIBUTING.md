@@ -8,7 +8,7 @@ By participating, you agree to follow the [Code of Conduct](CODE_OF_CONDUCT.md).
 
 ## Current Stage
 
-Easecraft is in the proposal and repository-foundation stage. The package and documentation applications have not been scaffolded yet, so there is currently no install, build, or test command to run.
+Easecraft is in the repository-foundation stage. The pnpm and Turborepo workspace is initialized, while package source and applications remain to be implemented.
 
 The immediate focus is Phase 0 of the [project proposal](PROPOSAL.md#phase-0-product-and-repository-foundation): confirming the remaining public identifiers, creating the workspace, establishing quality checks, and proving a local package can be consumed by an example application.
 
@@ -36,10 +36,21 @@ Clone the personal-account repository and create a focused branch:
 ```bash
 git clone https://github.com/Eswar2000/easecraft.git
 cd easecraft
+corepack enable
+pnpm install
 git switch -c docs/short-description
 ```
 
-Once Phase 0 tooling is added, this guide will document the exact runtime requirements and verified root commands. Do not assume commands listed as targets in the proposal are available before then.
+Development currently requires Node.js 24 or newer. Run the available repository checks from the root:
+
+```bash
+pnpm lint
+pnpm typecheck
+pnpm test
+pnpm build
+```
+
+These commands currently execute placeholder package tasks to verify workspace discovery and orchestration. They will run the real toolchains as each package and application is implemented.
 
 ## Making Changes
 

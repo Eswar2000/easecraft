@@ -6,7 +6,7 @@ Easecraft is an open-source motion design system planned for React. It will comb
 
 ## Project Status
 
-Easecraft is currently in the **proposal and repository-foundation stage**. No npm package or production implementation has been published yet.
+Easecraft is currently in the **repository-foundation stage**. The pnpm and Turborepo workspace is initialized, but package source, applications, and production builds have not been implemented or published yet.
 
 The complete product scope, architecture, delivery plan, and initial backlog are documented in the [project proposal](PROPOSAL.md).
 
@@ -22,6 +22,21 @@ Easecraft will use unscoped npm package names.
 | `easecraft-cli` | Post-MVP registry CLI |
 
 These names were unregistered on npm when checked on 2026-07-25. They are planned identifiers, not reserved names, until their first publication.
+
+## Development
+
+The workspace currently requires Node.js 24 or newer and Corepack. Install dependencies and run the repository checks from the root:
+
+```bash
+corepack enable
+pnpm install
+pnpm lint
+pnpm typecheck
+pnpm test
+pnpm build
+```
+
+The package tasks are placeholders at this stage. They verify workspace discovery and Turborepo orchestration until the TypeScript, testing, and build toolchains are added.
 
 ## What Easecraft Will Provide
 

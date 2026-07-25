@@ -1,0 +1,14 @@
+{
+  "name": "easecraft-docs",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Documentation and interactive playground for Easecraft.",
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "build": "node -e \"console.log('easecraft-docs: build placeholder')\"",
+    "lint": "node -e \"console.log('easecraft-docs: lint placeholder')\"",
+    "test": "node -e \"console.log('easecraft-docs: test placeholder')\"",
+    "typecheck": "node -e \"console.log('easecraft-docs: typecheck placeholder')\""
+  }
+}

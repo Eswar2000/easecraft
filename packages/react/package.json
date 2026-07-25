@@ -1,0 +1,14 @@
+{
+  "name": "easecraft",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Accessible React motion primitives, hooks, and components.",
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "build": "node -e \"console.log('easecraft: build placeholder')\"",
+    "lint": "node -e \"console.log('easecraft: lint placeholder')\"",
+    "test": "node -e \"console.log('easecraft: test placeholder')\"",
+    "typecheck": "node -e \"console.log('easecraft: typecheck placeholder')\""
+  }
+}
