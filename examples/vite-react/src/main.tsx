@@ -1,5 +1,13 @@
-import { Motion, MotionProvider, useMotionConfig } from "easecraft";
-import { StrictMode, useState } from "react";
+import {
+  Motion,
+  MotionProvider,
+  Presence,
+  useAnime,
+  useMotionConfig,
+  type AnimeSetup,
+  type PresenceRenderProps,
+} from "easecraft";
+import { StrictMode, useCallback, useState } from "react";
 import { createRoot } from "react-dom/client";
 
 import "./styles.css";
@@ -9,17 +17,35 @@ interface FixtureProps {
   readonly setReduceMotion: (reduceMotion: boolean) => void;
 }
 
-function MotionSpecimen() {
-  const { reducedMotion } = useMotionConfig();
+function PresenceSpecimen({ complete, state }: PresenceRenderProps) {
+  const setupAnimation = useCallback<AnimeSetup<HTMLDivElement>>(
+    ({ animate, reducedMotion, root, tokens }) => {
+      if (state === "present") {
+        return undefined;
+      }
+
+      const exiting = state === "exiting";
+
+      animate(root, {
+        duration: reducedMotion
+          ? tokens.duration.instant
+          : exiting
+            ? tokens.duration.fast
+            : tokens.duration.slow,
+        ease: reducedMotion ? "linear" : exiting ? tokens.easing.exit : tokens.easing.enter,
+        onComplete: complete,
+        opacity: exiting ? [1, 0] : [0, 1],
+        y: reducedMotion ? 0 : exiting ? [0, -12] : [18, 0],
+      });
+
+      return undefined;
+    },
+    [complete, state],
+  );
+  const rootRef = useAnime(setupAnimation);
 
   return (
-    <Motion
-      className="motion-specimen"
-      data-reduced-motion={reducedMotion}
-      distance={18}
-      duration="slow"
-      preset="fade-rise"
-    >
+    <div className="motion-specimen" data-presence-state={state} ref={rootRef}>
       <span className="specimen-index">01</span>
       <p>Motion should explain what changed.</p>
       <div className="timeline" aria-hidden="true">
@@ -27,12 +53,12 @@ function MotionSpecimen() {
         <span />
         <span />
       </div>
-    </Motion>
+    </div>
   );
 }
 
 function Fixture({ reduceMotion, setReduceMotion }: FixtureProps) {
-  const [replayKey, setReplayKey] = useState(0);
+  const [specimenPresent, setSpecimenPresent] = useState(true);
   const { tokens } = useMotionConfig();
   const motionTokens = [
     {
@@ -82,10 +108,10 @@ function Fixture({ reduceMotion, setReduceMotion }: FixtureProps) {
             <button
               type="button"
               onClick={() => {
-                setReplayKey((key) => key + 1);
+                setSpecimenPresent((current) => !current);
               }}
             >
-              Replay
+              {specimenPresent ? "Remove" : "Show"}
             </button>
           </div>
         </section>
@@ -98,10 +124,12 @@ function Fixture({ reduceMotion, setReduceMotion }: FixtureProps) {
               <span>300</span>
               <span>450</span>
             </div>
-            <MotionSpecimen key={replayKey} />
+            <Presence present={specimenPresent}>
+              {(props) => <PresenceSpecimen {...props} />}
+            </Presence>
           </div>
 
-          <aside className="token-panel" aria-labelledby="token-title">
+          <Motion as="aside" aria-labelledby="token-title" className="token-panel" preset="fade">
             <div className="panel-heading">
               <p className="eyebrow">Resolved values</p>
               <h2 id="token-title">Motion tokens</h2>
@@ -118,7 +146,7 @@ function Fixture({ reduceMotion, setReduceMotion }: FixtureProps) {
               <span aria-hidden="true">PASS</span>
               Consumer build ready
             </p>
-          </aside>
+          </Motion>
         </section>
       </main>
     </div>

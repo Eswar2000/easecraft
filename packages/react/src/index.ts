@@ -16,6 +16,12 @@ export {
   type MotionTagName,
 } from "./motion.js";
 export {
+  Presence,
+  type PresenceProps,
+  type PresenceRenderProps,
+  type PresenceState,
+} from "./presence.js";
+export {
   useAnime,
   type AnimeSetup,
   type AnimeSetupContext,
