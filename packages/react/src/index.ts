@@ -7,6 +7,15 @@ export {
   type ReducedMotionMode,
 } from "./motion-provider.js";
 export {
+  Motion,
+  type MotionDistance,
+  type MotionDuration,
+  type MotionEasing,
+  type MotionPreset,
+  type MotionProps,
+  type MotionTagName,
+} from "./motion.js";
+export {
   useAnime,
   type AnimeSetup,
   type AnimeSetupContext,

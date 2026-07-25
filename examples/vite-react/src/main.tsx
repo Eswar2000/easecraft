@@ -1,5 +1,5 @@
-import { MotionProvider, useAnime, useMotionConfig, type AnimeSetup } from "easecraft";
-import { StrictMode, useCallback, useState } from "react";
+import { Motion, MotionProvider, useMotionConfig } from "easecraft";
+import { StrictMode, useState } from "react";
 import { createRoot } from "react-dom/client";
 
 import "./styles.css";
@@ -10,25 +10,16 @@ interface FixtureProps {
 }
 
 function MotionSpecimen() {
-  const setupAnimation = useCallback<AnimeSetup<HTMLDivElement>>(
-    ({ animate, reducedMotion, root, tokens }) => {
-      animate(root, {
-        duration: reducedMotion ? tokens.duration.instant : tokens.duration.slow,
-        ease: reducedMotion ? "linear" : tokens.easing.enter,
-        opacity: [0, 1],
-        scale: reducedMotion ? 1 : [0.98, 1],
-        y: reducedMotion ? 0 : [18, 0],
-      });
-
-      return undefined;
-    },
-    [],
-  );
-  const rootRef = useAnime(setupAnimation);
   const { reducedMotion } = useMotionConfig();
 
   return (
-    <div ref={rootRef} className="motion-specimen" data-reduced-motion={reducedMotion}>
+    <Motion
+      className="motion-specimen"
+      data-reduced-motion={reducedMotion}
+      distance={18}
+      duration="slow"
+      preset="fade-rise"
+    >
       <span className="specimen-index">01</span>
       <p>Motion should explain what changed.</p>
       <div className="timeline" aria-hidden="true">
@@ -36,7 +27,7 @@ function MotionSpecimen() {
         <span />
         <span />
       </div>
-    </div>
+    </Motion>
   );
 }
 
