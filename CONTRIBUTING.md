@@ -8,9 +8,9 @@ By participating, you agree to follow the [Code of Conduct](CODE_OF_CONDUCT.md).
 
 ## Current Stage
 
-Easecraft is in the repository-foundation stage. The token package, Next.js docs explorer, and Vite consumer fixture are implemented, while the React motion package remains to be built.
+Easecraft is in the motion-foundation stage. The token package, `MotionProvider`, reduced-motion hooks, Next.js docs explorer, and Vite consumer fixture are implemented. Anime.js lifecycle integration is the next package milestone.
 
-The immediate focus is Phase 0 of the [project proposal](PROPOSAL.md#phase-0-product-and-repository-foundation): confirming the remaining public identifiers, establishing shared quality checks, and proving a local package can be consumed by an example application.
+The immediate package focus is [Phase 1](PROPOSAL.md#phase-1-motion-foundation): Anime.js lifecycle integration and the first motion primitives. Remaining Phase 0 repository work includes public identifiers, CI, preview deployment, and architecture decision records.
 
 Useful contributions at this stage include:
 
@@ -52,7 +52,7 @@ pnpm test
 pnpm build
 ```
 
-`pnpm dev` starts the token build watcher and both applications. The format, lint, and typecheck commands run real Prettier, ESLint, and strict TypeScript checks. The build command produces both applications and `easecraft-tokens`; the React and registry builds remain placeholders. The test command runs real token tests while remaining workspace tests are placeholders.
+`pnpm dev` starts token and React package build watchers plus both applications. The format, lint, and typecheck commands run real Prettier, ESLint, and strict TypeScript checks. The build command produces both applications, `easecraft-tokens`, and `easecraft`; only the registry build remains a placeholder. The test command runs real token and provider tests while the docs, registry, and consumer fixture tests remain placeholders.
 
 ## Making Changes
 

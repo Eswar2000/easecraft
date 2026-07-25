@@ -5,14 +5,47 @@
   "description": "Accessible React motion primitives, hooks, and components.",
   "license": "MIT",
   "type": "module",
+  "sideEffects": false,
+  "files": [
+    "dist"
+  ],
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    }
+  },
   "scripts": {
-    "build": "node -e \"console.log('easecraft: build placeholder')\"",
+    "build": "vite build",
+    "dev": "vite build --watch",
     "lint": "eslint . --max-warnings 0",
-    "test": "node -e \"console.log('easecraft: test placeholder')\"",
+    "test": "vitest run",
+    "test:watch": "vitest",
     "typecheck": "tsc --noEmit --project tsconfig.json"
   },
+  "dependencies": {
+    "easecraft-tokens": "workspace:*"
+  },
+  "peerDependencies": {
+    "react": ">=18.2.0 <20.0.0",
+    "react-dom": ">=18.2.0 <20.0.0"
+  },
   "devDependencies": {
+    "@testing-library/dom": "10.4.1",
+    "@testing-library/react": "16.3.2",
+    "@types/react": "19.2.17",
+    "@types/react-dom": "19.2.3",
     "easecraft-eslint-config": "workspace:*",
-    "easecraft-typescript-config": "workspace:*"
+    "easecraft-typescript-config": "workspace:*",
+    "jsdom": "29.1.1",
+    "react": "19.2.8",
+    "react-dom": "19.2.8",
+    "vite": "8.1.5",
+    "vite-plugin-dts": "5.0.3",
+    "vitest": "4.1.10"
   }
 }

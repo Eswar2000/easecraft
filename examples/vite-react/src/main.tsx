@@ -1,24 +1,28 @@
-import { defaultMotionTokens } from "easecraft-tokens";
+import { MotionProvider, useMotionConfig } from "easecraft";
 import { StrictMode, useState } from "react";
 import { createRoot } from "react-dom/client";
 
 import "./styles.css";
 
-const motionTokens = [
-  {
-    label: "duration.normal",
-    value: `${defaultMotionTokens.duration.normal.toString()}ms`,
-  },
-  { label: "easing.enter", value: defaultMotionTokens.easing.enter },
-  {
-    label: "distance.medium",
-    value: `${defaultMotionTokens.distance.medium.toString()}px`,
-  },
-] as const;
+interface FixtureProps {
+  readonly reduceMotion: boolean;
+  readonly setReduceMotion: (reduceMotion: boolean) => void;
+}
 
-function App() {
+function Fixture({ reduceMotion, setReduceMotion }: FixtureProps) {
   const [replayKey, setReplayKey] = useState(0);
-  const [reducedMotion, setReducedMotion] = useState(false);
+  const { reducedMotion, tokens } = useMotionConfig();
+  const motionTokens = [
+    {
+      label: "duration.normal",
+      value: `${tokens.duration.normal.toString()}ms`,
+    },
+    { label: "easing.enter", value: tokens.easing.enter },
+    {
+      label: "distance.medium",
+      value: `${tokens.distance.medium.toString()}px`,
+    },
+  ] as const;
 
   return (
     <div className="app-shell">
@@ -45,9 +49,9 @@ function App() {
             <label className="motion-toggle">
               <input
                 type="checkbox"
-                checked={reducedMotion}
+                checked={reduceMotion}
                 onChange={(event) => {
-                  setReducedMotion(event.currentTarget.checked);
+                  setReduceMotion(event.currentTarget.checked);
                 }}
               />
               <span aria-hidden="true" />
@@ -104,6 +108,16 @@ function App() {
         </section>
       </main>
     </div>
+  );
+}
+
+function App() {
+  const [reduceMotion, setReduceMotion] = useState(false);
+
+  return (
+    <MotionProvider reducedMotion={reduceMotion ? "always" : "never"}>
+      <Fixture reduceMotion={reduceMotion} setReduceMotion={setReduceMotion} />
+    </MotionProvider>
   );
 }
 
