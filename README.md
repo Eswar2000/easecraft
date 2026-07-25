@@ -10,6 +10,19 @@ Easecraft is currently in the **proposal and repository-foundation stage**. No n
 
 The complete product scope, architecture, delivery plan, and initial backlog are documented in the [project proposal](PROPOSAL.md).
 
+## Planned npm Packages
+
+Easecraft will use unscoped npm package names.
+
+| Package | Purpose |
+| --- | --- |
+| `easecraft` | React motion primitives, hooks, and components |
+| `easecraft-tokens` | Framework-independent motion tokens |
+| `easecraft-registry` | Typed metadata and copyable component source |
+| `easecraft-cli` | Post-MVP registry CLI |
+
+These names were unregistered on npm when checked on 2026-07-25. They are planned identifiers, not reserved names, until their first publication.
+
 ## What Easecraft Will Provide
 
 - A small React package of motion primitives, hooks, and accessible animated components

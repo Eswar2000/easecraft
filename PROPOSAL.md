@@ -4,10 +4,10 @@
 
 **Document status:** Build proposal v0.1
 **Date:** 2026-07-25
-**Working package name:** `@easecraft/react`
+**Planned core package:** `easecraft`
 **Working website:** `easecraft.dev`
 
-> The product, npm scope, social handles, and domain names in this document are working names. Check npm, domain, and trademark availability before publishing. The source repository is confirmed at `Eswar2000/easecraft`.
+> The source repository is confirmed at `Eswar2000/easecraft`. The unscoped package names below were unregistered on npm as of 2026-07-25; availability checks do not reserve names. Social handles, domain names, and trademark availability still require final verification.
 
 ## 1. Executive Summary
 
@@ -36,12 +36,13 @@ The name connects animation easing with deliberate craftsmanship. It is understa
 
 ### Package And Repository Names
 
-| Surface | Working name |
+| Surface | Confirmed or planned identifier |
 | --- | --- |
 | GitHub repository | `Eswar2000/easecraft` |
-| Core package | `@easecraft/react` |
-| Token package | `@easecraft/tokens` |
-| Registry CLI, post-MVP | `@easecraft/cli` |
+| Core package | `easecraft` |
+| Token package | `easecraft-tokens` |
+| Registry metadata package | `easecraft-registry` |
+| Registry CLI, post-MVP | `easecraft-cli` |
 | Documentation site | `easecraft.dev` |
 | Initial preview URL | `easecraft-ui.vercel.app` |
 
@@ -145,7 +146,7 @@ Easecraft has two public layers.
 
 ### Layer A: Stable Package
 
-`@easecraft/react` contains:
+`easecraft` contains:
 
 - Providers
 - Hooks
@@ -338,7 +339,7 @@ import {
   MotionProvider,
   StaggeredList,
   TextReveal,
-} from "@easecraft/react";
+} from "easecraft";
 
 const tokens = {
   duration: { normal: 360 },
@@ -404,9 +405,9 @@ Pin exact versions when scaffolding. Use automated dependency updates only after
 flowchart LR
   User[Developer] --> Docs[Next.js docs and playground]
   Docs --> Registry[Typed component registry]
-  Docs --> ReactPkg[@easecraft/react]
+  Docs --> ReactPkg[easecraft]
   Registry --> ReactPkg
-  ReactPkg --> Tokens[@easecraft/tokens]
+  ReactPkg --> Tokens[easecraft-tokens]
   ReactPkg --> Anime[Anime.js]
   ReactPkg --> Radix[Accessible primitives]
   GitHub[GitHub Actions] --> Checks[Lint, types, tests, builds]
@@ -474,9 +475,9 @@ easecraft/
 
 ### Package Responsibilities
 
-- `@easecraft/tokens` must not depend on React or Anime.js.
-- `@easecraft/react` may depend on Anime.js and use React and Radix as declared dependencies or peers according to their integration model.
-- `@easecraft/registry` contains metadata and copyable source, not runtime application state.
+- `easecraft-tokens` must not depend on React or Anime.js.
+- `easecraft` may depend on Anime.js and use React and Radix as declared dependencies or peers according to their integration model.
+- `easecraft-registry` contains metadata and copyable source, not runtime application state.
 - The docs app consumes published package entry points rather than reaching into package internals.
 - The Vite example acts as a consumer smoke test.
 
@@ -826,7 +827,7 @@ Independent jobs should run in parallel after dependency installation and cachin
 
 **Deliverables**
 
-- `@easecraft/tokens`
+- `easecraft-tokens`
 - `MotionProvider`
 - `useReducedMotion`
 - `useAnime`
@@ -988,12 +989,12 @@ Use measured outcomes in the final resume bullet once real data exists. Do not i
 
 Create these as the first implementation issues:
 
-1. Verify project name, npm scope, repository, and domain availability.
+1. Confirm the remaining public identifiers: domain, social handles, and trademark availability.
 2. Scaffold pnpm workspaces and Turborepo.
 3. Configure shared strict TypeScript settings.
 4. Configure linting, formatting, and package scripts.
 5. Scaffold `apps/docs` and `examples/vite-react`.
-6. Create `@easecraft/tokens` and its tests.
+6. Create `easecraft-tokens` and its tests.
 7. Design the `MotionProvider` contract.
 8. Implement scoped `useAnime` setup and cleanup.
 9. Implement reduced-motion preference resolution.

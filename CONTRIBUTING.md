@@ -10,7 +10,7 @@ By participating, you agree to follow the [Code of Conduct](CODE_OF_CONDUCT.md).
 
 Easecraft is in the proposal and repository-foundation stage. The package and documentation applications have not been scaffolded yet, so there is currently no install, build, or test command to run.
 
-The immediate focus is Phase 0 of the [project proposal](PROPOSAL.md#phase-0-product-and-repository-foundation): confirming public identifiers, creating the workspace, establishing quality checks, and proving a local package can be consumed by an example application.
+The immediate focus is Phase 0 of the [project proposal](PROPOSAL.md#phase-0-product-and-repository-foundation): confirming the remaining public identifiers, creating the workspace, establishing quality checks, and proving a local package can be consumed by an example application.
 
 Useful contributions at this stage include:
 
