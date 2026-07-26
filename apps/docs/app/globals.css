@@ -462,41 +462,102 @@ h2 {
   color: var(--muted);
 }
 
-.dialog-preview {
+.dialog-preview-trigger {
   position: relative;
+  display: grid;
+  width: 100%;
   min-height: 130px;
+  padding: 0;
+  place-items: center;
+  overflow: hidden;
   border: 1px solid var(--ink);
+  border-radius: 0;
+  color: var(--ink);
   background: rgb(23 23 21 / 14%);
 }
 
-.dialog-preview > span {
+.dialog-preview-trigger::before {
   position: absolute;
   inset: 0;
   background: rgb(23 23 21 / 20%);
+  content: "";
 }
 
-.dialog-preview div {
-  position: absolute;
-  inset: 24px;
+.dialog-preview-trigger > span {
+  position: relative;
   display: grid;
-  align-content: center;
-  gap: 12px;
-  padding: 16px;
+  width: calc(100% - 48px);
+  min-height: 70px;
+  align-items: center;
+  padding: 12px;
   border: 1px solid var(--ink);
   background: #fff;
-  animation: dialog-enter 440ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  box-shadow: 5px 5px 0 var(--yellow);
+  font-family: "Bricolage Grotesque", sans-serif;
+  font-size: 14px;
+  font-weight: 700;
 }
 
-.dialog-preview i {
-  display: block;
-  width: 80%;
-  height: 8px;
-  background: var(--line);
+.dialog-preview-trigger small {
+  position: absolute;
+  right: 8px;
+  bottom: 7px;
+  padding: 3px 5px;
+  color: #fff;
+  background: var(--signal);
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 8px;
+  font-weight: 500;
+  text-transform: uppercase;
 }
 
-.dialog-preview i:last-child {
-  width: 48%;
-  background: var(--yellow);
+.dialog-preview-overlay {
+  --easecraft-dialog-overlay: rgb(23 23 21 / 58%);
+
+  backdrop-filter: blur(2px);
+}
+
+.dialog-preview-content {
+  --easecraft-dialog-background: #fff;
+  --easecraft-dialog-padding: 30px;
+
+  position: relative;
+  border: 1px solid var(--ink);
+  box-shadow: 10px 10px 0 var(--yellow);
+}
+
+.dialog-preview-content [data-easecraft-dialog-title] {
+  margin: 0 48px 8px 0;
+  font-size: 28px;
+}
+
+.dialog-preview-content [data-easecraft-dialog-description],
+.dialog-preview-content [data-easecraft-dialog-body] p {
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.dialog-preview-content [data-easecraft-dialog-body] {
+  padding-top: 18px;
+  border-top: 1px solid var(--line);
+}
+
+.dialog-preview-close,
+.motion-dialog-close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 36px;
+  min-height: 36px;
+  padding: 0;
+  border-radius: 4px;
+  font-size: 0;
+}
+
+.dialog-preview-close::before,
+.motion-dialog-close::before {
+  font-size: 20px;
+  content: "\00d7";
 }
 
 .toast-preview span {
@@ -1228,15 +1289,154 @@ h2 {
   color: var(--muted);
 }
 
-@keyframes dialog-enter {
-  from {
-    opacity: 0;
-    transform: translateY(10px) scale(0.96);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
+.motion-dialog-demo {
+  border: 1px solid var(--ink);
+  background: var(--panel);
+}
+
+.motion-dialog-controls {
+  display: flex;
+  min-height: 64px;
+  align-items: center;
+  gap: 22px;
+  padding: 10px;
+  border-bottom: 1px solid var(--ink);
+}
+
+.dialog-status {
+  margin-right: auto;
+  padding: 0 8px;
+  color: var(--signal);
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 10px;
+  text-transform: uppercase;
+}
+
+.motion-dialog-stage {
+  position: relative;
+  display: grid;
+  min-height: 520px;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 48px;
+  align-items: center;
+  padding: 64px;
+  background:
+    linear-gradient(rgb(244 210 37 / 15%) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(244 210 37 / 15%) 1px, transparent 1px), #fdfdf9;
+  background-size: 40px 40px;
+}
+
+.dialog-launch-copy {
+  max-width: 520px;
+}
+
+.dialog-launch-index {
+  display: block;
+  margin-bottom: 18px;
+  color: var(--signal);
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 11px;
+}
+
+.dialog-launch-copy h2 {
+  margin-bottom: 12px;
+  font-size: 42px;
+}
+
+.dialog-launch-copy p {
+  max-width: 440px;
+  margin: 0;
+  color: var(--muted);
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+.dialog-launch-button {
+  min-width: 156px;
+  min-height: 48px;
+  box-shadow: 6px 6px 0 var(--cyan);
+}
+
+.motion-dialog-overlay {
+  --easecraft-dialog-overlay: rgb(23 23 21 / 62%);
+
+  backdrop-filter: blur(3px);
+}
+
+.motion-dialog-content {
+  --easecraft-dialog-background: #fff;
+  --easecraft-dialog-padding: 34px;
+
+  position: relative;
+  border: 1px solid var(--ink);
+  box-shadow: 12px 12px 0 var(--yellow);
+}
+
+.motion-dialog-content [data-easecraft-dialog-title] {
+  max-width: 390px;
+  margin: 0 50px 9px 0;
+  font-family: "Bricolage Grotesque", sans-serif;
+  font-size: 30px;
+  letter-spacing: 0;
+}
+
+.motion-dialog-content [data-easecraft-dialog-description] {
+  max-width: 440px;
+  margin: 0;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.motion-dialog-content [data-easecraft-dialog-body] {
+  margin-top: 24px;
+  padding-top: 22px;
+  border-top: 1px solid var(--line);
+}
+
+.dialog-release-checks {
+  margin: 0;
+}
+
+.dialog-release-checks div {
+  display: flex;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 13px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.dialog-release-checks dt,
+.dialog-release-checks dd {
+  margin: 0;
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 10px;
+}
+
+.dialog-release-checks dt {
+  color: var(--muted);
+}
+
+.motion-dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 24px;
+}
+
+.dialog-secondary-action,
+.dialog-primary-action {
+  min-height: 40px;
+}
+
+.dialog-secondary-action {
+  color: var(--ink);
+  background: #fff;
+}
+
+.dialog-primary-action {
+  color: var(--ink);
+  background: var(--yellow);
 }
 
 @keyframes toast-enter {
@@ -1483,5 +1683,48 @@ h2 {
 
   .tabs-demo-panel-content > div > strong {
     font-size: 52px;
+  }
+
+  .motion-dialog-controls {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .dialog-status {
+    margin: 0;
+    padding: 8px 4px;
+  }
+
+  .motion-dialog-stage {
+    min-height: 470px;
+    grid-template-columns: 1fr;
+    gap: 28px;
+    padding: 58px 24px 32px;
+  }
+
+  .dialog-launch-copy h2 {
+    font-size: 34px;
+  }
+
+  .dialog-launch-button {
+    width: 100%;
+  }
+
+  .motion-dialog-content,
+  .dialog-preview-content {
+    --easecraft-dialog-padding: 24px;
+
+    max-width: calc(100vw - 32px);
+    box-shadow: 7px 7px 0 var(--yellow);
+  }
+
+  .motion-dialog-content [data-easecraft-dialog-title],
+  .dialog-preview-content [data-easecraft-dialog-title] {
+    font-size: 25px;
+  }
+
+  .motion-dialog-actions {
+    align-items: stretch;
+    flex-direction: column-reverse;
   }
 }

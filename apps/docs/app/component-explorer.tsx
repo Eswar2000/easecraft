@@ -1,6 +1,13 @@
 "use client";
 
-import { AnimatedTabs, MotionProvider, NumberTicker, StaggeredList, TextReveal } from "easecraft";
+import {
+  AnimatedTabs,
+  MotionDialog,
+  MotionProvider,
+  NumberTicker,
+  StaggeredList,
+  TextReveal,
+} from "easecraft";
 import { useDeferredValue, useState } from "react";
 
 const categories = ["All", "Text", "Layout", "Overlay", "Feedback"] as const;
@@ -80,7 +87,7 @@ const componentDemos = [
     kind: "dialog",
     name: "Motion Dialog",
     slug: "motion-dialog",
-    status: "Planned",
+    status: "Implemented",
   },
   {
     category: "Feedback",
@@ -153,13 +160,24 @@ function Preview({ kind, reducedMotion }: PreviewProps) {
       );
     case "dialog":
       return (
-        <div className="dialog-preview" aria-hidden="true">
-          <span />
-          <div>
-            <i />
-            <i />
-          </div>
-        </div>
+        <MotionProvider reducedMotion={reducedMotion ? "always" : "never"}>
+          <MotionDialog
+            closeClassName="dialog-preview-close"
+            contentClassName="dialog-preview-content"
+            description="A focus-safe modal rendered from the component explorer."
+            overlayClassName="dialog-preview-overlay"
+            title="Review release"
+            trigger={
+              <button className="dialog-preview-trigger" type="button">
+                <span>Review release</span>
+                <small>Open dialog</small>
+              </button>
+            }
+          >
+            <p>Keyboard focus remains inside until the exit motion completes.</p>
+            <button type="button">Continue review</button>
+          </MotionDialog>
+        </MotionProvider>
       );
     case "toast":
       return (

@@ -415,6 +415,52 @@ h2 {
   font-weight: 500;
 }
 
+.fixture-dialog-overlay {
+  --easecraft-dialog-overlay: rgb(23 23 21 / 55%);
+
+  backdrop-filter: blur(2px);
+}
+
+.fixture-dialog-content {
+  --easecraft-dialog-background: #fff;
+  --easecraft-dialog-padding: 32px;
+
+  border: 1px solid var(--ink);
+  box-shadow: 10px 10px 0 var(--yellow);
+}
+
+.fixture-dialog-content [data-easecraft-dialog-title] {
+  margin: 0 44px 8px 0;
+  font-size: 26px;
+}
+
+.fixture-dialog-content [data-easecraft-dialog-description],
+.fixture-dialog-content [data-easecraft-dialog-body] p {
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.fixture-dialog-content [data-easecraft-dialog-body] {
+  padding-top: 18px;
+  border-top: 1px solid var(--line);
+}
+
+.fixture-dialog-close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 36px;
+  min-height: 36px;
+  padding: 0;
+  border-radius: 4px;
+  font-size: 0;
+}
+
+.fixture-dialog-close::before {
+  font-size: 20px;
+  content: "\00d7";
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

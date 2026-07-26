@@ -17,6 +17,14 @@ export {
   type ReducedMotionMode,
 } from "./motion-provider.js";
 export {
+  MotionDialog,
+  type MotionDialogDistance,
+  type MotionDialogDuration,
+  type MotionDialogEasing,
+  type MotionDialogProps,
+  type MotionDialogState,
+} from "./motion-dialog.js";
+export {
   Motion,
   type MotionDistance,
   type MotionDuration,

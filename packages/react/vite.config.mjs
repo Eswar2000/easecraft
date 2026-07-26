@@ -21,6 +21,7 @@ export default defineConfig({
     minify: false,
     rollupOptions: {
       external: (id) =>
+        id === "@radix-ui/react-dialog" ||
         id === "animejs" ||
         id.startsWith("animejs/") ||
         id === "easecraft-tokens" ||

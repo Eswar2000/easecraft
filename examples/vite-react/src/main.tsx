@@ -1,6 +1,7 @@
 import {
   AnimatedTabs,
   Motion,
+  MotionDialog,
   MotionProvider,
   NumberTicker,
   Presence,
@@ -166,6 +167,17 @@ function Fixture({ reduceMotion, setReduceMotion }: FixtureProps) {
             >
               Update value
             </button>
+            <MotionDialog
+              closeClassName="fixture-dialog-close"
+              contentClassName="fixture-dialog-content"
+              description="This modal is rendered from the installed workspace package."
+              overlayClassName="fixture-dialog-overlay"
+              title="Consumer dialog"
+              trigger={<button type="button">Open dialog</button>}
+            >
+              <p>Focus, Escape, scroll locking, and exit retention are active.</p>
+              <button type="button">Confirm fixture</button>
+            </MotionDialog>
             <button
               type="button"
               onClick={() => {
