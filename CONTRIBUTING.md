@@ -8,9 +8,9 @@ By participating, you agree to follow the [Code of Conduct](CODE_OF_CONDUCT.md).
 
 ## Current Stage
 
-Easecraft has completed its motion foundation and first `TextReveal` vertical slice across package code, tests, consumer usage, and interactive documentation. `NumberTicker` is the next planned high-level component.
+Easecraft has completed its motion foundation plus the `TextReveal` and `NumberTicker` vertical slices across package code, tests, consumer usage, and interactive documentation.
 
-The immediate package focus is `NumberTicker` and reusable component acceptance patterns. Remaining Phase 0 repository work includes public identifiers, CI, preview deployment, and architecture decision records.
+The immediate package focus is expanding the component catalog with the same reusable acceptance patterns. Remaining Phase 0 repository work includes public identifiers, CI, preview deployment, and architecture decision records.
 
 Useful contributions at this stage include:
 
@@ -52,7 +52,7 @@ pnpm test
 pnpm build
 ```
 
-`pnpm dev` starts token and React package build watchers plus both applications. The format, lint, and typecheck commands run real Prettier, ESLint, and strict TypeScript checks. The build command produces both applications, `easecraft-tokens`, and `easecraft`; only the registry build remains a placeholder. The test command runs real token and provider tests while the docs, registry, and consumer fixture tests remain placeholders.
+`pnpm dev` starts token and React package build watchers plus both applications. The format, lint, and typecheck commands run real Prettier, ESLint, and strict TypeScript checks. The build command produces both applications, `easecraft-tokens`, and `easecraft`; only the registry build remains a placeholder. The test command runs real token and React package unit and integration tests; the registry test remains a placeholder.
 
 ## Making Changes
 

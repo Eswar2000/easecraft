@@ -396,9 +396,8 @@ h2 {
   font-weight: 500;
 }
 
-.number-preview span {
-  margin-right: 7px;
-  color: var(--cyan);
+.number-preview > [data-easecraft-number-value] {
+  color: var(--ink);
 }
 
 .list-preview,
@@ -810,6 +809,81 @@ h2 {
   line-height: 1.45;
 }
 
+.number-demo {
+  border: 1px solid var(--ink);
+  background: var(--panel);
+}
+
+.number-demo-controls {
+  display: flex;
+  min-height: 72px;
+  align-items: end;
+  gap: 16px;
+  padding: 10px;
+  border-bottom: 1px solid var(--ink);
+}
+
+.number-control-field {
+  display: grid;
+  gap: 5px;
+  color: var(--muted);
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 9px;
+  text-transform: uppercase;
+}
+
+.number-control-field input,
+.number-control-field select {
+  min-height: 40px;
+  padding: 0 10px;
+  border: 1px solid var(--line);
+  border-radius: 0;
+  color: var(--ink);
+  background: #fff;
+  font-family: "Source Sans 3", sans-serif;
+  font-size: 14px;
+  text-transform: none;
+}
+
+.number-control-field input {
+  width: 150px;
+}
+
+.number-demo-controls .motion-switch {
+  margin-left: auto;
+  margin-bottom: 10px;
+}
+
+.number-demo-stage {
+  position: relative;
+  display: grid;
+  min-height: 430px;
+  place-items: center;
+  align-content: center;
+  gap: 20px;
+  overflow: hidden;
+  padding: 64px;
+  background:
+    linear-gradient(rgb(244 210 37 / 16%) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(244 210 37 / 16%) 1px, transparent 1px), #fdfdf9;
+  background-size: 40px 40px;
+}
+
+.number-demo-value {
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 68px;
+  font-weight: 500;
+  line-height: 1;
+}
+
+.number-demo-stage > p {
+  max-width: 470px;
+  margin: 0;
+  color: var(--muted);
+  font-size: 14px;
+  text-align: center;
+}
+
 @keyframes tab-move {
   from {
     transform: translateX(-100%);
@@ -980,5 +1054,28 @@ h2 {
 
   .accessibility-band dl {
     grid-template-columns: 1fr;
+  }
+
+  .number-demo-controls {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .number-control-field input,
+  .number-control-field select {
+    width: 100%;
+  }
+
+  .number-demo-controls .motion-switch {
+    margin: 0;
+  }
+
+  .number-demo-stage {
+    min-height: 360px;
+    padding: 52px 24px 36px;
+  }
+
+  .number-demo-value {
+    font-size: 44px;
   }
 }

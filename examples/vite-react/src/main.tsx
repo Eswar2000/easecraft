@@ -1,6 +1,7 @@
 import {
   Motion,
   MotionProvider,
+  NumberTicker,
   Presence,
   TextReveal,
   useAnime,
@@ -12,6 +13,8 @@ import { StrictMode, useCallback, useState } from "react";
 import { createRoot } from "react-dom/client";
 
 import "./styles.css";
+
+const integerFormatOptions = { maximumFractionDigits: 0 } satisfies Intl.NumberFormatOptions;
 
 interface FixtureProps {
   readonly reduceMotion: boolean;
@@ -61,6 +64,7 @@ function PresenceSpecimen({ complete, state }: PresenceRenderProps) {
 }
 
 function Fixture({ reduceMotion, setReduceMotion }: FixtureProps) {
+  const [metricValue, setMetricValue] = useState(12480);
   const [specimenPresent, setSpecimenPresent] = useState(true);
   const { tokens } = useMotionConfig();
   const motionTokens = [
@@ -111,6 +115,14 @@ function Fixture({ reduceMotion, setReduceMotion }: FixtureProps) {
             <button
               type="button"
               onClick={() => {
+                setMetricValue((current) => current + 375);
+              }}
+            >
+              Update value
+            </button>
+            <button
+              type="button"
+              onClick={() => {
                 setSpecimenPresent((current) => !current);
               }}
             >
@@ -144,6 +156,17 @@ function Fixture({ reduceMotion, setReduceMotion }: FixtureProps) {
                   <dd>{token.value}</dd>
                 </div>
               ))}
+              <div>
+                <dt>consumer.metric</dt>
+                <dd>
+                  <NumberTicker
+                    announce="polite"
+                    formatOptions={integerFormatOptions}
+                    prefix="+"
+                    value={metricValue}
+                  />
+                </dd>
+              </div>
             </dl>
             <p className="fixture-status">
               <span aria-hidden="true">PASS</span>

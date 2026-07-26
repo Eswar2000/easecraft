@@ -6,7 +6,7 @@ Easecraft is an open-source motion design system planned for React. It will comb
 
 ## Project Status
 
-Easecraft is currently in the **first-component stage**. The motion foundation and `TextReveal` vertical slice are implemented across the package, tests, consumer fixture, and interactive documentation; no npm package has been published yet.
+Easecraft is currently in the **component-catalog stage**. The motion foundation plus the `TextReveal` and `NumberTicker` vertical slices are implemented across the package, tests, consumer fixture, and interactive documentation; no npm package has been published yet.
 
 The complete product scope, architecture, delivery plan, and initial backlog are documented in the [project proposal](PROPOSAL.md).
 
@@ -23,7 +23,7 @@ Easecraft will use unscoped npm package names.
 
 These names were unregistered on npm when checked on 2026-07-25. They are planned identifiers, not reserved names, until their first publication.
 
-`easecraft-tokens` and the first `easecraft` React APIs are implemented. The Vite fixture consumes `MotionProvider`, `Motion`, `Presence`, and `TextReveal` through the public workspace export as an external application would; all packages remain private and unpublished during foundation work.
+`easecraft-tokens` and the first `easecraft` React APIs are implemented. The Vite fixture consumes `MotionProvider`, `Motion`, `Presence`, `TextReveal`, and `NumberTicker` through the public workspace export as an external application would; all packages remain private and unpublished during foundation work.
 
 ## Development
 
@@ -40,7 +40,7 @@ pnpm test
 pnpm build
 ```
 
-`pnpm dev` starts token and React package build watchers, the docs explorer, and the Vite consumer fixture. `pnpm lint` runs shared type-aware ESLint rules, including React Hooks and JSX accessibility checks where applicable. `pnpm typecheck` runs TypeScript 6 with shared strict settings, and `pnpm format:check` validates code and configuration files with Prettier. `pnpm build` builds both applications, `easecraft-tokens`, and `easecraft`; only the registry build remains a placeholder. `pnpm test` runs token and provider tests while the docs, registry, and consumer fixture tests remain placeholders.
+`pnpm dev` starts token and React package build watchers, the docs explorer, and the Vite consumer fixture. `pnpm lint` runs shared type-aware ESLint rules, including React Hooks and JSX accessibility checks where applicable. `pnpm typecheck` runs TypeScript 6 with shared strict settings, and `pnpm format:check` validates code and configuration files with Prettier. `pnpm build` builds both applications, `easecraft-tokens`, and `easecraft`; only the registry build remains a placeholder. `pnpm test` runs the token and React package unit and integration tests; the registry test remains a placeholder.
 
 ## What Easecraft Will Provide
 
@@ -59,7 +59,7 @@ The proposed first release includes five foundations, five hooks, and eight high
 - Hooks: `useAnime`, `useTimeline`, `usePresence`, `useReducedMotion`, and `useScrollProgress`
 - Components: `TextReveal`, `NumberTicker`, `StaggeredList`, `AnimatedTabs`, `MotionDialog`, `ToastStack`, `FilterGrid`, and `ScrollReveal`
 
-`TextReveal` is the first completed vertical slice, proving the package API, Anime.js lifecycle integration, reduced-motion behavior, accessible output, documentation, tests, and consumer build before the catalog expands.
+`TextReveal` and `NumberTicker` are completed vertical slices, proving the package API, Anime.js lifecycle integration, reduced-motion behavior, accessible output, documentation, tests, and consumer build as the catalog expands.
 
 ## Principles
 

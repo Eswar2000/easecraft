@@ -16,6 +16,14 @@ export {
   type MotionTagName,
 } from "./motion.js";
 export {
+  NumberTicker,
+  type NumberTickerAnnouncement,
+  type NumberTickerDuration,
+  type NumberTickerEasing,
+  type NumberTickerProps,
+  type NumberTickerTagName,
+} from "./number-ticker.js";
+export {
   Presence,
   type PresenceProps,
   type PresenceRenderProps,

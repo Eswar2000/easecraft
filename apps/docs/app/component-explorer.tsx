@@ -1,6 +1,6 @@
 "use client";
 
-import { MotionProvider, TextReveal } from "easecraft";
+import { MotionProvider, NumberTicker, TextReveal } from "easecraft";
 import { useDeferredValue, useState } from "react";
 
 const categories = ["All", "Text", "Layout", "Overlay", "Feedback"] as const;
@@ -32,7 +32,7 @@ const componentDemos = [
     kind: "number",
     name: "Number Ticker",
     slug: "number-ticker",
-    status: "Planned",
+    status: "Implemented",
   },
   {
     category: "Layout",
@@ -85,9 +85,15 @@ function Preview({ kind, reducedMotion }: PreviewProps) {
       );
     case "number":
       return (
-        <div className="number-preview">
-          <span>+</span>12,480
-        </div>
+        <MotionProvider reducedMotion={reducedMotion ? "always" : "never"}>
+          <NumberTicker
+            className="number-preview"
+            duration="slow"
+            from={9000}
+            prefix="+"
+            value={12480}
+          />
+        </MotionProvider>
       );
     case "list":
       return (
@@ -241,8 +247,8 @@ export function ComponentExplorer() {
                 <div className="card-copy">
                   <div>
                     <h2>
-                      {demo.slug === "text-reveal" ? (
-                        <a className="component-title-link" href="/components/text-reveal">
+                      {demo.status === "Implemented" ? (
+                        <a className="component-title-link" href={`/components/${demo.slug}`}>
                           {demo.name}
                         </a>
                       ) : (
