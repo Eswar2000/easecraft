@@ -667,6 +667,39 @@ h2 {
   text-align: center;
 }
 
+.scroll-preview {
+  position: relative;
+  display: grid;
+  min-height: 130px;
+  place-items: center;
+  overflow: hidden;
+  border: 1px solid var(--ink);
+  background:
+    linear-gradient(rgb(244 210 37 / 18%) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(244 210 37 / 18%) 1px, transparent 1px), #fff;
+  background-size: 20px 20px;
+}
+
+.scroll-preview span {
+  font-family: "Bricolage Grotesque", sans-serif;
+  font-size: 17px;
+  font-weight: 700;
+}
+
+.scroll-preview i {
+  position: absolute;
+  right: 12px;
+  bottom: 12px;
+  width: 28px;
+  height: 4px;
+  background: var(--signal);
+}
+
+.scroll-preview[data-easecraft-scroll-state="waiting"] i,
+.scroll-preview[data-easecraft-scroll-state="revealing"] i {
+  background: var(--cyan);
+}
+
 .card-copy {
   display: flex;
   min-height: 126px;
@@ -1842,6 +1875,177 @@ h2 {
   text-transform: uppercase;
 }
 
+.scroll-demo {
+  border: 1px solid var(--ink);
+  background: var(--panel);
+}
+
+.scroll-demo-controls {
+  display: flex;
+  min-height: 74px;
+  align-items: center;
+  gap: 18px;
+  padding: 10px;
+  border-bottom: 1px solid var(--ink);
+}
+
+.scroll-demo-status {
+  margin-right: auto;
+  padding: 0 8px;
+  color: var(--signal);
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 10px;
+  text-transform: uppercase;
+}
+
+.scroll-preset-control {
+  display: flex;
+  margin: 0;
+  padding: 16px 0 0;
+  border: 0;
+}
+
+.scroll-preset-control legend {
+  position: absolute;
+  color: var(--muted);
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 9px;
+  text-transform: uppercase;
+}
+
+.scroll-preset-control button {
+  min-height: 36px;
+  padding: 0 11px;
+  border: 1px solid var(--line);
+  border-right: 0;
+  border-radius: 0;
+  color: var(--muted);
+  background: #fff;
+  font-size: 11px;
+  text-transform: capitalize;
+}
+
+.scroll-preset-control button:last-child {
+  border-right: 1px solid var(--line);
+}
+
+.scroll-preset-control button[aria-pressed="true"] {
+  color: #fff;
+  background: var(--ink);
+}
+
+.scroll-restart-button {
+  min-height: 38px;
+  padding: 0 14px;
+}
+
+.scroll-demo-stage {
+  position: relative;
+  min-height: 700px;
+  padding: 70px 56px 46px;
+  background:
+    linear-gradient(rgb(244 210 37 / 14%) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(244 210 37 / 14%) 1px, transparent 1px), #fdfdf9;
+  background-size: 40px 40px;
+}
+
+.scroll-demo-viewport {
+  position: relative;
+  height: 540px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  border: 1px solid var(--ink);
+  background: rgb(255 255 255 / 94%);
+  scrollbar-color: var(--signal) var(--paper);
+}
+
+.scroll-demo-viewport:focus-visible {
+  outline: 3px solid var(--cyan);
+  outline-offset: 3px;
+}
+
+.scroll-demo-intro,
+.scroll-demo-finish {
+  display: grid;
+  min-height: 430px;
+  align-content: center;
+  justify-items: center;
+  padding: 40px;
+  text-align: center;
+}
+
+.scroll-demo-intro > span,
+.scroll-demo-finish > span {
+  margin-bottom: 12px;
+  color: var(--signal);
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 9px;
+  text-transform: uppercase;
+}
+
+.scroll-demo-intro h2 {
+  max-width: 560px;
+  margin-bottom: 12px;
+  font-size: 42px;
+}
+
+.scroll-demo-intro p {
+  max-width: 500px;
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.scroll-demo-slot {
+  display: grid;
+  min-height: 420px;
+  align-items: center;
+  padding: 46px;
+  border-top: 1px solid var(--line);
+}
+
+.scroll-demo-card {
+  min-height: 220px;
+  padding: 34px;
+  border: 1px solid var(--ink);
+  background: #fff;
+  box-shadow: 9px 9px 0 rgb(0 194 209 / 35%);
+}
+
+.scroll-demo-card > span {
+  display: block;
+  margin-bottom: 24px;
+  color: var(--signal);
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 10px;
+}
+
+.scroll-demo-card h3 {
+  margin: 0 0 10px;
+  font-size: 28px;
+}
+
+.scroll-demo-card p {
+  max-width: 600px;
+  margin: 0;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.scroll-demo-card[data-easecraft-scroll-state="waiting"] {
+  box-shadow: 9px 9px 0 rgb(201 201 192 / 65%);
+}
+
+.scroll-demo-card[data-easecraft-scroll-state="revealed"] {
+  box-shadow: 9px 9px 0 rgb(244 210 37 / 60%);
+}
+
+.scroll-demo-finish {
+  min-height: 260px;
+  border-top: 1px solid var(--line);
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
@@ -2186,5 +2390,59 @@ h2 {
 
   .filter-demo-card {
     min-height: 150px;
+  }
+
+  .scroll-demo-controls {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .scroll-demo-status {
+    margin: 0;
+    padding: 8px 4px;
+  }
+
+  .scroll-preset-control {
+    width: 100%;
+  }
+
+  .scroll-preset-control button {
+    min-width: 0;
+    flex: 1;
+    padding: 0 5px;
+    font-size: 9px;
+  }
+
+  .scroll-demo-stage {
+    min-height: 650px;
+    padding: 58px 18px 30px;
+  }
+
+  .scroll-demo-viewport {
+    height: 520px;
+  }
+
+  .scroll-demo-intro {
+    min-height: 390px;
+    padding: 28px 20px;
+  }
+
+  .scroll-demo-intro h2 {
+    font-size: 34px;
+  }
+
+  .scroll-demo-slot {
+    min-height: 390px;
+    padding: 34px 20px;
+  }
+
+  .scroll-demo-card {
+    min-height: 210px;
+    padding: 25px;
+    box-shadow: 6px 6px 0 rgb(0 194 209 / 35%);
+  }
+
+  .scroll-demo-card h3 {
+    font-size: 24px;
   }
 }

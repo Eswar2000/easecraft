@@ -55,6 +55,17 @@ export {
   type PresenceState,
 } from "./presence.js";
 export {
+  ScrollReveal,
+  type ScrollRevealDistance,
+  type ScrollRevealDuration,
+  type ScrollRevealEasing,
+  type ScrollRevealPreset,
+  type ScrollRevealProps,
+  type ScrollRevealState,
+  type ScrollRevealTagName,
+  type ScrollRevealThreshold,
+} from "./scroll-reveal.js";
+export {
   Stagger,
   type StaggerDistance,
   type StaggerDuration,

@@ -6,6 +6,7 @@ import {
   MotionProvider,
   NumberTicker,
   Presence,
+  ScrollReveal,
   Stagger,
   StaggeredList,
   TextReveal,
@@ -136,6 +137,18 @@ function PresenceSpecimen({ complete, state }: PresenceRenderProps) {
       >
         {(item) => <span>{item.label}</span>}
       </FilterGrid>
+      <div>
+        <ScrollReveal
+          as="div"
+          className="consumer-scroll-reveal"
+          duration="fast"
+          rootMargin="0px 0px -10% 0px"
+          threshold={0.2}
+        >
+          <i aria-hidden="true" />
+          Viewport observer
+        </ScrollReveal>
+      </div>
       <div className="timeline" aria-hidden="true">
         <span />
         <span />

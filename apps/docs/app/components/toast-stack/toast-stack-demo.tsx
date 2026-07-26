@@ -102,10 +102,20 @@ export function ToastStackDemo() {
             <h2>Notification controls</h2>
             <p>Hover or focus the stack to pause every auto-dismiss timer.</p>
             <div className="toast-launch-actions">
-              <button type="button" onClick={() => add("polite")}>
+              <button
+                type="button"
+                onClick={() => {
+                  add("polite");
+                }}
+              >
                 Add polite
               </button>
-              <button type="button" onClick={() => add("assertive")}>
+              <button
+                type="button"
+                onClick={() => {
+                  add("assertive");
+                }}
+              >
                 Add assertive
               </button>
               <button type="button" onClick={addBurst}>

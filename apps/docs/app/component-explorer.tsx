@@ -6,6 +6,7 @@ import {
   MotionDialog,
   MotionProvider,
   NumberTicker,
+  ScrollReveal,
   StaggeredList,
   TextReveal,
   ToastStack,
@@ -66,13 +67,13 @@ const filterPreviewFilters = [
 interface ComponentDemo {
   category: DemoCategory;
   description: string;
-  kind: "text" | "number" | "list" | "tabs" | "dialog" | "toast" | "filter";
+  kind: "text" | "number" | "list" | "tabs" | "dialog" | "toast" | "filter" | "scroll";
   name: string;
   slug: string;
   status: "Implemented" | "Planned";
 }
 
-const componentDemos = [
+const componentDemos: readonly ComponentDemo[] = [
   {
     category: "Text",
     description: "Word-level entrance with readable source text.",
@@ -129,7 +130,15 @@ const componentDemos = [
     slug: "filter-grid",
     status: "Implemented",
   },
-] as const satisfies readonly ComponentDemo[];
+  {
+    category: "Layout",
+    description: "Bounded viewport reveals with visible fallback content.",
+    kind: "scroll",
+    name: "Scroll Reveal",
+    slug: "scroll-reveal",
+    status: "Implemented",
+  },
+];
 
 interface PreviewProps {
   kind: ComponentDemo["kind"];
@@ -276,6 +285,15 @@ function Preview({ kind, reducedMotion }: PreviewProps) {
           </FilterGrid>
         </MotionProvider>
       );
+    case "scroll":
+      return (
+        <MotionProvider reducedMotion={reducedMotion ? "always" : "never"}>
+          <ScrollReveal className="scroll-preview" duration="slow" threshold={0.1}>
+            <span>Viewport observed</span>
+            <i aria-hidden="true" />
+          </ScrollReveal>
+        </MotionProvider>
+      );
   }
 }
 
@@ -316,7 +334,7 @@ export function ComponentExplorer() {
       <main>
         <section className="explorer-heading" id="components" aria-labelledby="page-title">
           <div>
-            <p className="eyebrow">Registry / 07 previews</p>
+            <p className="eyebrow">Registry / 08 previews</p>
             <h1 id="page-title">Component explorer</h1>
           </div>
           <p className="heading-note">Accessible motion primitives, inspected in place.</p>

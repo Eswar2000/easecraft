@@ -390,6 +390,25 @@ h2 {
   font-size: 8px;
 }
 
+.consumer-scroll-reveal {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin-bottom: 22px;
+  padding: 8px;
+  border: 1px solid var(--line);
+  color: var(--muted);
+  background: #fff;
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 9px;
+}
+
+.consumer-scroll-reveal i {
+  width: 7px;
+  height: 7px;
+  background: var(--signal);
+}
+
 .timeline {
   display: grid;
   grid-template-columns: 2fr 1fr 3fr;
