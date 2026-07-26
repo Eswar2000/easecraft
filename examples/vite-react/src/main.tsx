@@ -1,5 +1,6 @@
 import {
   AnimatedTabs,
+  FilterGrid,
   Motion,
   MotionDialog,
   MotionProvider,
@@ -12,6 +13,7 @@ import {
   useAnime,
   useMotionConfig,
   type AnimeSetup,
+  type FilterGridFilter,
   type PresenceRenderProps,
   type ToastStackItem,
 } from "easecraft";
@@ -30,6 +32,25 @@ const consumerViews = [
   { id: "motion", label: "Motion", value: "Scoped" },
   { id: "a11y", label: "Access", value: "Semantic" },
 ] as const;
+const consumerCatalog = [
+  { category: "core", id: "motion", label: "Motion" },
+  { category: "core", id: "presence", label: "Presence" },
+  { category: "component", id: "tabs", label: "Tabs" },
+  { category: "component", id: "toast", label: "Toast" },
+] as const;
+
+type ConsumerCatalogItem = (typeof consumerCatalog)[number];
+type ConsumerCatalogFilter = "all" | ConsumerCatalogItem["category"];
+
+const consumerCatalogFilters = [
+  { label: "All", matches: () => true, value: "all" },
+  { label: "Core", matches: (item) => item.category === "core", value: "core" },
+  {
+    label: "Components",
+    matches: (item) => item.category === "component",
+    value: "component",
+  },
+] satisfies readonly FilterGridFilter<ConsumerCatalogItem, ConsumerCatalogFilter>[];
 
 interface FixtureProps {
   readonly reduceMotion: boolean;
@@ -103,6 +124,18 @@ function PresenceSpecimen({ complete, state }: PresenceRenderProps) {
       >
         {(view) => <span>{view.value} contract</span>}
       </AnimatedTabs>
+      <FilterGrid
+        className="consumer-catalog"
+        controlClassName="consumer-catalog-filter"
+        controlsClassName="consumer-catalog-controls"
+        filters={consumerCatalogFilters}
+        getKey={(item) => item.id}
+        gridClassName="consumer-catalog-grid"
+        items={consumerCatalog}
+        resultClassName="consumer-catalog-results"
+      >
+        {(item) => <span>{item.label}</span>}
+      </FilterGrid>
       <div className="timeline" aria-hidden="true">
         <span />
         <span />

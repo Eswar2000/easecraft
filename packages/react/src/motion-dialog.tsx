@@ -260,19 +260,20 @@ function MotionDialogLayer({
       transform: "",
       translate: "",
     };
+    const baseStyles = baseStylesRef.current;
 
     if (phase === "open") {
-      applyMotionStyle(overlay, baseStylesRef.current.get(overlay) ?? emptyMotionStyle);
-      applyMotionStyle(content, baseStylesRef.current.get(content) ?? emptyMotionStyle);
+      applyMotionStyle(overlay, baseStyles.get(overlay) ?? emptyMotionStyle);
+      applyMotionStyle(content, baseStyles.get(content) ?? emptyMotionStyle);
       return undefined;
     }
 
-    if (!baseStylesRef.current.has(overlay)) {
-      baseStylesRef.current.set(overlay, getMotionStyle(overlay));
+    if (!baseStyles.has(overlay)) {
+      baseStyles.set(overlay, getMotionStyle(overlay));
     }
 
-    if (!baseStylesRef.current.has(content)) {
-      baseStylesRef.current.set(content, getMotionStyle(content));
+    if (!baseStyles.has(content)) {
+      baseStyles.set(content, getMotionStyle(content));
     }
 
     const complete = () => {
@@ -282,8 +283,8 @@ function MotionDialogLayer({
     let completed = false;
 
     if (reducedMotion) {
-      applyMotionStyle(overlay, baseStylesRef.current.get(overlay) ?? emptyMotionStyle);
-      applyMotionStyle(content, baseStylesRef.current.get(content) ?? emptyMotionStyle);
+      applyMotionStyle(overlay, baseStyles.get(overlay) ?? emptyMotionStyle);
+      applyMotionStyle(content, baseStyles.get(content) ?? emptyMotionStyle);
       complete();
       return undefined;
     }
@@ -322,11 +323,11 @@ function MotionDialogLayer({
 
         queueMicrotask(() => {
           if (!overlay.isConnected) {
-            applyMotionStyle(overlay, baseStylesRef.current.get(overlay) ?? emptyMotionStyle);
+            applyMotionStyle(overlay, baseStyles.get(overlay) ?? emptyMotionStyle);
           }
 
           if (!content.isConnected) {
-            applyMotionStyle(content, baseStylesRef.current.get(content) ?? emptyMotionStyle);
+            applyMotionStyle(content, baseStyles.get(content) ?? emptyMotionStyle);
           }
         });
       }
@@ -488,7 +489,7 @@ export function MotionDialog({
             initialFocusRef={initialFocusRef}
             overlayClassName={overlayClassName}
             overlayStyle={overlayStyle}
-            phase={machine.state as MotionDialogState}
+            phase={machine.state}
             portalClassName={portalClassName}
             positionerClassName={positionerClassName}
             positionerStyle={positionerStyle}

@@ -9,6 +9,13 @@ export {
   type AnimatedTabsTagName,
 } from "./animated-tabs.js";
 export {
+  FilterGrid,
+  type FilterGridFilter,
+  type FilterGridItemState,
+  type FilterGridProps,
+  type FilterGridTagName,
+} from "./filter-grid.js";
+export {
   MotionProvider,
   useMotionConfig,
   useReducedMotion,

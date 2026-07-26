@@ -2,12 +2,14 @@
 
 import {
   AnimatedTabs,
+  FilterGrid,
   MotionDialog,
   MotionProvider,
   NumberTicker,
   StaggeredList,
   TextReveal,
   ToastStack,
+  type FilterGridFilter,
   type ToastStackItem,
 } from "easecraft";
 import { useDeferredValue, useState } from "react";
@@ -41,10 +43,30 @@ function getTabsPreviewValue(item: (typeof tabsPreviewItems)[number]) {
   return item.id;
 }
 
+const filterPreviewItems = [
+  { category: "core", id: "motion", label: "Motion" },
+  { category: "component", id: "tabs", label: "Tabs" },
+  { category: "component", id: "dialog", label: "Dialog" },
+  { category: "core", id: "presence", label: "Presence" },
+] as const;
+
+type FilterPreviewItem = (typeof filterPreviewItems)[number];
+type FilterPreviewValue = "all" | FilterPreviewItem["category"];
+
+const filterPreviewFilters = [
+  { label: "All", matches: () => true, value: "all" },
+  { label: "Core", matches: (item) => item.category === "core", value: "core" },
+  {
+    label: "UI",
+    matches: (item) => item.category === "component",
+    value: "component",
+  },
+] satisfies readonly FilterGridFilter<FilterPreviewItem, FilterPreviewValue>[];
+
 interface ComponentDemo {
   category: DemoCategory;
   description: string;
-  kind: "text" | "number" | "list" | "tabs" | "dialog" | "toast";
+  kind: "text" | "number" | "list" | "tabs" | "dialog" | "toast" | "filter";
   name: string;
   slug: string;
   status: "Implemented" | "Planned";
@@ -97,6 +119,14 @@ const componentDemos = [
     kind: "toast",
     name: "Toast Stack",
     slug: "toast-stack",
+    status: "Implemented",
+  },
+  {
+    category: "Layout",
+    description: "Focus-safe filtering with animated grid reflow.",
+    kind: "filter",
+    name: "Filter Grid",
+    slug: "filter-grid",
     status: "Implemented",
   },
 ] as const satisfies readonly ComponentDemo[];
@@ -228,6 +258,24 @@ function Preview({ kind, reducedMotion }: PreviewProps) {
       );
     case "toast":
       return <ToastPreview reducedMotion={reducedMotion} />;
+    case "filter":
+      return (
+        <MotionProvider reducedMotion={reducedMotion ? "always" : "never"}>
+          <FilterGrid
+            className="filter-preview"
+            controlClassName="filter-preview-control"
+            controlsClassName="filter-preview-controls"
+            controlsLabel="Filter Grid preview"
+            filters={filterPreviewFilters}
+            getKey={(item) => item.id}
+            gridClassName="filter-preview-grid"
+            items={filterPreviewItems}
+            resultClassName="filter-preview-results"
+          >
+            {(item) => <span>{item.label}</span>}
+          </FilterGrid>
+        </MotionProvider>
+      );
   }
 }
 
@@ -268,7 +316,7 @@ export function ComponentExplorer() {
       <main>
         <section className="explorer-heading" id="components" aria-labelledby="page-title">
           <div>
-            <p className="eyebrow">Registry / 06 previews</p>
+            <p className="eyebrow">Registry / 07 previews</p>
             <h1 id="page-title">Component explorer</h1>
           </div>
           <p className="heading-note">Accessible motion primitives, inspected in place.</p>

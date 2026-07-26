@@ -614,6 +614,59 @@ h2 {
   content: "\00d7";
 }
 
+.filter-preview-controls {
+  display: flex;
+  margin-bottom: 8px;
+}
+
+.filter-preview-control {
+  min-width: 0;
+  min-height: 30px;
+  flex: 1;
+  padding: 0 5px;
+  border: 1px solid var(--line);
+  border-right: 0;
+  border-radius: 0;
+  color: var(--muted);
+  background: #fff;
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 8px;
+}
+
+.filter-preview-control:last-child {
+  border-right: 1px solid var(--line);
+}
+
+.filter-preview-control[aria-pressed="true"] {
+  color: #fff;
+  background: var(--ink);
+}
+
+.filter-preview-results {
+  display: block;
+  margin-bottom: 7px;
+  color: var(--signal);
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 8px;
+  text-transform: uppercase;
+}
+
+.filter-preview-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 7px;
+}
+
+.filter-preview-grid li {
+  min-width: 0;
+  min-height: 34px;
+  padding: 8px;
+  border: 1px solid var(--ink);
+  background: #fff;
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 8px;
+  text-align: center;
+}
+
 .card-copy {
   display: flex;
   min-height: 126px;
@@ -1641,6 +1694,154 @@ h2 {
   content: "\00d7";
 }
 
+.filter-demo {
+  border: 1px solid var(--ink);
+  background: var(--panel);
+}
+
+.filter-demo-toolbar {
+  display: flex;
+  min-height: 64px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 10px;
+  border-bottom: 1px solid var(--ink);
+}
+
+.filter-demo-mode {
+  padding: 0 8px;
+  color: var(--signal);
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 10px;
+  text-transform: uppercase;
+}
+
+.filter-demo-stage {
+  position: relative;
+  display: grid;
+  min-height: 650px;
+  align-items: start;
+  padding: 70px 56px 42px;
+  background:
+    linear-gradient(rgb(0 194 209 / 10%) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(0 194 209 / 10%) 1px, transparent 1px), #fdfdf9;
+  background-size: 40px 40px;
+}
+
+.filter-demo-surface {
+  min-width: 0;
+  width: 100%;
+}
+
+.filter-demo-controls {
+  display: flex;
+  width: 100%;
+  max-width: 100%;
+  margin-bottom: 14px;
+  overflow-x: auto;
+  border: 1px solid var(--ink);
+  background: #fff;
+}
+
+.filter-demo-control {
+  min-width: 110px;
+  min-height: 42px;
+  flex: 1;
+  padding: 0 12px;
+  border: 0;
+  border-right: 1px solid var(--line);
+  border-radius: 0;
+  color: var(--muted);
+  background: transparent;
+  font-size: 12px;
+}
+
+.filter-demo-control:last-child {
+  border-right: 0;
+}
+
+.filter-demo-control[aria-pressed="true"] {
+  color: #fff;
+  background: var(--ink);
+}
+
+.filter-demo-results {
+  display: block;
+  margin-bottom: 14px;
+  color: var(--signal);
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 10px;
+  text-transform: uppercase;
+}
+
+.filter-demo-grid {
+  min-width: 0;
+  width: 100%;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.filter-demo-grid > li {
+  min-width: 0;
+}
+
+.filter-demo-card {
+  display: grid;
+  min-height: 170px;
+  grid-template-rows: auto 1fr auto;
+  gap: 16px;
+  padding: 18px;
+  border: 1px solid var(--ink);
+  background: #fff;
+  box-shadow: 6px 6px 0 rgb(244 210 37 / 55%);
+}
+
+.filter-demo-card[data-state="entering"] {
+  box-shadow: 6px 6px 0 rgb(0 194 209 / 45%);
+}
+
+.filter-demo-card[data-state="exiting"] {
+  box-shadow: 6px 6px 0 rgb(240 68 33 / 35%);
+}
+
+.filter-demo-card > span {
+  color: var(--signal);
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 9px;
+}
+
+.filter-demo-card h3 {
+  margin: 0 0 5px;
+  font-size: 18px;
+}
+
+.filter-demo-card p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.filter-demo-card button {
+  min-height: 34px;
+  padding: 0 10px;
+  color: var(--ink);
+  background: var(--paper);
+  font-size: 10px;
+}
+
+.filter-demo-empty {
+  display: grid;
+  min-height: 260px;
+  place-items: center;
+  border: 1px dashed var(--line);
+  color: var(--muted);
+  background: rgb(255 255 255 / 75%);
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 11px;
+  text-transform: uppercase;
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
@@ -1959,5 +2160,31 @@ h2 {
 
   .toast-demo-content {
     --easecraft-toast-padding: 14px;
+  }
+
+  .filter-demo-toolbar {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .filter-demo-mode {
+    padding: 8px 4px;
+  }
+
+  .filter-demo-stage {
+    min-height: 680px;
+    padding: 58px 18px 30px;
+  }
+
+  .filter-demo-control {
+    min-width: 96px;
+  }
+
+  .filter-demo-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .filter-demo-card {
+    min-height: 150px;
   }
 }

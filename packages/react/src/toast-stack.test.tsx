@@ -142,7 +142,13 @@ describe("ToastStack", () => {
     completeContentAnimation(1);
     animateMock.mockClear();
 
-    fireEvent.click(view.getAllByRole("button", { name: "Dismiss notification" })[0]!);
+    const firstDismissButton = view.getAllByRole("button", { name: "Dismiss notification" })[0];
+
+    if (!firstDismissButton) {
+      throw new Error("Expected the first dismiss button");
+    }
+
+    fireEvent.click(firstDismissButton);
 
     const exitingToast = document.querySelector<HTMLElement>(
       '[data-easecraft-toast-id="string:build"]',
@@ -318,7 +324,13 @@ describe("ToastStack", () => {
     completeContentAnimation(1);
     animateMock.mockClear();
 
-    fireEvent.click(view.getAllByRole("button", { name: "Dismiss notification" })[0]!);
+    const firstDismissButton = view.getAllByRole("button", { name: "Dismiss notification" })[0];
+
+    if (!firstDismissButton) {
+      throw new Error("Expected the first dismiss button");
+    }
+
+    fireEvent.click(firstDismissButton);
     moved = true;
     completeContentAnimation(0);
 

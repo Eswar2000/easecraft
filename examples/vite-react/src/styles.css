@@ -338,6 +338,58 @@ h2 {
   font-size: 9px;
 }
 
+.consumer-catalog {
+  margin-bottom: 24px;
+}
+
+.consumer-catalog-controls {
+  display: flex;
+  margin-bottom: 7px;
+}
+
+.consumer-catalog-filter {
+  min-height: 28px;
+  flex: 1;
+  padding: 0 5px;
+  border: 1px solid var(--line);
+  border-right: 0;
+  border-radius: 0;
+  color: var(--muted);
+  background: #fff;
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 8px;
+}
+
+.consumer-catalog-filter:last-child {
+  border-right: 1px solid var(--line);
+}
+
+.consumer-catalog-filter[aria-pressed="true"] {
+  color: #fff;
+  background: var(--ink);
+}
+
+.consumer-catalog-results {
+  display: block;
+  margin-bottom: 7px;
+  color: var(--muted);
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 8px;
+}
+
+.consumer-catalog-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.consumer-catalog-grid li {
+  padding: 6px;
+  border: 1px solid var(--line);
+  background: var(--paper);
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 8px;
+}
+
 .timeline {
   display: grid;
   grid-template-columns: 2fr 1fr 3fr;
