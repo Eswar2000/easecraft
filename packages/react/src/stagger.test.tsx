@@ -171,9 +171,13 @@ describe("Stagger", () => {
     );
 
     expect(animateMock).toHaveBeenCalledTimes(2);
-    expect(animateMock.mock.calls[1]?.[0]).toEqual(
-      Array.from(view.container.children[0]!.children),
-    );
+    const root = view.container.firstElementChild;
+
+    if (!root) {
+      throw new Error("Expected the Stagger root");
+    }
+
+    expect(animateMock.mock.calls[1]?.[0]).toEqual(Array.from(root.children));
   });
 
   it("renders semantic child markup on the server", () => {

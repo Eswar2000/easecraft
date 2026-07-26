@@ -65,12 +65,17 @@ function getChildSignature(children: ReactNode): string {
   return Children.toArray(children)
     .map((child, index) => {
       if (!isValidElement(child)) {
-        return `${typeof child}:${String(child)}`;
+        if (typeof child === "string" || typeof child === "number" || typeof child === "bigint") {
+          return `${typeof child}:${child.toString()}`;
+        }
+
+        return `${typeof child}:${index.toString()}`;
       }
 
       const elementType = typeof child.type === "string" ? child.type : "component";
+      const childKey = child.key ?? index;
 
-      return `${child.key ?? index}:${elementType}`;
+      return `${childKey.toString()}:${elementType}`;
     })
     .join("|");
 }
@@ -102,7 +107,7 @@ function StaggerImplementation(
 
       const targets = getDirectTargets(root);
 
-      if (reducedMotion || targets.length === 0) {
+      if (reducedMotion || childSignature.length === 0 || targets.length === 0) {
         onComplete?.();
         return undefined;
       }

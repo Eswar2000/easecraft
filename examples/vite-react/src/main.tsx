@@ -4,6 +4,7 @@ import {
   NumberTicker,
   Presence,
   Stagger,
+  StaggeredList,
   TextReveal,
   useAnime,
   useMotionConfig,
@@ -16,6 +17,11 @@ import { createRoot } from "react-dom/client";
 import "./styles.css";
 
 const integerFormatOptions = { maximumFractionDigits: 0 } satisfies Intl.NumberFormatOptions;
+const consumerChecks = [
+  { id: "scope", label: "Scoped lifecycle" },
+  { id: "motion", label: "Reduced motion" },
+  { id: "types", label: "Typed exports" },
+] as const;
 
 interface FixtureProps {
   readonly reduceMotion: boolean;
@@ -62,6 +68,23 @@ function PresenceSpecimen({ complete, state }: PresenceRenderProps) {
       <TextReveal as="p" distance="small" duration="normal" split="words" stagger="tight">
         Motion should explain what changed.
       </TextReveal>
+      <StaggeredList
+        aria-label="Consumer checks"
+        className="consumer-checks"
+        duration="fast"
+        getKey={(check) => check.id}
+        interval="tight"
+        items={consumerChecks}
+        maxDelay="fast"
+        preset="fade"
+      >
+        {(check) => (
+          <span>
+            <i aria-hidden="true" />
+            {check.label}
+          </span>
+        )}
+      </StaggeredList>
       <div className="timeline" aria-hidden="true">
         <span />
         <span />

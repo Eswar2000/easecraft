@@ -41,6 +41,12 @@ export {
   type StaggerTagName,
 } from "./stagger.js";
 export {
+  StaggeredList,
+  type StaggeredListItemState,
+  type StaggeredListProps,
+  type StaggeredListTagName,
+} from "./staggered-list.js";
+export {
   TextReveal,
   type TextRevealDistance,
   type TextRevealDuration,

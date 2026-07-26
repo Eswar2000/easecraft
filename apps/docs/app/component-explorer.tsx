@@ -1,12 +1,22 @@
 "use client";
 
-import { MotionProvider, NumberTicker, TextReveal } from "easecraft";
+import { MotionProvider, NumberTicker, StaggeredList, TextReveal } from "easecraft";
 import { useDeferredValue, useState } from "react";
 
 const categories = ["All", "Text", "Layout", "Overlay", "Feedback"] as const;
 
 type Category = (typeof categories)[number];
 type DemoCategory = Exclude<Category, "All">;
+
+const listPreviewItems = [
+  { id: "one", width: "100%" },
+  { id: "two", width: "82%" },
+  { id: "three", width: "92%" },
+] as const;
+
+function getListPreviewKey(item: (typeof listPreviewItems)[number]) {
+  return item.id;
+}
 
 interface ComponentDemo {
   category: DemoCategory;
@@ -40,7 +50,7 @@ const componentDemos = [
     kind: "list",
     name: "Staggered List",
     slug: "staggered-list",
-    status: "Planned",
+    status: "Implemented",
   },
   {
     category: "Layout",
@@ -97,11 +107,19 @@ function Preview({ kind, reducedMotion }: PreviewProps) {
       );
     case "list":
       return (
-        <div className="list-preview" aria-hidden="true">
-          <span />
-          <span />
-          <span />
-        </div>
+        <MotionProvider reducedMotion={reducedMotion ? "always" : "never"}>
+          <StaggeredList
+            aria-hidden="true"
+            className="list-preview"
+            duration="slow"
+            getKey={getListPreviewKey}
+            interval="tight"
+            items={listPreviewItems}
+            maxDelay="fast"
+          >
+            {(item) => <span style={{ width: item.width }} />}
+          </StaggeredList>
+        </MotionProvider>
       );
     case "tabs":
       return (
