@@ -424,24 +424,42 @@ h2 {
 }
 
 .tabs-preview {
-  position: relative;
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  padding-bottom: 9px;
-  border-bottom: 1px solid var(--line);
+  border: 1px solid var(--line);
+  background: #fff;
   font-family: "IBM Plex Mono", monospace;
   font-size: 10px;
   text-align: center;
 }
 
-.tabs-preview i {
-  position: absolute;
-  bottom: -2px;
-  left: 33.333%;
-  width: 33.333%;
-  height: 3px;
-  background: var(--signal);
-  animation: tab-move 700ms cubic-bezier(0.16, 1, 0.3, 1) both;
+.tabs-preview [role="tablist"] {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  border-bottom: 1px solid var(--line);
+}
+
+.tabs-preview [role="tab"] {
+  min-height: 38px;
+  padding: 0 5px;
+  border: 0;
+  border-radius: 0;
+  color: var(--muted);
+  background: transparent;
+  font-family: inherit;
+  font-size: inherit;
+}
+
+.tabs-preview [role="tab"][aria-selected="true"] {
+  color: var(--ink);
+}
+
+.tabs-preview [data-easecraft-tabs-indicator] {
+  color: var(--signal);
+}
+
+.tabs-preview [role="tabpanel"] {
+  min-height: 50px;
+  padding: 18px 8px;
+  color: var(--muted);
 }
 
 .dialog-preview {
@@ -1018,13 +1036,196 @@ h2 {
   text-transform: uppercase;
 }
 
-@keyframes tab-move {
-  from {
-    transform: translateX(-100%);
-  }
-  to {
-    transform: translateX(0);
-  }
+.tabs-demo {
+  border: 1px solid var(--ink);
+  background: var(--panel);
+}
+
+.tabs-demo-controls {
+  display: flex;
+  min-height: 74px;
+  align-items: center;
+  gap: 18px;
+  padding: 10px;
+  border-bottom: 1px solid var(--ink);
+}
+
+.tabs-control-group {
+  display: flex;
+  margin: 0;
+  padding: 16px 0 0;
+  border: 0;
+}
+
+.tabs-control-group legend {
+  position: absolute;
+  color: var(--muted);
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 9px;
+  text-transform: uppercase;
+}
+
+.tabs-control-group button {
+  min-height: 36px;
+  padding: 0 12px;
+  border: 1px solid var(--line);
+  border-right: 0;
+  border-radius: 0;
+  color: var(--ink);
+  background: #fff;
+  font-size: 12px;
+  text-transform: capitalize;
+}
+
+.tabs-control-group button:last-child {
+  border-right: 1px solid var(--line);
+}
+
+.tabs-control-group button[aria-pressed="true"] {
+  color: #fff;
+  background: var(--ink);
+}
+
+.tabs-demo-controls .motion-switch {
+  margin-left: auto;
+}
+
+.tabs-demo-stage {
+  position: relative;
+  display: grid;
+  min-height: 520px;
+  place-items: center;
+  overflow: hidden;
+  padding: 64px;
+  background:
+    linear-gradient(rgb(0 194 209 / 10%) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(0 194 209 / 10%) 1px, transparent 1px), #fdfdf9;
+  background-size: 40px 40px;
+}
+
+.animated-tabs-demo {
+  width: min(100%, 820px);
+  border: 1px solid var(--ink);
+  background: #fff;
+  box-shadow: 8px 8px 0 rgb(244 210 37 / 55%);
+}
+
+.animated-tabs-demo [role="tablist"] {
+  display: flex;
+  border-bottom: 1px solid var(--ink);
+}
+
+.animated-tabs-demo[data-orientation="vertical"] {
+  display: grid;
+  grid-template-columns: 180px minmax(0, 1fr);
+}
+
+.animated-tabs-demo[data-orientation="vertical"] [role="tablist"] {
+  display: flex;
+  min-height: 300px;
+  flex-direction: column;
+  border-right: 1px solid var(--ink);
+  border-bottom: 0;
+}
+
+.animated-tabs-demo [role="tab"] {
+  min-height: 52px;
+  flex: 1;
+  padding: 0 16px;
+  border: 0;
+  border-right: 1px solid var(--line);
+  border-radius: 0;
+  color: var(--muted);
+  background: #fff;
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 11px;
+}
+
+.animated-tabs-demo[data-orientation="vertical"] [role="tab"] {
+  min-height: 64px;
+  flex: 0 0 auto;
+  border-right: 0;
+  border-bottom: 1px solid var(--line);
+  text-align: left;
+}
+
+.animated-tabs-demo [role="tab"]:last-of-type {
+  border-right: 0;
+}
+
+.animated-tabs-demo [role="tab"][aria-selected="true"] {
+  color: var(--ink);
+  background: var(--paper);
+}
+
+.animated-tabs-demo [role="tab"][aria-disabled="true"] {
+  color: var(--line);
+  cursor: not-allowed;
+}
+
+.animated-tabs-demo [data-easecraft-tabs-indicator] {
+  z-index: 1;
+  color: var(--signal);
+}
+
+.animated-tabs-demo [data-easecraft-tabs-panels],
+.animated-tabs-demo [role="tabpanel"] {
+  min-width: 0;
+  min-height: 300px;
+}
+
+.tabs-demo-panel-content {
+  display: grid;
+  min-height: 300px;
+  grid-template-columns: minmax(0, 1fr) minmax(220px, 0.8fr);
+  gap: 42px;
+  align-items: center;
+  padding: 42px;
+}
+
+.tabs-panel-kicker {
+  display: block;
+  margin-bottom: 12px;
+  color: var(--signal);
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 9px;
+  text-transform: uppercase;
+}
+
+.tabs-demo-panel-content > div > strong {
+  display: block;
+  font-family: "Bricolage Grotesque", sans-serif;
+  font-size: 72px;
+  line-height: 0.9;
+}
+
+.tabs-demo-panel-content p {
+  margin: 14px 0 0;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.tabs-demo-panel-content dl {
+  margin: 0;
+}
+
+.tabs-demo-panel-content dl div {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 13px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.tabs-demo-panel-content dt,
+.tabs-demo-panel-content dd {
+  margin: 0;
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 10px;
+}
+
+.tabs-demo-panel-content dt {
+  color: var(--muted);
 }
 
 @keyframes dialog-enter {
@@ -1239,5 +1440,48 @@ h2 {
 
   .list-item-state {
     display: none;
+  }
+
+  .tabs-demo-controls {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .tabs-control-group {
+    width: 100%;
+  }
+
+  .tabs-control-group button {
+    flex: 1;
+  }
+
+  .tabs-demo-controls .motion-switch {
+    margin: 0;
+  }
+
+  .tabs-demo-stage {
+    min-height: 560px;
+    padding: 58px 16px 28px;
+  }
+
+  .animated-tabs-demo[data-orientation="vertical"] {
+    grid-template-columns: 120px minmax(0, 1fr);
+  }
+
+  .animated-tabs-demo [role="tab"] {
+    min-width: 0;
+    padding: 0 8px;
+    font-size: 9px;
+  }
+
+  .tabs-demo-panel-content {
+    min-height: 340px;
+    grid-template-columns: 1fr;
+    gap: 24px;
+    padding: 28px 20px;
+  }
+
+  .tabs-demo-panel-content > div > strong {
+    font-size: 52px;
   }
 }

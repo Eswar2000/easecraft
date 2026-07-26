@@ -1,4 +1,5 @@
 import {
+  AnimatedTabs,
   Motion,
   MotionProvider,
   NumberTicker,
@@ -21,6 +22,10 @@ const consumerChecks = [
   { id: "scope", label: "Scoped lifecycle" },
   { id: "motion", label: "Reduced motion" },
   { id: "types", label: "Typed exports" },
+] as const;
+const consumerViews = [
+  { id: "motion", label: "Motion", value: "Scoped" },
+  { id: "a11y", label: "Access", value: "Semantic" },
 ] as const;
 
 interface FixtureProps {
@@ -85,6 +90,16 @@ function PresenceSpecimen({ complete, state }: PresenceRenderProps) {
           </span>
         )}
       </StaggeredList>
+      <AnimatedTabs
+        aria-label="Consumer view"
+        className="consumer-tabs"
+        duration="fast"
+        getLabel={(view) => view.label}
+        getValue={(view) => view.id}
+        items={consumerViews}
+      >
+        {(view) => <span>{view.value} contract</span>}
+      </AnimatedTabs>
       <div className="timeline" aria-hidden="true">
         <span />
         <span />

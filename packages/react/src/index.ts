@@ -1,4 +1,14 @@
 export {
+  AnimatedTabs,
+  type AnimatedTabsActivationMode,
+  type AnimatedTabsDistance,
+  type AnimatedTabsDuration,
+  type AnimatedTabsEasing,
+  type AnimatedTabsOrientation,
+  type AnimatedTabsProps,
+  type AnimatedTabsTagName,
+} from "./animated-tabs.js";
+export {
   MotionProvider,
   useMotionConfig,
   useReducedMotion,

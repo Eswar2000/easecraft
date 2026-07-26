@@ -300,6 +300,44 @@ h2 {
   background: var(--cyan);
 }
 
+.consumer-tabs {
+  margin-bottom: 26px;
+  border: 1px solid var(--line);
+  background: #fff;
+}
+
+.consumer-tabs [role="tablist"] {
+  display: flex;
+  border-bottom: 1px solid var(--line);
+}
+
+.consumer-tabs [role="tab"] {
+  min-height: 32px;
+  flex: 1;
+  padding: 0 8px;
+  border: 0;
+  border-radius: 0;
+  color: var(--muted);
+  background: transparent;
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 9px;
+}
+
+.consumer-tabs [role="tab"][aria-selected="true"] {
+  color: var(--ink);
+}
+
+.consumer-tabs [data-easecraft-tabs-indicator] {
+  color: var(--signal);
+}
+
+.consumer-tabs [role="tabpanel"] {
+  padding: 9px;
+  color: var(--muted);
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 9px;
+}
+
 .timeline {
   display: grid;
   grid-template-columns: 2fr 1fr 3fr;

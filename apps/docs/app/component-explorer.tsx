@@ -1,6 +1,6 @@
 "use client";
 
-import { MotionProvider, NumberTicker, StaggeredList, TextReveal } from "easecraft";
+import { AnimatedTabs, MotionProvider, NumberTicker, StaggeredList, TextReveal } from "easecraft";
 import { useDeferredValue, useState } from "react";
 
 const categories = ["All", "Text", "Layout", "Overlay", "Feedback"] as const;
@@ -15,6 +15,20 @@ const listPreviewItems = [
 ] as const;
 
 function getListPreviewKey(item: (typeof listPreviewItems)[number]) {
+  return item.id;
+}
+
+const tabsPreviewItems = [
+  { id: "enter", label: "Enter", panel: "Ready" },
+  { id: "move", label: "Move", panel: "Active" },
+  { id: "exit", label: "Exit", panel: "Complete" },
+] as const;
+
+function getTabsPreviewLabel(item: (typeof tabsPreviewItems)[number]) {
+  return item.label;
+}
+
+function getTabsPreviewValue(item: (typeof tabsPreviewItems)[number]) {
   return item.id;
 }
 
@@ -58,7 +72,7 @@ const componentDemos = [
     kind: "tabs",
     name: "Animated Tabs",
     slug: "animated-tabs",
-    status: "Planned",
+    status: "Implemented",
   },
   {
     category: "Overlay",
@@ -123,12 +137,19 @@ function Preview({ kind, reducedMotion }: PreviewProps) {
       );
     case "tabs":
       return (
-        <div className="tabs-preview" aria-hidden="true">
-          <span>Enter</span>
-          <span>Move</span>
-          <span>Exit</span>
-          <i />
-        </div>
+        <MotionProvider reducedMotion={reducedMotion ? "always" : "never"}>
+          <AnimatedTabs
+            aria-label="Animated Tabs preview"
+            className="tabs-preview"
+            defaultValue="move"
+            duration="slow"
+            getLabel={getTabsPreviewLabel}
+            getValue={getTabsPreviewValue}
+            items={tabsPreviewItems}
+          >
+            {(item) => item.panel}
+          </AnimatedTabs>
+        </MotionProvider>
       );
     case "dialog":
       return (
