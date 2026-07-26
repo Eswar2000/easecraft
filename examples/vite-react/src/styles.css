@@ -461,6 +461,45 @@ h2 {
   content: "\00d7";
 }
 
+.fixture-toast-viewport {
+  right: 24px !important;
+  top: 80px !important;
+}
+
+.fixture-toast-content {
+  --easecraft-toast-background: #fff;
+  --easecraft-toast-border: var(--ink);
+  --easecraft-toast-shadow: 6px 6px 0 var(--cyan);
+
+  position: relative;
+  padding-right: 48px !important;
+}
+
+.fixture-toast-content [data-easecraft-toast-title] {
+  font-family: "Bricolage Grotesque", sans-serif;
+  font-weight: 700;
+}
+
+.fixture-toast-content [data-easecraft-toast-description] {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.fixture-toast-close {
+  position: absolute;
+  top: 9px;
+  right: 9px;
+  width: 30px;
+  min-height: 30px;
+  padding: 0;
+  font-size: 0;
+}
+
+.fixture-toast-close::before {
+  font-size: 17px;
+  content: "\00d7";
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

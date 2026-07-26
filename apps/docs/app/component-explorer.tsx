@@ -7,6 +7,8 @@ import {
   NumberTicker,
   StaggeredList,
   TextReveal,
+  ToastStack,
+  type ToastStackItem,
 } from "easecraft";
 import { useDeferredValue, useState } from "react";
 
@@ -95,13 +97,58 @@ const componentDemos = [
     kind: "toast",
     name: "Toast Stack",
     slug: "toast-stack",
-    status: "Planned",
+    status: "Implemented",
   },
 ] as const satisfies readonly ComponentDemo[];
 
 interface PreviewProps {
   kind: ComponentDemo["kind"];
   reducedMotion: boolean;
+}
+
+const toastPreviewViewportStyle = {
+  inset: "auto",
+  maxWidth: "none",
+  position: "relative",
+  width: "100%",
+} as const;
+
+function ToastPreview({ reducedMotion }: { reducedMotion: boolean }) {
+  const [items, setItems] = useState<ToastStackItem<number>[]>([]);
+
+  return (
+    <MotionProvider reducedMotion={reducedMotion ? "always" : "never"}>
+      <div className="toast-preview">
+        <button
+          className="toast-preview-trigger"
+          type="button"
+          onClick={() => {
+            setItems([
+              {
+                description: "Accessible and motion-aware.",
+                duration: Infinity,
+                id: 1,
+                title: "Preview ready",
+              },
+            ]);
+          }}
+        >
+          Show notification
+        </button>
+        <ToastStack
+          closeClassName="toast-preview-close"
+          contentClassName="toast-preview-content"
+          items={items}
+          limit={1}
+          onDismiss={(id) => {
+            setItems((current) => current.filter((item) => item.id !== id));
+          }}
+          viewportClassName="toast-preview-viewport"
+          viewportStyle={toastPreviewViewportStyle}
+        />
+      </div>
+    </MotionProvider>
+  );
 }
 
 function Preview({ kind, reducedMotion }: PreviewProps) {
@@ -180,12 +227,7 @@ function Preview({ kind, reducedMotion }: PreviewProps) {
         </MotionProvider>
       );
     case "toast":
-      return (
-        <div className="toast-preview" aria-hidden="true">
-          <span />
-          <span />
-        </div>
-      );
+      return <ToastPreview reducedMotion={reducedMotion} />;
   }
 }
 

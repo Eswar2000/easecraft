@@ -8,9 +8,9 @@ By participating, you agree to follow the [Code of Conduct](CODE_OF_CONDUCT.md).
 
 ## Current Stage
 
-Easecraft has completed its core motion foundation, including `Stagger`, plus the `TextReveal`, `NumberTicker`, `StaggeredList`, `AnimatedTabs`, and `MotionDialog` vertical slices across package code, tests, consumer usage, and interactive documentation.
+Easecraft has completed its core motion foundation, including `Stagger`, plus the `TextReveal`, `NumberTicker`, `StaggeredList`, `AnimatedTabs`, `MotionDialog`, and `ToastStack` vertical slices across package code, tests, consumer usage, and interactive documentation.
 
-The immediate package focus is the `ToastStack` vertical slice using the same reusable acceptance patterns. Remaining Phase 0 repository work includes public identifiers, CI, preview deployment, and architecture decision records.
+The immediate package focus is the `FilterGrid` vertical slice using the same reusable acceptance patterns. Remaining Phase 0 repository work includes public identifiers, CI, preview deployment, and architecture decision records.
 
 Useful contributions at this stage include:
 

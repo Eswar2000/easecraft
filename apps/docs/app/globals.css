@@ -560,23 +560,58 @@ h2 {
   content: "\00d7";
 }
 
-.toast-preview span {
-  display: block;
-  width: 90%;
-  height: 48px;
-  margin-left: auto;
-  border: 1px solid var(--ink);
-  background: #fff;
-  box-shadow: 5px 5px 0 var(--cyan);
-  animation: toast-enter 420ms cubic-bezier(0.16, 1, 0.3, 1) both;
+.toast-preview {
+  display: grid;
+  gap: 12px;
 }
 
-.toast-preview span:last-child {
-  width: 72%;
-  margin-right: auto;
-  margin-left: 0;
-  box-shadow: 5px 5px 0 var(--yellow);
-  animation-delay: 90ms;
+.toast-preview-trigger {
+  min-height: 38px;
+  color: var(--ink);
+  background: #fff;
+  font-size: 11px;
+}
+
+.toast-preview-viewport {
+  display: grid !important;
+  gap: 8px !important;
+}
+
+.toast-preview-content {
+  --easecraft-toast-background: #fff;
+  --easecraft-toast-border: var(--ink);
+  --easecraft-toast-padding: 12px;
+  --easecraft-toast-shadow: 5px 5px 0 var(--cyan);
+
+  position: relative;
+  padding-right: 38px !important;
+  text-align: left;
+}
+
+.toast-preview-content [data-easecraft-toast-title] {
+  font-family: "Bricolage Grotesque", sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.toast-preview-content [data-easecraft-toast-description] {
+  color: var(--muted);
+  font-size: 10px;
+}
+
+.toast-preview-close {
+  position: absolute;
+  top: 7px;
+  right: 7px;
+  width: 26px;
+  min-height: 26px;
+  padding: 0;
+  font-size: 0;
+}
+
+.toast-preview-close::before {
+  font-size: 15px;
+  content: "\00d7";
 }
 
 .card-copy {
@@ -1439,15 +1474,171 @@ h2 {
   background: var(--yellow);
 }
 
-@keyframes toast-enter {
-  from {
-    opacity: 0;
-    transform: translateX(16px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
+.toast-demo {
+  border: 1px solid var(--ink);
+  background: var(--panel);
+}
+
+.toast-demo-controls {
+  display: flex;
+  min-height: 72px;
+  align-items: center;
+  gap: 18px;
+  padding: 10px;
+  border-bottom: 1px solid var(--ink);
+}
+
+.toast-demo-status {
+  margin-right: auto;
+  padding: 0 8px;
+  color: var(--signal);
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 10px;
+  text-transform: uppercase;
+}
+
+.toast-limit-control {
+  display: flex;
+  margin: 0;
+  padding: 16px 0 0;
+  border: 0;
+}
+
+.toast-limit-control legend {
+  position: absolute;
+  color: var(--muted);
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 9px;
+  text-transform: uppercase;
+}
+
+.toast-limit-control button {
+  width: 40px;
+  min-height: 34px;
+  padding: 0;
+  border: 1px solid var(--line);
+  border-right: 0;
+  border-radius: 0;
+  color: var(--ink);
+  background: #fff;
+}
+
+.toast-limit-control button:last-child {
+  border-right: 1px solid var(--line);
+}
+
+.toast-limit-control button[aria-pressed="true"] {
+  color: #fff;
+  background: var(--ink);
+}
+
+.toast-demo-stage {
+  position: relative;
+  display: grid;
+  min-height: 600px;
+  align-items: end;
+  padding: 64px;
+  overflow: hidden;
+  background:
+    linear-gradient(rgb(240 68 33 / 9%) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(240 68 33 / 9%) 1px, transparent 1px), #fdfdf9;
+  background-size: 40px 40px;
+}
+
+.toast-launch-panel {
+  max-width: 520px;
+}
+
+.toast-launch-index {
+  display: block;
+  margin-bottom: 16px;
+  color: var(--signal);
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 11px;
+}
+
+.toast-launch-panel h2 {
+  margin-bottom: 10px;
+  font-size: 40px;
+}
+
+.toast-launch-panel > p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 15px;
+}
+
+.toast-launch-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px;
+  margin-top: 22px;
+}
+
+.toast-launch-actions button {
+  min-height: 40px;
+  padding: 0 13px;
+  font-size: 12px;
+}
+
+.toast-demo-viewport {
+  display: grid !important;
+  gap: 10px !important;
+}
+
+.toast-demo-viewport [data-swipe="cancel"] {
+  transition: transform 180ms ease;
+}
+
+.toast-demo-content {
+  --easecraft-toast-background: #fff;
+  --easecraft-toast-border: var(--ink);
+  --easecraft-toast-padding: 17px;
+  --easecraft-toast-shadow: 7px 7px 0 var(--cyan);
+
+  position: relative;
+  grid-template-columns: minmax(0, 1fr) auto;
+  padding-right: 48px !important;
+}
+
+[data-easecraft-toast-priority="assertive"] .toast-demo-content {
+  --easecraft-toast-shadow: 7px 7px 0 var(--yellow);
+}
+
+.toast-demo-content [data-easecraft-toast-title] {
+  font-family: "Bricolage Grotesque", sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.toast-demo-content [data-easecraft-toast-description] {
+  grid-column: 1 / -1;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.toast-demo-action {
+  min-height: 30px;
+  padding: 0 9px;
+  color: var(--ink);
+  background: var(--yellow);
+  font-size: 10px;
+}
+
+.toast-demo-close {
+  position: absolute;
+  top: 9px;
+  right: 9px;
+  width: 30px;
+  min-height: 30px;
+  padding: 0;
+  font-size: 0;
+}
+
+.toast-demo-close::before {
+  font-size: 17px;
+  content: "\00d7";
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -1726,5 +1917,47 @@ h2 {
   .motion-dialog-actions {
     align-items: stretch;
     flex-direction: column-reverse;
+  }
+
+  .toast-demo-controls {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .toast-demo-status {
+    margin: 0;
+    padding: 8px 4px;
+  }
+
+  .toast-limit-control {
+    width: 100%;
+  }
+
+  .toast-limit-control button {
+    flex: 1;
+  }
+
+  .toast-demo-stage {
+    min-height: 720px;
+    padding: 58px 20px 28px;
+  }
+
+  .toast-launch-panel h2 {
+    font-size: 33px;
+  }
+
+  .toast-launch-actions {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .toast-demo-viewport {
+    right: 16px !important;
+    top: 62px !important;
+    width: calc(100% - 32px) !important;
+  }
+
+  .toast-demo-content {
+    --easecraft-toast-padding: 14px;
   }
 }
