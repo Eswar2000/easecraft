@@ -3,6 +3,7 @@ import {
   MotionProvider,
   NumberTicker,
   Presence,
+  Stagger,
   TextReveal,
   useAnime,
   useMotionConfig,
@@ -49,7 +50,14 @@ function PresenceSpecimen({ complete, state }: PresenceRenderProps) {
   const rootRef = useAnime(setupAnimation);
 
   return (
-    <div className="motion-specimen" data-presence-state={state} ref={rootRef}>
+    <Stagger
+      as="div"
+      className="motion-specimen"
+      data-presence-state={state}
+      interval="tight"
+      maxDelay={100}
+      ref={rootRef}
+    >
       <span className="specimen-index">01</span>
       <TextReveal as="p" distance="small" duration="normal" split="words" stagger="tight">
         Motion should explain what changed.
@@ -59,7 +67,7 @@ function PresenceSpecimen({ complete, state }: PresenceRenderProps) {
         <span />
         <span />
       </div>
-    </div>
+    </Stagger>
   );
 }
 

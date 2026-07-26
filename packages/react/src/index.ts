@@ -30,6 +30,17 @@ export {
   type PresenceState,
 } from "./presence.js";
 export {
+  Stagger,
+  type StaggerDistance,
+  type StaggerDuration,
+  type StaggerEasing,
+  type StaggerInterval,
+  type StaggerOrder,
+  type StaggerPreset,
+  type StaggerProps,
+  type StaggerTagName,
+} from "./stagger.js";
+export {
   TextReveal,
   type TextRevealDistance,
   type TextRevealDuration,
