@@ -6,7 +6,7 @@ Easecraft is an open-source motion design system planned for React. It will comb
 
 ## Project Status
 
-Easecraft is currently in the **registry and playground stage**. The motion foundation plus all nine planned component vertical slices are implemented across the package, tests, consumer fixture, and interactive documentation; no npm package has been published yet.
+Easecraft is currently in the **registry and playground stage**. The motion foundation plus all nine planned component vertical slices are implemented across the package, tests, consumer fixture, and interactive documentation. A typed metadata registry now defines the catalog consumed by the component explorer; no npm package has been published yet.
 
 The complete product scope, architecture, delivery plan, and initial backlog are documented in the [project proposal](PROPOSAL.md).
 
@@ -23,7 +23,7 @@ Easecraft will use unscoped npm package names.
 
 These names were unregistered on npm when checked on 2026-07-25. They are planned identifiers, not reserved names, until their first publication.
 
-`easecraft-tokens` and the first `easecraft` React APIs are implemented. The Vite fixture consumes `MotionProvider`, `Motion`, `Presence`, `Stagger`, `TextReveal`, `NumberTicker`, `StaggeredList`, `AnimatedTabs`, `AnimatedAccordion`, `MotionDialog`, `ToastStack`, `FilterGrid`, and `ScrollReveal` through the public workspace export as an external application would; all packages remain private and unpublished during foundation work.
+`easecraft-tokens`, the first `easecraft` React APIs, and the metadata foundation of `easecraft-registry` are implemented. The Vite fixture consumes `MotionProvider`, `Motion`, `Presence`, `Stagger`, `TextReveal`, `NumberTicker`, `StaggeredList`, `AnimatedTabs`, `AnimatedAccordion`, `MotionDialog`, `ToastStack`, `FilterGrid`, and `ScrollReveal` through the public workspace export as an external application would; all packages remain private and unpublished during foundation work.
 
 ## Development
 
@@ -40,7 +40,7 @@ pnpm test
 pnpm build
 ```
 
-`pnpm dev` starts token and React package build watchers, the docs explorer, and the Vite consumer fixture. `pnpm lint` runs shared type-aware ESLint rules, including React Hooks and JSX accessibility checks where applicable. `pnpm typecheck` runs TypeScript 6 with shared strict settings, and `pnpm format:check` validates code and configuration files with Prettier. `pnpm build` builds both applications, `easecraft-tokens`, and `easecraft`; only the registry build remains a placeholder. `pnpm test` runs the token and React package unit and integration tests; the registry test remains a placeholder.
+`pnpm dev` starts token, React, and registry package build watchers, the docs explorer, and the Vite consumer fixture. `pnpm lint` runs shared type-aware ESLint rules, including React Hooks and JSX accessibility checks where applicable. `pnpm typecheck` runs TypeScript 6 with shared strict settings, and `pnpm format:check` validates code and configuration files with Prettier. `pnpm build` builds both applications and all three implementation packages. `pnpm test` runs token, React, registry, and docs registry-consumer tests; remaining application tests are placeholders.
 
 ## What Easecraft Will Provide
 
@@ -61,7 +61,7 @@ The proposed first release includes five foundations, five hooks, and nine high-
 
 `TextReveal`, `NumberTicker`, `StaggeredList`, `AnimatedTabs`, `AnimatedAccordion`, `MotionDialog`, `ToastStack`, `FilterGrid`, and `ScrollReveal` are completed vertical slices, proving the package API, Anime.js lifecycle integration, reduced-motion behavior, accessible output, documentation, tests, and consumer build.
 
-The `Stagger` foundation is also implemented with bounded forward and reverse child sequencing, scoped cleanup, and an immediate reduced-motion fallback. The next milestone is the typed registry and interactive playground.
+The `Stagger` foundation is also implemented with bounded forward and reverse child sequencing, scoped cleanup, and an immediate reduced-motion fallback. The next milestone is copy-source manifests and registry compositions, followed by the interactive playground.
 
 ## Principles
 

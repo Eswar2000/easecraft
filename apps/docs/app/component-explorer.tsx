@@ -14,12 +14,19 @@ import {
   type FilterGridFilter,
   type ToastStackItem,
 } from "easecraft";
+import {
+  componentCategories,
+  componentSlugs,
+  listComponents,
+  type ComponentSlug,
+  type ComponentStatus,
+} from "easecraft-registry";
 import { useDeferredValue, useState } from "react";
 
-const categories = ["All", "Text", "Layout", "Overlay", "Feedback"] as const;
+const categories = ["All", ...componentCategories] as const;
+const componentDemos = listComponents();
 
 type Category = (typeof categories)[number];
-type DemoCategory = Exclude<Category, "All">;
 
 const listPreviewItems = [
   { id: "one", width: "100%" },
@@ -78,94 +85,13 @@ const filterPreviewFilters = [
   },
 ] satisfies readonly FilterGridFilter<FilterPreviewItem, FilterPreviewValue>[];
 
-interface ComponentDemo {
-  category: DemoCategory;
-  description: string;
-  kind:
-    "text" | "number" | "list" | "tabs" | "dialog" | "toast" | "filter" | "scroll" | "accordion";
-  name: string;
-  slug: string;
-  status: "Implemented" | "Planned";
+interface PreviewProps {
+  kind: ComponentSlug;
+  reducedMotion: boolean;
 }
 
-const componentDemos: readonly ComponentDemo[] = [
-  {
-    category: "Text",
-    description: "Word-level entrance with readable source text.",
-    kind: "text",
-    name: "Text Reveal",
-    slug: "text-reveal",
-    status: "Implemented",
-  },
-  {
-    category: "Feedback",
-    description: "Numeric transitions with stable final output.",
-    kind: "number",
-    name: "Number Ticker",
-    slug: "number-ticker",
-    status: "Implemented",
-  },
-  {
-    category: "Layout",
-    description: "Insertion and removal with bounded stagger.",
-    kind: "list",
-    name: "Staggered List",
-    slug: "staggered-list",
-    status: "Implemented",
-  },
-  {
-    category: "Layout",
-    description: "Keyboard-ready panels with a moving indicator.",
-    kind: "tabs",
-    name: "Animated Tabs",
-    slug: "animated-tabs",
-    status: "Implemented",
-  },
-  {
-    category: "Overlay",
-    description: "Focus-safe presence with retained exit content.",
-    kind: "dialog",
-    name: "Motion Dialog",
-    slug: "motion-dialog",
-    status: "Implemented",
-  },
-  {
-    category: "Feedback",
-    description: "Live-region notifications with controlled reflow.",
-    kind: "toast",
-    name: "Toast Stack",
-    slug: "toast-stack",
-    status: "Implemented",
-  },
-  {
-    category: "Layout",
-    description: "Focus-safe filtering with animated grid reflow.",
-    kind: "filter",
-    name: "Filter Grid",
-    slug: "filter-grid",
-    status: "Implemented",
-  },
-  {
-    category: "Layout",
-    description: "Bounded viewport reveals with visible fallback content.",
-    kind: "scroll",
-    name: "Scroll Reveal",
-    slug: "scroll-reveal",
-    status: "Implemented",
-  },
-  {
-    category: "Layout",
-    description: "Intrinsic-height disclosure with retained panel exits.",
-    kind: "accordion",
-    name: "Animated Accordion",
-    slug: "animated-accordion",
-    status: "Implemented",
-  },
-];
-
-interface PreviewProps {
-  kind: ComponentDemo["kind"];
-  reducedMotion: boolean;
+function getStatusLabel(status: ComponentStatus) {
+  return status === "implemented" ? "Implemented" : "Planned";
 }
 
 const toastPreviewViewportStyle = {
@@ -215,7 +141,7 @@ function ToastPreview({ reducedMotion }: { reducedMotion: boolean }) {
 
 function Preview({ kind, reducedMotion }: PreviewProps) {
   switch (kind) {
-    case "text":
+    case "text-reveal":
       return (
         <MotionProvider reducedMotion={reducedMotion ? "always" : "never"}>
           <TextReveal as="p" className="preview-copy" duration="slow" stagger="tight">
@@ -223,7 +149,7 @@ function Preview({ kind, reducedMotion }: PreviewProps) {
           </TextReveal>
         </MotionProvider>
       );
-    case "number":
+    case "number-ticker":
       return (
         <MotionProvider reducedMotion={reducedMotion ? "always" : "never"}>
           <NumberTicker
@@ -235,7 +161,7 @@ function Preview({ kind, reducedMotion }: PreviewProps) {
           />
         </MotionProvider>
       );
-    case "list":
+    case "staggered-list":
       return (
         <MotionProvider reducedMotion={reducedMotion ? "always" : "never"}>
           <StaggeredList
@@ -251,7 +177,7 @@ function Preview({ kind, reducedMotion }: PreviewProps) {
           </StaggeredList>
         </MotionProvider>
       );
-    case "tabs":
+    case "animated-tabs":
       return (
         <MotionProvider reducedMotion={reducedMotion ? "always" : "never"}>
           <AnimatedTabs
@@ -267,7 +193,7 @@ function Preview({ kind, reducedMotion }: PreviewProps) {
           </AnimatedTabs>
         </MotionProvider>
       );
-    case "dialog":
+    case "motion-dialog":
       return (
         <MotionProvider reducedMotion={reducedMotion ? "always" : "never"}>
           <MotionDialog
@@ -288,9 +214,9 @@ function Preview({ kind, reducedMotion }: PreviewProps) {
           </MotionDialog>
         </MotionProvider>
       );
-    case "toast":
+    case "toast-stack":
       return <ToastPreview reducedMotion={reducedMotion} />;
-    case "filter":
+    case "filter-grid":
       return (
         <MotionProvider reducedMotion={reducedMotion ? "always" : "never"}>
           <FilterGrid
@@ -308,7 +234,7 @@ function Preview({ kind, reducedMotion }: PreviewProps) {
           </FilterGrid>
         </MotionProvider>
       );
-    case "scroll":
+    case "scroll-reveal":
       return (
         <MotionProvider reducedMotion={reducedMotion ? "always" : "never"}>
           <ScrollReveal className="scroll-preview" duration="slow" threshold={0.1}>
@@ -317,7 +243,7 @@ function Preview({ kind, reducedMotion }: PreviewProps) {
           </ScrollReveal>
         </MotionProvider>
       );
-    case "accordion":
+    case "animated-accordion":
       return (
         <MotionProvider reducedMotion={reducedMotion ? "always" : "never"}>
           <AnimatedAccordion
@@ -378,7 +304,9 @@ export function ComponentExplorer() {
       <main>
         <section className="explorer-heading" id="components" aria-labelledby="page-title">
           <div>
-            <p className="eyebrow">Registry / 09 previews</p>
+            <p className="eyebrow">
+              Registry / {componentSlugs.length.toString().padStart(2, "0")} previews
+            </p>
             <h1 id="page-title">Component explorer</h1>
           </div>
           <p className="heading-note">Accessible motion primitives, inspected in place.</p>
@@ -441,35 +369,39 @@ export function ComponentExplorer() {
 
         {visibleDemos.length > 0 ? (
           <section className="component-grid" aria-label="Component previews">
-            {visibleDemos.map((demo, index) => (
-              <article className="component-card" key={demo.slug}>
-                <div className="card-meta">
-                  <span>{(index + 1).toString().padStart(2, "0")}</span>
-                  <span>{demo.category}</span>
-                  <span data-status={demo.status}>{demo.status}</span>
-                </div>
-                <div className="preview-frame">
-                  <div className="preview-content" key={`${demo.slug}-${replayKey.toString()}`}>
-                    <Preview kind={demo.kind} reducedMotion={reducedMotion} />
+            {visibleDemos.map((demo, index) => {
+              const statusLabel = getStatusLabel(demo.status);
+
+              return (
+                <article className="component-card" key={demo.slug}>
+                  <div className="card-meta">
+                    <span>{(index + 1).toString().padStart(2, "0")}</span>
+                    <span>{demo.category}</span>
+                    <span data-status={statusLabel}>{statusLabel}</span>
                   </div>
-                </div>
-                <div className="card-copy">
-                  <div>
-                    <h2>
-                      {demo.status === "Implemented" ? (
-                        <a className="component-title-link" href={`/components/${demo.slug}`}>
-                          {demo.name}
-                        </a>
-                      ) : (
-                        demo.name
-                      )}
-                    </h2>
-                    <p>{demo.description}</p>
+                  <div className="preview-frame">
+                    <div className="preview-content" key={`${demo.slug}-${replayKey.toString()}`}>
+                      <Preview kind={demo.slug} reducedMotion={reducedMotion} />
+                    </div>
                   </div>
-                  <span className="component-slug">/{demo.slug}</span>
-                </div>
-              </article>
-            ))}
+                  <div className="card-copy">
+                    <div>
+                      <h2>
+                        {demo.status === "implemented" ? (
+                          <a className="component-title-link" href={demo.docsPath}>
+                            {demo.name}
+                          </a>
+                        ) : (
+                          demo.name
+                        )}
+                      </h2>
+                      <p>{demo.description}</p>
+                    </div>
+                    <span className="component-slug">/{demo.slug}</span>
+                  </div>
+                </article>
+              );
+            })}
           </section>
         ) : (
           <div className="empty-state" role="status">

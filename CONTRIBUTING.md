@@ -8,9 +8,9 @@ By participating, you agree to follow the [Code of Conduct](CODE_OF_CONDUCT.md).
 
 ## Current Stage
 
-Easecraft has completed its core motion foundation, including `Stagger`, plus all nine planned component vertical slices across package code, tests, consumer usage, and interactive documentation.
+Easecraft has completed its core motion foundation, including `Stagger`, all nine planned component vertical slices, and the typed component metadata registry across package code, tests, consumer usage, and interactive documentation.
 
-The immediate focus is the typed registry and interactive playground. Remaining Phase 0 repository work includes public identifiers, CI, preview deployment, and architecture decision records.
+The immediate focus is copy-source registry manifests and compositions, followed by the interactive playground. Remaining Phase 0 repository work includes public identifiers, CI, preview deployment, and architecture decision records.
 
 Useful contributions at this stage include:
 
@@ -52,7 +52,7 @@ pnpm test
 pnpm build
 ```
 
-`pnpm dev` starts token and React package build watchers plus both applications. The format, lint, and typecheck commands run real Prettier, ESLint, and strict TypeScript checks. The build command produces both applications, `easecraft-tokens`, and `easecraft`; only the registry build remains a placeholder. The test command runs real token and React package unit and integration tests; the registry test remains a placeholder.
+`pnpm dev` starts token, React, and registry package build watchers plus both applications. The format, lint, and typecheck commands run real Prettier, ESLint, and strict TypeScript checks. The build command produces both applications and all three implementation packages. The test command runs token, React, registry, and docs registry-consumer tests; remaining application tests are placeholders.
 
 ## Making Changes
 
