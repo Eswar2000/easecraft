@@ -240,7 +240,7 @@ Do not place the preview inside multiple nested cards. The preview should receiv
 
 ## 10. Version 1 Component Inventory
 
-Version 1 should be deliberately limited. Eight excellent components are more valuable than forty shallow effects.
+Version 1 should be deliberately limited. Nine excellent components are more valuable than forty shallow effects.
 
 ### Foundations
 
@@ -270,6 +270,7 @@ Version 1 should be deliberately limited. Eight excellent components are more va
 | `NumberTicker` | Animate between numeric values | Expose the final value and control live-region announcements |
 | `StaggeredList` | Animate insertion, removal, and reordering | Preserve list semantics and focus stability |
 | `AnimatedTabs` | Move an active indicator and transition panels | Use accessible tab semantics and keyboard navigation |
+| `AnimatedAccordion` | Animate intrinsic-height disclosure panels | Preserve heading and region semantics, keyboard navigation, and focus during retained exits |
 | `MotionDialog` | Animate overlay and content presence | Trap focus, restore focus, support Escape, and retain content during exit |
 | `ToastStack` | Enter, dismiss, and reflow notifications | Use appropriate live-region behavior and pausable timeouts |
 | `FilterGrid` | Animate filtering and layout changes | Keep controls keyboard accessible and avoid focus loss |
@@ -867,6 +868,7 @@ Independent jobs should run in parallel after dependency installation and cachin
 - `ToastStack`
 - `FilterGrid`
 - `ScrollReveal`
+- `AnimatedAccordion`
 - Registry compositions using the stable components
 
 **Exit criteria**
@@ -917,7 +919,7 @@ Independent jobs should run in parallel after dependency installation and cachin
 
 Version 1 is complete when:
 
-- Eight planned components are documented and usable.
+- Nine planned components are documented and usable.
 - Stable exports have typed public APIs.
 - Every component defines interruption and reduced-motion behavior.
 - The docs site works at mobile and desktop widths.
@@ -937,7 +939,7 @@ Version 1 is complete when:
 | React lifecycle creates duplicate or stale animations | Broken state and memory leaks | Centralize scoped setup and cleanup in tested hooks |
 | Exit animations conflict with unmounting | Content disappears too early | Use an explicit presence state machine |
 | Accessibility becomes secondary to visual effects | Unusable components and weak credibility | Build on accessible primitives and require per-component checks |
-| Registry scope grows too quickly | Delayed release and shallow quality | Freeze v1 at eight components and eight compositions |
+| Registry scope grows too quickly | Delayed release and shallow quality | Freeze v1 at nine components and eight compositions |
 | Package API mirrors Anime.js too closely | Weak abstraction and lock-in | Use semantic component APIs with low-level escape hatches |
 | Documentation and package drift | Incorrect examples | Generate install data and API references from typed metadata |
 | Playground introduces code execution risk | Security vulnerability | Generate from validated templates; never evaluate user code |
@@ -981,7 +983,7 @@ The public case study should explain:
 
 ### Suggested Resume Bullet
 
-> Built and published Easecraft, an accessible React motion design system powered by Anime.js, with typed primitives, eight production-ready components, reduced-motion support, an interactive code-generating playground, cross-browser tests, and automated npm releases.
+> Built and published Easecraft, an accessible React motion design system powered by Anime.js, with typed primitives, nine production-ready components, reduced-motion support, an interactive code-generating playground, cross-browser tests, and automated npm releases.
 
 Use measured outcomes in the final resume bullet once real data exists. Do not invent adoption or performance figures.
 
@@ -1052,6 +1054,6 @@ The recommended first implementation is:
 - **Database:** None for version 1
 - **Testing:** Vitest, Testing Library, Playwright, and axe-core
 - **Release management:** Changesets
-- **MVP:** Five foundations, five hooks, eight components, and eight registry compositions
+- **MVP:** Five foundations, five hooks, nine components, and eight registry compositions
 
 The key implementation principle is to complete one vertical slice before broadening the catalog. `TextReveal` should prove the package API, Anime.js lifecycle, reduced-motion handling, documentation format, tests, code generation, and consumer build. Once that slice is credible, the remaining components can follow the same contract.

@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  AnimatedAccordion,
   AnimatedTabs,
   FilterGrid,
   MotionDialog,
@@ -44,6 +45,19 @@ function getTabsPreviewValue(item: (typeof tabsPreviewItems)[number]) {
   return item.id;
 }
 
+const accordionPreviewItems = [
+  { id: "height", label: "Measured height", panel: "Content sets the endpoint." },
+  { id: "access", label: "Keyboard ready", panel: "Focus follows the APG pattern." },
+] as const;
+
+function getAccordionPreviewLabel(item: (typeof accordionPreviewItems)[number]) {
+  return item.label;
+}
+
+function getAccordionPreviewValue(item: (typeof accordionPreviewItems)[number]) {
+  return item.id;
+}
+
 const filterPreviewItems = [
   { category: "core", id: "motion", label: "Motion" },
   { category: "component", id: "tabs", label: "Tabs" },
@@ -67,7 +81,8 @@ const filterPreviewFilters = [
 interface ComponentDemo {
   category: DemoCategory;
   description: string;
-  kind: "text" | "number" | "list" | "tabs" | "dialog" | "toast" | "filter" | "scroll";
+  kind:
+    "text" | "number" | "list" | "tabs" | "dialog" | "toast" | "filter" | "scroll" | "accordion";
   name: string;
   slug: string;
   status: "Implemented" | "Planned";
@@ -136,6 +151,14 @@ const componentDemos: readonly ComponentDemo[] = [
     kind: "scroll",
     name: "Scroll Reveal",
     slug: "scroll-reveal",
+    status: "Implemented",
+  },
+  {
+    category: "Layout",
+    description: "Intrinsic-height disclosure with retained panel exits.",
+    kind: "accordion",
+    name: "Animated Accordion",
+    slug: "animated-accordion",
     status: "Implemented",
   },
 ];
@@ -294,6 +317,27 @@ function Preview({ kind, reducedMotion }: PreviewProps) {
           </ScrollReveal>
         </MotionProvider>
       );
+    case "accordion":
+      return (
+        <MotionProvider reducedMotion={reducedMotion ? "always" : "never"}>
+          <AnimatedAccordion
+            aria-label="Animated Accordion preview"
+            bodyClassName="accordion-preview-body"
+            className="accordion-preview"
+            contentClassName="accordion-preview-content"
+            defaultValue="height"
+            duration="fast"
+            getLabel={getAccordionPreviewLabel}
+            getValue={getAccordionPreviewValue}
+            headerClassName="accordion-preview-header"
+            itemClassName="accordion-preview-item"
+            items={accordionPreviewItems}
+            triggerClassName="accordion-preview-trigger"
+          >
+            {(item) => item.panel}
+          </AnimatedAccordion>
+        </MotionProvider>
+      );
   }
 }
 
@@ -334,7 +378,7 @@ export function ComponentExplorer() {
       <main>
         <section className="explorer-heading" id="components" aria-labelledby="page-title">
           <div>
-            <p className="eyebrow">Registry / 08 previews</p>
+            <p className="eyebrow">Registry / 09 previews</p>
             <h1 id="page-title">Component explorer</h1>
           </div>
           <p className="heading-note">Accessible motion primitives, inspected in place.</p>

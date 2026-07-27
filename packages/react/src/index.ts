@@ -1,4 +1,14 @@
 export {
+  AnimatedAccordion,
+  type AnimatedAccordionDuration,
+  type AnimatedAccordionEasing,
+  type AnimatedAccordionHeadingLevel,
+  type AnimatedAccordionMode,
+  type AnimatedAccordionProps,
+  type AnimatedAccordionState,
+  type AnimatedAccordionTagName,
+} from "./animated-accordion.js";
+export {
   AnimatedTabs,
   type AnimatedTabsActivationMode,
   type AnimatedTabsDistance,

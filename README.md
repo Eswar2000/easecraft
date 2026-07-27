@@ -6,7 +6,7 @@ Easecraft is an open-source motion design system planned for React. It will comb
 
 ## Project Status
 
-Easecraft is currently in the **registry and playground stage**. The motion foundation plus all eight planned component vertical slices are implemented across the package, tests, consumer fixture, and interactive documentation; no npm package has been published yet.
+Easecraft is currently in the **registry and playground stage**. The motion foundation plus all nine planned component vertical slices are implemented across the package, tests, consumer fixture, and interactive documentation; no npm package has been published yet.
 
 The complete product scope, architecture, delivery plan, and initial backlog are documented in the [project proposal](PROPOSAL.md).
 
@@ -23,7 +23,7 @@ Easecraft will use unscoped npm package names.
 
 These names were unregistered on npm when checked on 2026-07-25. They are planned identifiers, not reserved names, until their first publication.
 
-`easecraft-tokens` and the first `easecraft` React APIs are implemented. The Vite fixture consumes `MotionProvider`, `Motion`, `Presence`, `Stagger`, `TextReveal`, `NumberTicker`, `StaggeredList`, `AnimatedTabs`, `MotionDialog`, `ToastStack`, `FilterGrid`, and `ScrollReveal` through the public workspace export as an external application would; all packages remain private and unpublished during foundation work.
+`easecraft-tokens` and the first `easecraft` React APIs are implemented. The Vite fixture consumes `MotionProvider`, `Motion`, `Presence`, `Stagger`, `TextReveal`, `NumberTicker`, `StaggeredList`, `AnimatedTabs`, `AnimatedAccordion`, `MotionDialog`, `ToastStack`, `FilterGrid`, and `ScrollReveal` through the public workspace export as an external application would; all packages remain private and unpublished during foundation work.
 
 ## Development
 
@@ -53,13 +53,13 @@ pnpm build
 
 ## Planned Version 1
 
-The proposed first release includes five foundations, five hooks, and eight high-level components:
+The proposed first release includes five foundations, five hooks, and nine high-level components:
 
 - Foundations: `MotionProvider`, `Motion`, `Presence`, `Stagger`, and `Timeline`
 - Hooks: `useAnime`, `useTimeline`, `usePresence`, `useReducedMotion`, and `useScrollProgress`
-- Components: `TextReveal`, `NumberTicker`, `StaggeredList`, `AnimatedTabs`, `MotionDialog`, `ToastStack`, `FilterGrid`, and `ScrollReveal`
+- Components: `TextReveal`, `NumberTicker`, `StaggeredList`, `AnimatedTabs`, `AnimatedAccordion`, `MotionDialog`, `ToastStack`, `FilterGrid`, and `ScrollReveal`
 
-`TextReveal`, `NumberTicker`, `StaggeredList`, `AnimatedTabs`, `MotionDialog`, `ToastStack`, `FilterGrid`, and `ScrollReveal` are completed vertical slices, proving the package API, Anime.js lifecycle integration, reduced-motion behavior, accessible output, documentation, tests, and consumer build.
+`TextReveal`, `NumberTicker`, `StaggeredList`, `AnimatedTabs`, `AnimatedAccordion`, `MotionDialog`, `ToastStack`, `FilterGrid`, and `ScrollReveal` are completed vertical slices, proving the package API, Anime.js lifecycle integration, reduced-motion behavior, accessible output, documentation, tests, and consumer build.
 
 The `Stagger` foundation is also implemented with bounded forward and reverse child sequencing, scoped cleanup, and an immediate reduced-motion fallback. The next milestone is the typed registry and interactive playground.
 

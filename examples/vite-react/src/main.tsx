@@ -1,4 +1,5 @@
 import {
+  AnimatedAccordion,
   AnimatedTabs,
   FilterGrid,
   Motion,
@@ -32,6 +33,10 @@ const consumerChecks = [
 const consumerViews = [
   { id: "motion", label: "Motion", value: "Scoped" },
   { id: "a11y", label: "Access", value: "Semantic" },
+] as const;
+const consumerAccordionItems = [
+  { id: "height", label: "Measured height", panel: "Intrinsic panel motion" },
+  { id: "keys", label: "Keyboard", panel: "Arrow, Home, and End" },
 ] as const;
 const consumerCatalog = [
   { category: "core", id: "motion", label: "Motion" },
@@ -137,6 +142,22 @@ function PresenceSpecimen({ complete, state }: PresenceRenderProps) {
       >
         {(item) => <span>{item.label}</span>}
       </FilterGrid>
+      <AnimatedAccordion
+        aria-label="Consumer accordion"
+        bodyClassName="consumer-accordion-body"
+        className="consumer-accordion"
+        contentClassName="consumer-accordion-content"
+        defaultValue="height"
+        duration="fast"
+        getLabel={(item) => item.label}
+        getValue={(item) => item.id}
+        headerClassName="consumer-accordion-header"
+        itemClassName="consumer-accordion-item"
+        items={consumerAccordionItems}
+        triggerClassName="consumer-accordion-trigger"
+      >
+        {(item) => item.panel}
+      </AnimatedAccordion>
       <div>
         <ScrollReveal
           as="div"

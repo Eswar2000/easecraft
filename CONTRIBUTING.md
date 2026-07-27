@@ -8,7 +8,7 @@ By participating, you agree to follow the [Code of Conduct](CODE_OF_CONDUCT.md).
 
 ## Current Stage
 
-Easecraft has completed its core motion foundation, including `Stagger`, plus all eight planned component vertical slices across package code, tests, consumer usage, and interactive documentation.
+Easecraft has completed its core motion foundation, including `Stagger`, plus all nine planned component vertical slices across package code, tests, consumer usage, and interactive documentation.
 
 The immediate focus is the typed registry and interactive playground. Remaining Phase 0 repository work includes public identifiers, CI, preview deployment, and architecture decision records.
 

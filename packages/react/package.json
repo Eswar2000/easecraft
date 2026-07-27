@@ -28,6 +28,7 @@
     "typecheck": "tsc --noEmit --project tsconfig.json"
   },
   "dependencies": {
+    "@radix-ui/react-accordion": "1.2.20",
     "@radix-ui/react-dialog": "1.1.23",
     "@radix-ui/react-toast": "1.2.23",
     "animejs": "4.5.0",

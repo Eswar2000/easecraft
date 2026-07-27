@@ -390,6 +390,54 @@ h2 {
   font-size: 8px;
 }
 
+.consumer-accordion {
+  margin-bottom: 22px;
+  border: 1px solid var(--line);
+  background: #fff;
+}
+
+.consumer-accordion-item + .consumer-accordion-item {
+  border-top: 1px solid var(--line);
+}
+
+.consumer-accordion-header {
+  margin: 0;
+}
+
+.consumer-accordion-trigger {
+  display: flex;
+  width: 100%;
+  min-height: 30px;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 8px;
+  border: 0;
+  border-radius: 0;
+  color: var(--ink);
+  background: transparent;
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 8px;
+}
+
+.consumer-accordion-trigger [data-easecraft-accordion-indicator]::before {
+  color: var(--signal);
+  content: "+";
+}
+
+.consumer-accordion-trigger[data-state="open"] [data-easecraft-accordion-indicator]::before {
+  content: "\2212";
+}
+
+.consumer-accordion-content {
+  color: var(--muted);
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 8px;
+}
+
+.consumer-accordion-body {
+  padding: 0 8px 9px;
+}
+
 .consumer-scroll-reveal {
   display: flex;
   align-items: center;
