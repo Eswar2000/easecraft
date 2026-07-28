@@ -53,6 +53,11 @@
       "types": "./dist/compositions/onboarding-progress-sequence.d.ts",
       "import": "./dist/compositions/onboarding-progress-sequence.js",
       "default": "./dist/compositions/onboarding-progress-sequence.js"
+    },
+    "./compositions/scroll-driven-article-timeline": {
+      "types": "./dist/compositions/scroll-driven-article-timeline.d.ts",
+      "import": "./dist/compositions/scroll-driven-article-timeline.js",
+      "default": "./dist/compositions/scroll-driven-article-timeline.js"
     }
   },
   "scripts": {

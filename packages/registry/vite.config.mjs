@@ -40,6 +40,12 @@ export default defineConfig({
             import.meta.url,
           ),
         ),
+        "compositions/scroll-driven-article-timeline": fileURLToPath(
+          new URL(
+            "./source/compositions/scroll-driven-article-timeline.package.tsx",
+            import.meta.url,
+          ),
+        ),
       },
       fileName: (_format, entryName) => `${entryName}.js`,
       formats: ["es"],

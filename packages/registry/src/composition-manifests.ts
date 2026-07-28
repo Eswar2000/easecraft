@@ -34,6 +34,7 @@ const filterableWorkGalleryCore = supportFile("filterable-work-gallery-core");
 const mobileNavigationPanelCore = supportFile("mobile-navigation-panel-core");
 const notificationCenterCore = supportFile("notification-center-core");
 const onboardingProgressSequenceCore = supportFile("onboarding-progress-sequence-core");
+const scrollDrivenArticleTimelineCore = supportFile("scroll-driven-article-timeline-core");
 
 export const compositionManifests = defineCompositionManifests(compositionSlugs, componentSlugs, {
   "animated-pricing-comparison": {
@@ -119,5 +120,17 @@ export const compositionManifests = defineCompositionManifests(compositionSlugs,
       compositionFile("onboarding-progress-sequence.package", "onboarding-progress-sequence"),
     ],
     slug: "onboarding-progress-sequence",
+  },
+  "scroll-driven-article-timeline": {
+    componentDependencies: ["scroll-reveal"],
+    copySourceFiles: [
+      scrollDrivenArticleTimelineCore,
+      compositionFile("scroll-driven-article-timeline.copy", "scroll-driven-article-timeline"),
+    ],
+    packageFiles: [
+      scrollDrivenArticleTimelineCore,
+      compositionFile("scroll-driven-article-timeline.package", "scroll-driven-article-timeline"),
+    ],
+    slug: "scroll-driven-article-timeline",
   },
 } satisfies CompositionManifestMap<CompositionSlug, ComponentSlug>);

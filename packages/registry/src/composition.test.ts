@@ -42,6 +42,7 @@ describe("compositionRegistry", () => {
       "onboarding-progress-sequence",
       "mobile-navigation-panel",
       "animated-pricing-comparison",
+      "scroll-driven-article-timeline",
     ]);
     expect(listCompositions()).toBe(compositionRegistry);
     expect(getComposition("command-palette")).toMatchObject({
@@ -86,6 +87,12 @@ describe("compositionRegistry", () => {
       category: "Commerce",
       componentDependencies: ["number-ticker"],
       name: "Animated Pricing Comparison",
+      status: "implemented",
+    });
+    expect(getComposition("scroll-driven-article-timeline")).toMatchObject({
+      category: "Content",
+      componentDependencies: ["scroll-reveal"],
+      name: "Scroll-driven Article Timeline",
       status: "implemented",
     });
     expect(isCompositionSlug("missing-composition")).toBe(false);
@@ -240,6 +247,24 @@ describe("compositionManifests", () => {
         },
       ],
       slug: "mobile-navigation-panel",
+    });
+    expect(compositionManifests["scroll-driven-article-timeline"]).toEqual({
+      componentDependencies: ["scroll-reveal"],
+      copySourceFiles: [
+        compositionFile("scroll-driven-article-timeline-core", "utility"),
+        {
+          ...compositionFile("scroll-driven-article-timeline.copy"),
+          destinationPath: "components/easecraft/compositions/scroll-driven-article-timeline.tsx",
+        },
+      ],
+      packageFiles: [
+        compositionFile("scroll-driven-article-timeline-core", "utility"),
+        {
+          ...compositionFile("scroll-driven-article-timeline.package"),
+          destinationPath: "components/easecraft/compositions/scroll-driven-article-timeline.tsx",
+        },
+      ],
+      slug: "scroll-driven-article-timeline",
     });
   });
 
@@ -423,6 +448,28 @@ describe("getCompositionInstallPlan", () => {
       "components/easecraft/number-ticker.tsx",
       "components/easecraft/compositions/animated-pricing-comparison-core.tsx",
       "components/easecraft/compositions/animated-pricing-comparison.tsx",
+    ]);
+    expect(copySourcePlan.dependencies.npm).toEqual([
+      { name: "animejs", type: "npm", version: "4.5.0" },
+    ]);
+  });
+
+  it("creates package and copy-source Scroll-driven Article Timeline plans", () => {
+    const packagePlan = getCompositionInstallPlan("scroll-driven-article-timeline", "package");
+    const copySourcePlan = getCompositionInstallPlan(
+      "scroll-driven-article-timeline",
+      "copy-source",
+    );
+
+    expect(packagePlan.componentDependencies).toEqual(["scroll-reveal"]);
+    expect(packagePlan.dependencies.npm).toEqual([
+      { name: "easecraft", type: "npm", version: "0.0.0" },
+    ]);
+    expect(copySourcePlan.files.map((file) => file.destinationPath)).toEqual([
+      "components/easecraft/motion-provider.tsx",
+      "components/easecraft/scroll-reveal.tsx",
+      "components/easecraft/compositions/scroll-driven-article-timeline-core.tsx",
+      "components/easecraft/compositions/scroll-driven-article-timeline.tsx",
     ]);
     expect(copySourcePlan.dependencies.npm).toEqual([
       { name: "animejs", type: "npm", version: "4.5.0" },

@@ -270,6 +270,42 @@ export const compositionEntries = defineCompositionRegistry(componentSlugs, [
     status: "implemented",
     tags: ["billing", "commerce", "pricing", "ticker"],
   },
+  {
+    accessibility: {
+      announcement: "polite",
+      focusManagement: false,
+      keyboard: [
+        {
+          behavior: "Moves through article timeline navigation links.",
+          keys: ["Tab", "Shift+Tab"],
+        },
+        { behavior: "Moves to the selected article section.", keys: ["Enter"] },
+      ],
+      notes: [
+        "Uses one labelled article with linked section regions and an ordered navigation landmark.",
+        "Announces meaningful active-section changes once while revealed content remains available after leaving the viewport.",
+      ],
+      pattern: "article-timeline",
+    },
+    category: "Content",
+    componentDependencies: ["scroll-reveal"],
+    description:
+      "Reveal a long-form article once while its timeline tracks the most visible section.",
+    motion: {
+      controlled: true,
+      enter: true,
+      exit: false,
+      intrinsicSize: false,
+      layout: false,
+      reducedMotion: true,
+      replay: false,
+      viewport: true,
+    },
+    name: "Scroll-driven Article Timeline",
+    slug: "scroll-driven-article-timeline",
+    status: "implemented",
+    tags: ["article", "scroll", "timeline", "viewport"],
+  },
 ] as const satisfies readonly CompositionRegistryEntry<ComponentSlug>[]);
 
 export type CompositionSlug = (typeof compositionEntries)[number]["slug"];

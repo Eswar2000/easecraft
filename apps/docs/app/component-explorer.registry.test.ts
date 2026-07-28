@@ -17,6 +17,7 @@ import { FilterableWorkGallery } from "easecraft-registry/compositions/filterabl
 import { MobileNavigationPanel } from "easecraft-registry/compositions/mobile-navigation-panel";
 import { NotificationCenter } from "easecraft-registry/compositions/notification-center";
 import { OnboardingProgressSequence } from "easecraft-registry/compositions/onboarding-progress-sequence";
+import { ScrollDrivenArticleTimeline } from "easecraft-registry/compositions/scroll-driven-article-timeline";
 
 describe("component explorer registry consumption", () => {
   it("provides the categories and nine cards rendered by the explorer", () => {
@@ -80,6 +81,7 @@ describe("component explorer registry consumption", () => {
       "onboarding-progress-sequence",
       "mobile-navigation-panel",
       "animated-pricing-comparison",
+      "scroll-driven-article-timeline",
     ]);
     expect(listCompositions()).toMatchObject([
       {
@@ -115,6 +117,11 @@ describe("component explorer registry consumption", () => {
       {
         componentDependencies: ["number-ticker"],
         name: "Animated Pricing Comparison",
+        status: "implemented",
+      },
+      {
+        componentDependencies: ["scroll-reveal"],
+        name: "Scroll-driven Article Timeline",
         status: "implemented",
       },
     ]);
@@ -158,6 +165,11 @@ describe("component explorer registry consumption", () => {
     expect(pricingPlan.files.at(-1)?.destinationPath).toBe(
       "components/easecraft/compositions/animated-pricing-comparison.tsx",
     );
+
+    const timelinePlan = getCompositionInstallPlan("scroll-driven-article-timeline", "copy-source");
+    expect(timelinePlan.files.at(-1)?.destinationPath).toBe(
+      "components/easecraft/compositions/scroll-driven-article-timeline.tsx",
+    );
   });
 
   it("provides static detail routes and public live-preview exports", () => {
@@ -169,6 +181,7 @@ describe("component explorer registry consumption", () => {
       "/compositions/onboarding-progress-sequence",
       "/compositions/mobile-navigation-panel",
       "/compositions/animated-pricing-comparison",
+      "/compositions/scroll-driven-article-timeline",
     ]);
     expect(typeof CommandPalette).toBe("function");
     expect(typeof ExpandableProjectCard).toBe("function");
@@ -177,5 +190,6 @@ describe("component explorer registry consumption", () => {
     expect(typeof OnboardingProgressSequence).toBe("function");
     expect(typeof MobileNavigationPanel).toBe("function");
     expect(typeof AnimatedPricingComparison).toBe("function");
+    expect(typeof ScrollDrivenArticleTimeline).toBe("function");
   });
 });

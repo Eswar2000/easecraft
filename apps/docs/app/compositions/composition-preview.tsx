@@ -25,6 +25,10 @@ import {
   OnboardingProgressSequence,
   type OnboardingStep,
 } from "easecraft-registry/compositions/onboarding-progress-sequence";
+import {
+  ScrollDrivenArticleTimeline,
+  type ArticleTimelineSection,
+} from "easecraft-registry/compositions/scroll-driven-article-timeline";
 import { useState } from "react";
 import type { CompositionSlug } from "easecraft-registry";
 
@@ -320,6 +324,105 @@ const pricingPlans = [
   },
 ] as const satisfies readonly PricingPlan[];
 
+const timelineSections = [
+  {
+    content: (
+      <>
+        <p>
+          Motion begins as a product decision: what changed, why it matters, and where attention
+          should move next.
+        </p>
+        <p>That brief becomes the constraint every primitive and component must preserve.</p>
+      </>
+    ),
+    date: "January 2026",
+    id: "brief",
+    label: "Brief",
+    media: (
+      <div className="composition-timeline-signal">
+        <span>Principle 01</span>
+        <strong>Meaning before movement.</strong>
+      </div>
+    ),
+    summary: "Frame animation as behavior before choosing an effect.",
+    title: "Write the motion brief",
+  },
+  {
+    content: (
+      <>
+        <p>
+          Scoped Anime.js lifecycles, semantic motion tokens, and reduced-motion resolution form the
+          shared execution layer.
+        </p>
+        <p>
+          Every higher-level interaction inherits cleanup and fallback behavior from this layer.
+        </p>
+      </>
+    ),
+    date: "March 2026",
+    id: "foundation",
+    label: "Foundation",
+    media: (
+      <dl className="composition-timeline-metrics">
+        <div>
+          <dt>Tokens</dt>
+          <dd>04</dd>
+        </div>
+        <div>
+          <dt>Foundations</dt>
+          <dd>05</dd>
+        </div>
+      </dl>
+    ),
+    summary: "Centralize lifecycle, timing, and accessibility decisions.",
+    title: "Build one execution layer",
+  },
+  {
+    content: (
+      <>
+        <p>
+          Nine production-ready components prove text, feedback, layout, overlay, and viewport
+          motion through stable public APIs.
+        </p>
+        <p>Each component ships with focused behavior and integration coverage.</p>
+      </>
+    ),
+    date: "May 2026",
+    id: "components",
+    label: "Components",
+    media: (
+      <div className="composition-timeline-count">
+        <strong>09</strong>
+        <span>Accessible components</span>
+      </div>
+    ),
+    summary: "Turn the foundation into useful, testable interface behavior.",
+    title: "Prove the component system",
+  },
+  {
+    content: (
+      <>
+        <p>
+          Eight copyable compositions now connect metadata, dependency graphs, package exports,
+          source delivery, tests, and live documentation.
+        </p>
+        <p>The registry is ready for copy actions and interactive playground work.</p>
+      </>
+    ),
+    date: "July 2026",
+    id: "registry",
+    label: "Registry",
+    media: (
+      <div className="composition-timeline-signal composition-timeline-signal-final">
+        <span>Milestone 08</span>
+        <strong>The composition catalog is complete.</strong>
+      </div>
+    ),
+    summary: "Deliver realistic patterns through package and copy-source paths.",
+    title: "Complete the composition registry",
+  },
+] as const satisfies readonly ArticleTimelineSection[];
+
 interface CompositionPreviewProps {
   readonly reducedMotion?: boolean;
   readonly slug: CompositionSlug;
@@ -388,7 +491,7 @@ export function CompositionPreview({ reducedMotion = false, slug }: CompositionP
             </div>
             <div>
               <dt>Compositions</dt>
-              <dd>07</dd>
+              <dd>08</dd>
             </div>
           </dl>
         </ExpandableProjectCard>
@@ -505,7 +608,7 @@ export function CompositionPreview({ reducedMotion = false, slug }: CompositionP
             <p>Last destination: {lastDestination}</p>
           </div>
         </div>
-      ) : (
+      ) : slug === "animated-pricing-comparison" ? (
         <div className="composition-pricing-preview">
           <div className="composition-pricing-heading">
             <span>07 / Flexible billing</span>
@@ -537,6 +640,24 @@ export function CompositionPreview({ reducedMotion = false, slug }: CompositionP
             titleClassName="composition-pricing-title"
           />
         </div>
+      ) : (
+        <ScrollDrivenArticleTimeline
+          activeRootMargin="-12% 0px -52% 0px"
+          articleClassName="composition-timeline-article"
+          contentClassName="composition-timeline-content"
+          indexClassName="composition-timeline-index"
+          mediaClassName="composition-timeline-media"
+          navClassName="composition-timeline-nav"
+          navLinkClassName="composition-timeline-nav-link"
+          navListClassName="composition-timeline-nav-list"
+          revealRootMargin="0px 0px -8% 0px"
+          rootClassName="composition-timeline"
+          sectionClassName="composition-timeline-section"
+          sections={timelineSections}
+          statusClassName="composition-timeline-status"
+          summaryClassName="composition-timeline-summary"
+          titleClassName="composition-timeline-title"
+        />
       )}
     </MotionProvider>
   );
