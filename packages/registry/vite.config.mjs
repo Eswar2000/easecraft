@@ -46,6 +46,7 @@ export default defineConfig({
             import.meta.url,
           ),
         ),
+        "source-content": fileURLToPath(new URL("./src/source-content.ts", import.meta.url)),
       },
       fileName: (_format, entryName) => `${entryName}.js`,
       formats: ["es"],

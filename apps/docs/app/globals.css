@@ -1721,9 +1721,16 @@
   margin-bottom: 18px;
 }
 
+.composition-command-block {
+  position: relative;
+  margin-bottom: 14px;
+}
+
 .composition-command-panel pre {
-  margin: 0 0 14px;
+  min-height: 74px;
+  margin: 0;
   padding: 18px;
+  padding-right: 132px;
   overflow-x: auto;
   color: #fff;
   background: var(--ink);
@@ -1733,6 +1740,45 @@
   overflow-wrap: anywhere;
 }
 
+.composition-copy-button {
+  display: inline-flex;
+  min-height: 34px;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 0 9px;
+  border: 1px solid var(--ink);
+  border-radius: 0;
+  color: var(--ink);
+  background: #fff;
+  font-size: 8px;
+  font-weight: 600;
+}
+
+.composition-command-block > .composition-copy-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  border-color: #fff;
+}
+
+.composition-copy-button svg {
+  width: 14px;
+  height: 14px;
+  flex: 0 0 14px;
+  stroke-width: 1.8;
+}
+
+.composition-copy-button:disabled {
+  opacity: 0.62;
+}
+
+.composition-copy-button[data-success="true"] {
+  color: #fff;
+  border-color: #08756c;
+  background: #08756c;
+}
+
 .composition-command-panel p {
   margin: 0;
   color: var(--muted);
@@ -1740,8 +1786,30 @@
   line-height: 1.5;
 }
 
+.composition-command-panel .composition-copy-status {
+  min-height: 18px;
+  margin-top: 12px;
+  color: #08756c;
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 8px;
+  text-transform: uppercase;
+}
+
+.composition-command-panel .composition-copy-status[data-error="true"] {
+  color: var(--signal);
+}
+
+.composition-plan-heading {
+  display: flex;
+  min-height: 36px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
 .composition-plan-panel h3 {
-  margin: 0 0 18px;
+  margin: 0;
   font-family: "IBM Plex Mono", monospace;
   font-size: 10px;
   text-transform: uppercase;
@@ -1763,6 +1831,24 @@
   gap: 5px;
   padding-bottom: 8px;
   border-bottom: 1px solid var(--line);
+}
+
+.composition-file-list li {
+  grid-template-columns: minmax(0, 1fr) auto;
+}
+
+.composition-file-list li > span,
+.composition-file-list li > code {
+  grid-column: 1;
+}
+
+.composition-file-copy-button {
+  width: 32px;
+  min-height: 32px;
+  grid-column: 2;
+  grid-row: 1 / 3;
+  align-self: center;
+  padding: 0;
 }
 
 .composition-file-list span,

@@ -9,6 +9,7 @@ import {
 
 import { CompositionPreview } from "../composition-preview";
 import { CompositionDeliveryPanel } from "./composition-delivery-panel";
+import { getCompositionDeliverySources } from "./composition-source";
 
 interface CompositionPageProps {
   readonly params: Promise<{ readonly slug: string }>;
@@ -43,6 +44,7 @@ export default async function CompositionPage({ params }: CompositionPageProps) 
   const foundations = composition.componentDependencies.map((dependency) =>
     getComponent(dependency),
   );
+  const deliverySources = await getCompositionDeliverySources(composition.slug);
 
   return (
     <div className="site-shell">
@@ -80,7 +82,7 @@ export default async function CompositionPage({ params }: CompositionPageProps) 
         </section>
 
         <div id="delivery">
-          <CompositionDeliveryPanel slug={composition.slug} />
+          <CompositionDeliveryPanel slug={composition.slug} sources={deliverySources} />
         </div>
 
         <section className="composition-doc-band" aria-labelledby="foundation-title">

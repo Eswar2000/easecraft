@@ -58,6 +58,11 @@
       "types": "./dist/compositions/scroll-driven-article-timeline.d.ts",
       "import": "./dist/compositions/scroll-driven-article-timeline.js",
       "default": "./dist/compositions/scroll-driven-article-timeline.js"
+    },
+    "./source-content": {
+      "types": "./dist/source-content.d.ts",
+      "import": "./dist/source-content.js",
+      "default": "./dist/source-content.js"
     }
   },
   "scripts": {
