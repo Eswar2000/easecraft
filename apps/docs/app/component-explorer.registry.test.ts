@@ -65,11 +65,16 @@ describe("component explorer registry consumption", () => {
   });
 
   it("consumes the Command Palette proving composition from the public registry API", () => {
-    expect(compositionSlugs).toEqual(["command-palette"]);
+    expect(compositionSlugs).toEqual(["command-palette", "expandable-project-card"]);
     expect(listCompositions()).toMatchObject([
       {
         componentDependencies: ["motion-dialog"],
         name: "Command Palette",
+        status: "implemented",
+      },
+      {
+        componentDependencies: ["animated-accordion"],
+        name: "Expandable Project Card",
         status: "implemented",
       },
     ]);
@@ -79,6 +84,11 @@ describe("component explorer registry consumption", () => {
     expect(getInstallCommand(packagePlan)).toBe("pnpm add easecraft@0.0.0");
     expect(copySourcePlan.files.at(-1)?.destinationPath).toBe(
       "components/easecraft/compositions/command-palette.tsx",
+    );
+
+    const projectCardPlan = getCompositionInstallPlan("expandable-project-card", "copy-source");
+    expect(projectCardPlan.files.at(-1)?.destinationPath).toBe(
+      "components/easecraft/compositions/expandable-project-card.tsx",
     );
   });
 });

@@ -28,6 +28,7 @@ function supportFile(name: string): CopySourceFile {
 const componentSlugs = componentEntries.map((component) => component.slug);
 const compositionSlugs = compositionEntries.map((composition) => composition.slug);
 const commandPaletteCore = supportFile("command-palette-core");
+const expandableProjectCardCore = supportFile("expandable-project-card-core");
 
 export const compositionManifests = defineCompositionManifests(compositionSlugs, componentSlugs, {
   "command-palette": {
@@ -41,5 +42,17 @@ export const compositionManifests = defineCompositionManifests(compositionSlugs,
       compositionFile("command-palette.package", "command-palette"),
     ],
     slug: "command-palette",
+  },
+  "expandable-project-card": {
+    componentDependencies: ["animated-accordion"],
+    copySourceFiles: [
+      expandableProjectCardCore,
+      compositionFile("expandable-project-card.copy", "expandable-project-card"),
+    ],
+    packageFiles: [
+      expandableProjectCardCore,
+      compositionFile("expandable-project-card.package", "expandable-project-card"),
+    ],
+    slug: "expandable-project-card",
   },
 } satisfies CompositionManifestMap<CompositionSlug, ComponentSlug>);

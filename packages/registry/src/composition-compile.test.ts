@@ -12,15 +12,20 @@ import {
 } from "typescript";
 import { afterEach, describe, expect, it } from "vitest";
 
-import { getCompositionInstallPlan, type RegistryDeliveryMode } from "./index.js";
+import {
+  compositionSlugs,
+  getCompositionInstallPlan,
+  type CompositionSlug,
+  type RegistryDeliveryMode,
+} from "./index.js";
 
 const registryRoot = fileURLToPath(new URL("../", import.meta.url));
 const workspaceRoot = fileURLToPath(new URL("../../../", import.meta.url));
 const temporaryDirectories: string[] = [];
 
-function materializeAndCompile(mode: RegistryDeliveryMode) {
-  const plan = getCompositionInstallPlan("command-palette", mode);
-  const temporaryDirectory = mkdtempSync(resolve(registryRoot, ".tmp-command-palette-"));
+function materializeAndCompile(slug: CompositionSlug, mode: RegistryDeliveryMode) {
+  const plan = getCompositionInstallPlan(slug, mode);
+  const temporaryDirectory = mkdtempSync(resolve(registryRoot, `.tmp-${slug}-`));
   temporaryDirectories.push(temporaryDirectory);
 
   const rootNames = plan.files.map((file) => {
@@ -57,12 +62,14 @@ afterEach(() => {
   });
 });
 
-describe("Command Palette generated source", () => {
-  it("compiles with package-backed component imports", () => {
-    expect(materializeAndCompile("package")).toEqual([]);
-  });
+describe("composition generated source", () => {
+  compositionSlugs.forEach((slug) => {
+    it(`${slug} compiles with package-backed component imports`, () => {
+      expect(materializeAndCompile(slug, "package")).toEqual([]);
+    });
 
-  it("compiles with copied component source", () => {
-    expect(materializeAndCompile("copy-source")).toEqual([]);
+    it(`${slug} compiles with copied component source`, () => {
+      expect(materializeAndCompile(slug, "copy-source")).toEqual([]);
+    });
   });
 });

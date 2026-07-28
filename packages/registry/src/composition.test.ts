@@ -26,7 +26,7 @@ function compositionFile(name: string, role: CopySourceFile["role"] = "compositi
 }
 
 describe("compositionRegistry", () => {
-  it("defines the Command Palette proving composition", () => {
+  it("defines the completed compositions in registry order", () => {
     expect(compositionCategories).toEqual([
       "Navigation",
       "Commerce",
@@ -34,7 +34,7 @@ describe("compositionRegistry", () => {
       "Content",
       "Workflow",
     ]);
-    expect(compositionSlugs).toEqual(["command-palette"]);
+    expect(compositionSlugs).toEqual(["command-palette", "expandable-project-card"]);
     expect(listCompositions()).toBe(compositionRegistry);
     expect(getComposition("command-palette")).toMatchObject({
       category: "Navigation",
@@ -44,6 +44,12 @@ describe("compositionRegistry", () => {
     });
     expect(findComposition("missing-composition")).toBeUndefined();
     expect(isCompositionSlug("command-palette")).toBe(true);
+    expect(getComposition("expandable-project-card")).toMatchObject({
+      category: "Content",
+      componentDependencies: ["animated-accordion"],
+      name: "Expandable Project Card",
+      status: "implemented",
+    });
     expect(isCompositionSlug("missing-composition")).toBe(false);
   });
 
@@ -88,6 +94,24 @@ describe("compositionManifests", () => {
         },
       ],
       slug: "command-palette",
+    });
+    expect(compositionManifests["expandable-project-card"]).toEqual({
+      componentDependencies: ["animated-accordion"],
+      copySourceFiles: [
+        compositionFile("expandable-project-card-core", "utility"),
+        {
+          ...compositionFile("expandable-project-card.copy"),
+          destinationPath: "components/easecraft/compositions/expandable-project-card.tsx",
+        },
+      ],
+      packageFiles: [
+        compositionFile("expandable-project-card-core", "utility"),
+        {
+          ...compositionFile("expandable-project-card.package"),
+          destinationPath: "components/easecraft/compositions/expandable-project-card.tsx",
+        },
+      ],
+      slug: "expandable-project-card",
     });
   });
 
@@ -154,5 +178,25 @@ describe("getCompositionInstallPlan", () => {
     expect(getInstallCommand(plan)).toBe(
       "pnpm add @radix-ui/react-dialog@1.1.23 animejs@4.5.0 easecraft-tokens@0.0.0",
     );
+  });
+
+  it("creates package and copy-source Expandable Project Card plans", () => {
+    const packagePlan = getCompositionInstallPlan("expandable-project-card", "package");
+    const copySourcePlan = getCompositionInstallPlan("expandable-project-card", "copy-source");
+
+    expect(packagePlan.componentDependencies).toEqual(["animated-accordion"]);
+    expect(packagePlan.dependencies.npm).toEqual([
+      { name: "easecraft", type: "npm", version: "0.0.0" },
+    ]);
+    expect(copySourcePlan.files.map((file) => file.destinationPath)).toEqual([
+      "components/easecraft/motion-provider.tsx",
+      "components/easecraft/animated-accordion.tsx",
+      "components/easecraft/compositions/expandable-project-card-core.tsx",
+      "components/easecraft/compositions/expandable-project-card.tsx",
+    ]);
+    expect(copySourcePlan.dependencies.npm).toEqual([
+      { name: "@radix-ui/react-accordion", type: "npm", version: "1.2.20" },
+      { name: "animejs", type: "npm", version: "4.5.0" },
+    ]);
   });
 });

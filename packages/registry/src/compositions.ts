@@ -42,6 +42,41 @@ export const compositionEntries = defineCompositionRegistry(componentSlugs, [
     status: "implemented",
     tags: ["command", "dialog", "keyboard", "search"],
   },
+  {
+    accessibility: {
+      announcement: "none",
+      focusManagement: true,
+      keyboard: [
+        { behavior: "Expands or collapses the project details.", keys: ["Enter", "Space"] },
+        {
+          behavior: "Moves through links and actions inside expanded details.",
+          keys: ["Tab", "Shift+Tab"],
+        },
+      ],
+      notes: [
+        "Uses an article containing one linked accordion heading, trigger, and region.",
+        "Programmatic collapse returns focus from project actions to the disclosure trigger.",
+      ],
+      pattern: "article-disclosure",
+    },
+    category: "Content",
+    componentDependencies: ["animated-accordion"],
+    description: "Reveal project details and actions inside an accessible, variable-height card.",
+    motion: {
+      controlled: true,
+      enter: true,
+      exit: true,
+      intrinsicSize: true,
+      layout: false,
+      reducedMotion: true,
+      replay: true,
+      viewport: false,
+    },
+    name: "Expandable Project Card",
+    slug: "expandable-project-card",
+    status: "implemented",
+    tags: ["accordion", "card", "content", "project"],
+  },
 ] as const satisfies readonly CompositionRegistryEntry<ComponentSlug>[]);
 
 export type CompositionSlug = (typeof compositionEntries)[number]["slug"];
