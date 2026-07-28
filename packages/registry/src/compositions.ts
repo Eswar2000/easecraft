@@ -77,6 +77,46 @@ export const compositionEntries = defineCompositionRegistry(componentSlugs, [
     status: "implemented",
     tags: ["accordion", "card", "content", "project"],
   },
+  {
+    accessibility: {
+      announcement: "configurable",
+      focusManagement: true,
+      keyboard: [
+        {
+          behavior: "Moves through center controls, feed items, and toast actions.",
+          keys: ["Tab", "Shift+Tab"],
+        },
+        {
+          behavior: "Activates mark-read, clear, and notification actions.",
+          keys: ["Enter", "Space"],
+        },
+        { behavior: "Moves focus to the transient notification viewport.", keys: ["F8"] },
+        { behavior: "Dismisses the active transient notification.", keys: ["Escape"] },
+      ],
+      notes: [
+        "Keeps persistent notification history separate from transient polite or assertive announcements.",
+        "Delegates pausable timers, swipe dismissal, queue limits, and retained exits to ToastStack.",
+      ],
+      pattern: "notification-center",
+    },
+    category: "Feedback",
+    componentDependencies: ["toast-stack"],
+    description: "Manage persistent unread history alongside queued, pausable live notifications.",
+    motion: {
+      controlled: true,
+      enter: true,
+      exit: true,
+      intrinsicSize: false,
+      layout: true,
+      reducedMotion: true,
+      replay: true,
+      viewport: false,
+    },
+    name: "Notification Center",
+    slug: "notification-center",
+    status: "implemented",
+    tags: ["feedback", "live-region", "notifications", "toast"],
+  },
 ] as const satisfies readonly CompositionRegistryEntry<ComponentSlug>[]);
 
 export type CompositionSlug = (typeof compositionEntries)[number]["slug"];

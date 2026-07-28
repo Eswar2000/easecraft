@@ -3,6 +3,10 @@
 import { MotionProvider } from "easecraft";
 import { CommandPalette } from "easecraft-registry/compositions/command-palette";
 import { ExpandableProjectCard } from "easecraft-registry/compositions/expandable-project-card";
+import {
+  NotificationCenter,
+  type NotificationCenterItem,
+} from "easecraft-registry/compositions/notification-center";
 import { useState } from "react";
 import type { CompositionSlug } from "easecraft-registry";
 
@@ -30,6 +34,30 @@ const previewProject = {
   title: "Easecraft",
 } as const;
 
+const previewNotifications = [
+  {
+    createdAt: "Now",
+    description: "Composition docs are available locally.",
+    duration: Infinity,
+    id: "docs",
+    title: "Preview ready",
+  },
+  {
+    createdAt: "4m",
+    description: "Keyboard checks passed.",
+    duration: Infinity,
+    id: "access",
+    priority: "assertive",
+    title: "Accessibility verified",
+  },
+  {
+    createdAt: "1h",
+    id: "build",
+    read: true,
+    title: "Production build complete",
+  },
+] as const satisfies readonly NotificationCenterItem[];
+
 interface CompositionPreviewProps {
   readonly reducedMotion?: boolean;
   readonly slug: CompositionSlug;
@@ -37,6 +65,8 @@ interface CompositionPreviewProps {
 
 export function CompositionPreview({ reducedMotion = false, slug }: CompositionPreviewProps) {
   const [lastCommand, setLastCommand] = useState("No command selected");
+  const [notifications, setNotifications] =
+    useState<readonly NotificationCenterItem[]>(previewNotifications);
 
   return (
     <MotionProvider reducedMotion={reducedMotion ? "always" : "never"}>
@@ -66,7 +96,7 @@ export function CompositionPreview({ reducedMotion = false, slug }: CompositionP
             }
           />
         </div>
-      ) : (
+      ) : slug === "expandable-project-card" ? (
         <ExpandableProjectCard
           actions={
             <div className="composition-project-actions">
@@ -93,10 +123,29 @@ export function CompositionPreview({ reducedMotion = false, slug }: CompositionP
             </div>
             <div>
               <dt>Compositions</dt>
-              <dd>02</dd>
+              <dd>03</dd>
             </div>
           </dl>
         </ExpandableProjectCard>
+      ) : (
+        <NotificationCenter
+          actionClassName="composition-notification-action"
+          centerClassName="composition-notification-center"
+          closeClassName="composition-notification-close"
+          contentClassName="composition-notification-toast"
+          controlsClassName="composition-notification-controls"
+          countClassName="composition-notification-count"
+          duration={Infinity}
+          emptyClassName="composition-notification-empty"
+          headerClassName="composition-notification-header"
+          itemClassName="composition-notification-item"
+          items={notifications}
+          listClassName="composition-notification-list"
+          onItemsChange={setNotifications}
+          toastClassName="composition-notification-toast-item"
+          viewportClassName="composition-notification-viewport"
+          viewportStyle={{ inset: "auto", position: "relative", width: "100%" }}
+        />
       )}
     </MotionProvider>
   );

@@ -12,6 +12,7 @@ import {
 } from "easecraft-registry";
 import { CommandPalette } from "easecraft-registry/compositions/command-palette";
 import { ExpandableProjectCard } from "easecraft-registry/compositions/expandable-project-card";
+import { NotificationCenter } from "easecraft-registry/compositions/notification-center";
 
 describe("component explorer registry consumption", () => {
   it("provides the categories and nine cards rendered by the explorer", () => {
@@ -66,8 +67,12 @@ describe("component explorer registry consumption", () => {
     });
   });
 
-  it("consumes the Command Palette proving composition from the public registry API", () => {
-    expect(compositionSlugs).toEqual(["command-palette", "expandable-project-card"]);
+  it("consumes completed compositions from the public registry API", () => {
+    expect(compositionSlugs).toEqual([
+      "command-palette",
+      "expandable-project-card",
+      "notification-center",
+    ]);
     expect(listCompositions()).toMatchObject([
       {
         componentDependencies: ["motion-dialog"],
@@ -77,6 +82,11 @@ describe("component explorer registry consumption", () => {
       {
         componentDependencies: ["animated-accordion"],
         name: "Expandable Project Card",
+        status: "implemented",
+      },
+      {
+        componentDependencies: ["toast-stack"],
+        name: "Notification Center",
         status: "implemented",
       },
     ]);
@@ -92,14 +102,21 @@ describe("component explorer registry consumption", () => {
     expect(projectCardPlan.files.at(-1)?.destinationPath).toBe(
       "components/easecraft/compositions/expandable-project-card.tsx",
     );
+
+    const notificationPlan = getCompositionInstallPlan("notification-center", "copy-source");
+    expect(notificationPlan.files.at(-1)?.destinationPath).toBe(
+      "components/easecraft/compositions/notification-center.tsx",
+    );
   });
 
   it("provides static detail routes and public live-preview exports", () => {
     expect(compositionSlugs.map((slug) => `/compositions/${slug}`)).toEqual([
       "/compositions/command-palette",
       "/compositions/expandable-project-card",
+      "/compositions/notification-center",
     ]);
     expect(typeof CommandPalette).toBe("function");
     expect(typeof ExpandableProjectCard).toBe("function");
+    expect(typeof NotificationCenter).toBe("function");
   });
 });

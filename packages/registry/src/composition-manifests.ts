@@ -29,6 +29,7 @@ const componentSlugs = componentEntries.map((component) => component.slug);
 const compositionSlugs = compositionEntries.map((composition) => composition.slug);
 const commandPaletteCore = supportFile("command-palette-core");
 const expandableProjectCardCore = supportFile("expandable-project-card-core");
+const notificationCenterCore = supportFile("notification-center-core");
 
 export const compositionManifests = defineCompositionManifests(compositionSlugs, componentSlugs, {
   "command-palette": {
@@ -54,5 +55,17 @@ export const compositionManifests = defineCompositionManifests(compositionSlugs,
       compositionFile("expandable-project-card.package", "expandable-project-card"),
     ],
     slug: "expandable-project-card",
+  },
+  "notification-center": {
+    componentDependencies: ["toast-stack"],
+    copySourceFiles: [
+      notificationCenterCore,
+      compositionFile("notification-center.copy", "notification-center"),
+    ],
+    packageFiles: [
+      notificationCenterCore,
+      compositionFile("notification-center.package", "notification-center"),
+    ],
+    slug: "notification-center",
   },
 } satisfies CompositionManifestMap<CompositionSlug, ComponentSlug>);

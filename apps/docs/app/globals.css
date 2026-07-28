@@ -363,6 +363,171 @@
   background: var(--ink);
 }
 
+.composition-notification-center {
+  min-width: 0;
+  border: 1px solid var(--ink);
+  background: #fff;
+  box-shadow: 10px 10px 0 rgb(240 68 33 / 32%);
+}
+
+.composition-notification-header {
+  display: flex;
+  min-height: 82px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 16px 18px;
+  border-bottom: 1px solid var(--ink);
+}
+
+.composition-notification-header h2 {
+  font-size: 19px;
+}
+
+.composition-notification-count {
+  display: block;
+  margin-top: 5px;
+  color: var(--signal);
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 8px;
+  text-transform: uppercase;
+}
+
+.composition-notification-controls {
+  display: flex;
+  gap: 6px;
+}
+
+.composition-notification-controls button {
+  min-height: 32px;
+  padding: 0 9px;
+  border: 1px solid var(--line);
+  border-radius: 0;
+  background: #fff;
+  font-size: 9px;
+}
+
+.composition-notification-controls button:last-child {
+  color: #fff;
+  background: var(--ink);
+}
+
+.composition-notification-controls button:disabled {
+  opacity: 0.42;
+  cursor: not-allowed;
+}
+
+.composition-notification-list {
+  display: grid;
+  max-height: 250px;
+  margin: 0;
+  padding: 0;
+  overflow-y: auto;
+  list-style: none;
+}
+
+.composition-notification-item {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 14px;
+  min-width: 0;
+  align-items: center;
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--line);
+  background: rgb(244 210 37 / 8%);
+}
+
+.composition-notification-item[data-read="true"] {
+  background: #fff;
+}
+
+.composition-notification-item strong {
+  font-size: 13px;
+}
+
+.composition-notification-item p {
+  margin: 4px 0;
+  color: var(--muted);
+  font-size: 10px;
+  line-height: 1.35;
+}
+
+.composition-notification-item small {
+  color: var(--muted);
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 8px;
+}
+
+.composition-notification-item > button {
+  width: 60px;
+  min-height: 30px;
+  padding: 0;
+  border: 1px solid var(--line);
+  border-radius: 0;
+  background: #fff;
+  font-size: 8px;
+  text-transform: uppercase;
+}
+
+.composition-notification-item > button[aria-pressed="false"] {
+  color: #fff;
+  background: var(--signal);
+}
+
+.composition-notification-empty {
+  margin: 0;
+  padding: 38px 18px;
+  color: var(--muted);
+  text-align: center;
+}
+
+.composition-notification-viewport {
+  display: grid !important;
+  gap: 7px !important;
+  max-width: none !important;
+  margin: 0 !important;
+  padding: 10px !important;
+  border-top: 1px solid var(--ink);
+}
+
+.composition-notification-toast {
+  --easecraft-toast-background: #171715;
+  --easecraft-toast-border: #171715;
+  --easecraft-toast-foreground: #fff;
+  --easecraft-toast-padding: 11px 42px 11px 12px;
+  --easecraft-toast-shadow: none;
+
+  position: relative;
+  border-radius: 0 !important;
+  font-size: 10px;
+}
+
+.composition-notification-close {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 26px;
+  min-height: 26px;
+  padding: 0;
+  color: #fff;
+  background: transparent;
+  font-size: 0;
+}
+
+.composition-notification-close::before {
+  font-size: 15px;
+  content: "\00d7";
+}
+
+.composition-notification-action {
+  width: fit-content;
+  min-height: 28px;
+  padding: 0 9px;
+  color: var(--ink);
+  background: var(--yellow);
+  font-size: 9px;
+}
+
 .composition-detail-main {
   display: grid;
   gap: 30px;
@@ -646,6 +811,23 @@
 
   .composition-project-card {
     box-shadow: 6px 6px 0 rgb(0 194 209 / 38%);
+  }
+
+  .composition-notification-center {
+    box-shadow: 6px 6px 0 rgb(240 68 33 / 32%);
+  }
+
+  .composition-notification-header {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .composition-notification-controls button {
+    flex: 1;
+  }
+
+  .composition-notification-item {
+    padding: 13px;
   }
 
   .composition-project-trigger {

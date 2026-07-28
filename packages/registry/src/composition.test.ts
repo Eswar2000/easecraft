@@ -34,7 +34,11 @@ describe("compositionRegistry", () => {
       "Content",
       "Workflow",
     ]);
-    expect(compositionSlugs).toEqual(["command-palette", "expandable-project-card"]);
+    expect(compositionSlugs).toEqual([
+      "command-palette",
+      "expandable-project-card",
+      "notification-center",
+    ]);
     expect(listCompositions()).toBe(compositionRegistry);
     expect(getComposition("command-palette")).toMatchObject({
       category: "Navigation",
@@ -48,6 +52,12 @@ describe("compositionRegistry", () => {
       category: "Content",
       componentDependencies: ["animated-accordion"],
       name: "Expandable Project Card",
+      status: "implemented",
+    });
+    expect(getComposition("notification-center")).toMatchObject({
+      category: "Feedback",
+      componentDependencies: ["toast-stack"],
+      name: "Notification Center",
       status: "implemented",
     });
     expect(isCompositionSlug("missing-composition")).toBe(false);
@@ -112,6 +122,24 @@ describe("compositionManifests", () => {
         },
       ],
       slug: "expandable-project-card",
+    });
+    expect(compositionManifests["notification-center"]).toEqual({
+      componentDependencies: ["toast-stack"],
+      copySourceFiles: [
+        compositionFile("notification-center-core", "utility"),
+        {
+          ...compositionFile("notification-center.copy"),
+          destinationPath: "components/easecraft/compositions/notification-center.tsx",
+        },
+      ],
+      packageFiles: [
+        compositionFile("notification-center-core", "utility"),
+        {
+          ...compositionFile("notification-center.package"),
+          destinationPath: "components/easecraft/compositions/notification-center.tsx",
+        },
+      ],
+      slug: "notification-center",
     });
   });
 
@@ -196,6 +224,26 @@ describe("getCompositionInstallPlan", () => {
     ]);
     expect(copySourcePlan.dependencies.npm).toEqual([
       { name: "@radix-ui/react-accordion", type: "npm", version: "1.2.20" },
+      { name: "animejs", type: "npm", version: "4.5.0" },
+    ]);
+  });
+
+  it("creates package and copy-source Notification Center plans", () => {
+    const packagePlan = getCompositionInstallPlan("notification-center", "package");
+    const copySourcePlan = getCompositionInstallPlan("notification-center", "copy-source");
+
+    expect(packagePlan.componentDependencies).toEqual(["toast-stack"]);
+    expect(packagePlan.dependencies.npm).toEqual([
+      { name: "easecraft", type: "npm", version: "0.0.0" },
+    ]);
+    expect(copySourcePlan.files.map((file) => file.destinationPath)).toEqual([
+      "components/easecraft/motion-provider.tsx",
+      "components/easecraft/toast-stack.tsx",
+      "components/easecraft/compositions/notification-center-core.tsx",
+      "components/easecraft/compositions/notification-center.tsx",
+    ]);
+    expect(copySourcePlan.dependencies.npm).toEqual([
+      { name: "@radix-ui/react-toast", type: "npm", version: "1.2.23" },
       { name: "animejs", type: "npm", version: "4.5.0" },
     ]);
   });
