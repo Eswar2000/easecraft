@@ -6,7 +6,7 @@ import dts from "vite-plugin-dts";
 export default defineConfig({
   plugins: [
     dts({
-      exclude: ["src/**/*.test.ts"],
+      exclude: ["src/**/*.test.ts", "src/**/*.test.tsx"],
       include: ["src"],
       insertTypesEntry: true,
       tsconfigPath: "./tsconfig.json",

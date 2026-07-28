@@ -1,4 +1,5 @@
 import { componentEntries, type ComponentSlug } from "./components.js";
+import { compositionEntries, type CompositionSlug } from "./compositions.js";
 import {
   defineComponentRegistry,
   type ComponentCategory,
@@ -6,17 +7,25 @@ import {
 } from "./schema.js";
 
 export const componentRegistry = defineComponentRegistry(componentEntries);
+export const compositionRegistry = compositionEntries;
 
 export type RegisteredComponent = Omit<ComponentRegistryEntry, "slug"> & {
   readonly slug: ComponentSlug;
 };
+export type RegisteredComposition = (typeof compositionRegistry)[number];
 
 export const componentSlugs = componentRegistry.map(
   (component) => component.slug,
 ) as readonly ComponentSlug[];
+export const compositionSlugs = compositionRegistry.map(
+  (composition) => composition.slug,
+) as readonly CompositionSlug[];
 
 const componentBySlug = new Map<string, RegisteredComponent>(
   componentRegistry.map((component) => [component.slug, component]),
+);
+const compositionBySlug = new Map<string, RegisteredComposition>(
+  compositionRegistry.map((composition) => [composition.slug, composition]),
 );
 
 export function isComponentSlug(value: string): value is ComponentSlug {
@@ -47,9 +56,34 @@ export function listComponentsByCategory(
   return componentRegistry.filter((component) => component.category === category);
 }
 
+export function isCompositionSlug(value: string): value is CompositionSlug {
+  return compositionBySlug.has(value);
+}
+
+export function findComposition(value: string): RegisteredComposition | undefined {
+  return compositionBySlug.get(value);
+}
+
+export function getComposition(slug: CompositionSlug): RegisteredComposition {
+  const composition = findComposition(slug);
+
+  if (!composition) {
+    throw new Error(`Unknown Easecraft composition: ${slug}`);
+  }
+
+  return composition;
+}
+
+export function listCompositions(): readonly RegisteredComposition[] {
+  return compositionRegistry;
+}
+
 export {
   componentCategories,
+  compositionCategories,
   defineComponentRegistry,
+  defineCompositionManifests,
+  defineCompositionRegistry,
   defineCopySourceManifests,
   registryDeliveryModes,
   registryPackageManagers,
@@ -65,17 +99,27 @@ export {
   type ComponentSourceFile,
   type ComponentSourceRole,
   type ComponentStatus,
+  type CompositionCategory,
+  type CompositionInstallPlan,
+  type CompositionManifest,
+  type CompositionManifestMap,
+  type CompositionRegistryEntry,
   type CopySourceFile,
   type CopySourceFileRole,
+  type CopySourceCompositionInstallPlan,
   type CopySourceInstallPlan,
   type CopySourceManifest,
   type CopySourceManifestMap,
   type InstallDependencyGroups,
   type PackageInstallPlan,
+  type PackageCompositionInstallPlan,
   type RegistryDeliveryMode,
+  type RegistryInstallPlan,
   type RegistryPackageManager,
 } from "./schema.js";
 
-export { getInstallCommand, getInstallPlan } from "./install-plan.js";
+export { compositionManifests } from "./composition-manifests.js";
+export { getCompositionInstallPlan, getInstallCommand, getInstallPlan } from "./install-plan.js";
 export { copySourceManifests } from "./manifests.js";
 export type { ComponentSlug } from "./components.js";
+export type { CompositionSlug } from "./compositions.js";

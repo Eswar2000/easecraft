@@ -1,13 +1,19 @@
 import { componentEntries, type ComponentSlug } from "./components.js";
+import { compositionManifests } from "./composition-manifests.js";
+import { compositionEntries, type CompositionSlug } from "./compositions.js";
 import { copySourceManifests } from "./manifests.js";
 import type {
   ComponentDependency,
   ComponentInstallPlan,
+  CompositionInstallPlan,
   CopySourceFile,
+  CopySourceCompositionInstallPlan,
   CopySourceInstallPlan,
   InstallDependencyGroups,
+  PackageCompositionInstallPlan,
   PackageInstallPlan,
   RegistryDeliveryMode,
+  RegistryInstallPlan,
   RegistryPackageManager,
 } from "./schema.js";
 
@@ -18,6 +24,9 @@ const easecraftPackage: ComponentDependency = {
 };
 
 const componentBySlug = new Map(componentEntries.map((component) => [component.slug, component]));
+const compositionBySlug = new Map(
+  compositionEntries.map((composition) => [composition.slug, composition]),
+);
 
 function resolveRegistryDependencies(slug: ComponentSlug): readonly ComponentSlug[] {
   const resolved: ComponentSlug[] = [];
@@ -89,6 +98,30 @@ function resolveCopySourceFiles(
   return [...filesByDestination.values()];
 }
 
+function mergeFiles(fileGroups: readonly (readonly CopySourceFile[])[]): readonly CopySourceFile[] {
+  const filesByDestination = new Map<string, CopySourceFile>();
+
+  fileGroups.forEach((files) => {
+    files.forEach((file) => {
+      const existing = filesByDestination.get(file.destinationPath);
+
+      if (existing && existing.sourcePath !== file.sourcePath) {
+        throw new Error(
+          `Install plan destination collision: ${file.destinationPath} maps to both ${existing.sourcePath} and ${file.sourcePath}.`,
+        );
+      }
+
+      filesByDestination.set(file.destinationPath, file);
+    });
+  });
+
+  return [...filesByDestination.values()];
+}
+
+function flattenDependencies(groups: InstallDependencyGroups): readonly ComponentDependency[] {
+  return [...groups.npm, ...groups.peer, ...groups.workspace];
+}
+
 function getComponentDependencies(slugs: readonly ComponentSlug[]): readonly ComponentDependency[] {
   return slugs.flatMap((slug) => {
     const component = componentBySlug.get(slug);
@@ -147,12 +180,84 @@ export function getInstallPlan(
   return mode === "package" ? getPackageInstallPlan(slug) : getCopySourceInstallPlan(slug);
 }
 
+function getPackageCompositionInstallPlan(
+  slug: CompositionSlug,
+): PackageCompositionInstallPlan<CompositionSlug, ComponentSlug> {
+  const composition = compositionBySlug.get(slug);
+
+  if (!composition) {
+    throw new Error(`Unknown Easecraft composition: ${slug}`);
+  }
+
+  const componentPlans = composition.componentDependencies.map((dependency) =>
+    getPackageInstallPlan(dependency),
+  );
+
+  return {
+    componentDependencies: composition.componentDependencies,
+    dependencies: groupDependencies(
+      componentPlans.flatMap((plan) => flattenDependencies(plan.dependencies)),
+    ),
+    files: compositionManifests[slug].packageFiles,
+    mode: "package",
+    slug,
+  };
+}
+
+function getCopySourceCompositionInstallPlan(
+  slug: CompositionSlug,
+): CopySourceCompositionInstallPlan<CompositionSlug, ComponentSlug> {
+  const composition = compositionBySlug.get(slug);
+
+  if (!composition) {
+    throw new Error(`Unknown Easecraft composition: ${slug}`);
+  }
+
+  const componentPlans = composition.componentDependencies.map((dependency) =>
+    getCopySourceInstallPlan(dependency),
+  );
+
+  return {
+    componentDependencies: composition.componentDependencies,
+    dependencies: groupDependencies(
+      componentPlans.flatMap((plan) => flattenDependencies(plan.dependencies)),
+    ),
+    files: mergeFiles([
+      ...componentPlans.map((plan) => plan.files),
+      compositionManifests[slug].copySourceFiles,
+    ]),
+    mode: "copy-source",
+    slug,
+  };
+}
+
+export function getCompositionInstallPlan(
+  slug: CompositionSlug,
+  mode: "package",
+): PackageCompositionInstallPlan<CompositionSlug, ComponentSlug>;
+export function getCompositionInstallPlan(
+  slug: CompositionSlug,
+  mode: "copy-source",
+): CopySourceCompositionInstallPlan<CompositionSlug, ComponentSlug>;
+export function getCompositionInstallPlan(
+  slug: CompositionSlug,
+  mode: RegistryDeliveryMode,
+): CompositionInstallPlan<CompositionSlug, ComponentSlug>;
+export function getCompositionInstallPlan(
+  slug: CompositionSlug,
+  mode: RegistryDeliveryMode,
+): CompositionInstallPlan<CompositionSlug, ComponentSlug> {
+  return mode === "package"
+    ? getPackageCompositionInstallPlan(slug)
+    : getCopySourceCompositionInstallPlan(slug);
+}
+
 function dependencySpecifier(dependency: ComponentDependency): string {
   return `${dependency.name}@${dependency.version}`;
 }
 
 export function getInstallCommand(
-  plan: ComponentInstallPlan<ComponentSlug>,
+  plan: RegistryInstallPlan<ComponentSlug, CompositionSlug>,
   packageManager: RegistryPackageManager = "pnpm",
 ): string {
   const packages = [...plan.dependencies.npm, ...plan.dependencies.workspace].map(

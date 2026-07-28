@@ -1,3 +1,3 @@
-import config from "easecraft-eslint-config";
+import config from "easecraft-eslint-config/react";
 
 export default config;

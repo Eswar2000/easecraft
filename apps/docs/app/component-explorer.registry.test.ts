@@ -3,8 +3,11 @@ import { describe, expect, it } from "vitest";
 import {
   componentCategories,
   componentSlugs,
+  compositionSlugs,
+  getCompositionInstallPlan,
   getInstallCommand,
   getInstallPlan,
+  listCompositions,
   listComponents,
 } from "easecraft-registry";
 
@@ -59,5 +62,23 @@ describe("component explorer registry consumption", () => {
       expect(copySourcePlan.files.at(-1)?.destinationPath).toBe(`components/easecraft/${slug}.tsx`);
       expect(getInstallCommand(copySourcePlan)).toMatch(/^pnpm add /u);
     });
+  });
+
+  it("consumes the Command Palette proving composition from the public registry API", () => {
+    expect(compositionSlugs).toEqual(["command-palette"]);
+    expect(listCompositions()).toMatchObject([
+      {
+        componentDependencies: ["motion-dialog"],
+        name: "Command Palette",
+        status: "implemented",
+      },
+    ]);
+
+    const packagePlan = getCompositionInstallPlan("command-palette", "package");
+    const copySourcePlan = getCompositionInstallPlan("command-palette", "copy-source");
+    expect(getInstallCommand(packagePlan)).toBe("pnpm add easecraft@0.0.0");
+    expect(copySourcePlan.files.at(-1)?.destinationPath).toBe(
+      "components/easecraft/compositions/command-palette.tsx",
+    );
   });
 });

@@ -1,13 +1,21 @@
 export const componentCategories = ["Text", "Layout", "Overlay", "Feedback"] as const;
+export const compositionCategories = [
+  "Navigation",
+  "Commerce",
+  "Feedback",
+  "Content",
+  "Workflow",
+] as const;
 export const registryDeliveryModes = ["package", "copy-source"] as const;
 export const registryPackageManagers = ["npm", "pnpm", "yarn", "bun"] as const;
 
 export type ComponentCategory = (typeof componentCategories)[number];
+export type CompositionCategory = (typeof compositionCategories)[number];
 export type ComponentStatus = "implemented" | "planned";
 export type ComponentAnnouncement = "none" | "optional" | "polite" | "assertive" | "configurable";
 export type ComponentDependencyType = "npm" | "peer" | "workspace";
 export type ComponentSourceRole = "implementation" | "unit-test" | "integration-test";
-export type CopySourceFileRole = "component" | "hook" | "provider" | "utility";
+export type CopySourceFileRole = "component" | "composition" | "hook" | "provider" | "utility";
 export type RegistryDeliveryMode = (typeof registryDeliveryModes)[number];
 export type RegistryPackageManager = (typeof registryPackageManagers)[number];
 
@@ -38,6 +46,34 @@ export type CopySourceManifestMap<Slug extends string> = {
   readonly [Key in Slug]: CopySourceManifest<Slug> & { readonly slug: Key };
 };
 
+export interface CompositionRegistryEntry<ComponentSlug extends string = string> {
+  readonly accessibility: ComponentAccessibility;
+  readonly category: CompositionCategory;
+  readonly componentDependencies: readonly ComponentSlug[];
+  readonly description: string;
+  readonly motion: ComponentMotionCapabilities;
+  readonly name: string;
+  readonly slug: string;
+  readonly status: ComponentStatus;
+  readonly tags: readonly string[];
+}
+
+export interface CompositionManifest<
+  CompositionSlug extends string = string,
+  ComponentSlug extends string = string,
+> {
+  readonly componentDependencies: readonly ComponentSlug[];
+  readonly copySourceFiles: readonly CopySourceFile[];
+  readonly packageFiles: readonly CopySourceFile[];
+  readonly slug: CompositionSlug;
+}
+
+export type CompositionManifestMap<CompositionSlug extends string, ComponentSlug extends string> = {
+  readonly [Key in CompositionSlug]: CompositionManifest<CompositionSlug, ComponentSlug> & {
+    readonly slug: Key;
+  };
+};
+
 export interface InstallDependencyGroups {
   readonly npm: readonly ComponentDependency[];
   readonly peer: readonly ComponentDependency[];
@@ -66,6 +102,40 @@ export interface CopySourceInstallPlan<
 
 export type ComponentInstallPlan<Slug extends string = string> =
   PackageInstallPlan<Slug> | CopySourceInstallPlan<Slug>;
+
+interface CompositionInstallPlanBase<CompositionSlug extends string, ComponentSlug extends string> {
+  readonly componentDependencies: readonly ComponentSlug[];
+  readonly dependencies: InstallDependencyGroups;
+  readonly files: readonly CopySourceFile[];
+  readonly mode: RegistryDeliveryMode;
+  readonly slug: CompositionSlug;
+}
+
+export interface PackageCompositionInstallPlan<
+  CompositionSlug extends string = string,
+  ComponentSlug extends string = string,
+> extends CompositionInstallPlanBase<CompositionSlug, ComponentSlug> {
+  readonly mode: "package";
+}
+
+export interface CopySourceCompositionInstallPlan<
+  CompositionSlug extends string = string,
+  ComponentSlug extends string = string,
+> extends CompositionInstallPlanBase<CompositionSlug, ComponentSlug> {
+  readonly mode: "copy-source";
+}
+
+export type CompositionInstallPlan<
+  CompositionSlug extends string = string,
+  ComponentSlug extends string = string,
+> =
+  | PackageCompositionInstallPlan<CompositionSlug, ComponentSlug>
+  | CopySourceCompositionInstallPlan<CompositionSlug, ComponentSlug>;
+
+export type RegistryInstallPlan<
+  ComponentSlug extends string = string,
+  CompositionSlug extends string = string,
+> = ComponentInstallPlan<ComponentSlug> | CompositionInstallPlan<CompositionSlug, ComponentSlug>;
 
 export interface ComponentMotionCapabilities {
   readonly controlled: boolean;
@@ -221,6 +291,121 @@ export function defineCopySourceManifests<
 
   componentSlugs.forEach((slug) => {
     visit(slug, []);
+  });
+
+  return manifests;
+}
+
+function validateCompositionFiles(
+  slug: string,
+  mode: RegistryDeliveryMode,
+  files: readonly CopySourceFile[],
+) {
+  if (files.length === 0) {
+    throw new Error(`Composition manifest ${slug} ${mode} mode must declare at least one file.`);
+  }
+
+  const sourcePaths = new Set<string>();
+  const destinationPaths = new Set<string>();
+  let compositionFileCount = 0;
+
+  files.forEach((file) => {
+    assertSafeRelativePath(file.sourcePath, `${slug} ${mode} source path`);
+    assertSafeRelativePath(file.destinationPath, `${slug} ${mode} destination path`);
+    assertUnique(sourcePaths, file.sourcePath, `${slug} ${mode} source path`);
+    assertUnique(destinationPaths, file.destinationPath, `${slug} ${mode} destination path`);
+
+    if (file.role === "composition") {
+      compositionFileCount += 1;
+    }
+  });
+
+  if (compositionFileCount !== 1) {
+    throw new Error(
+      `Composition manifest ${slug} ${mode} mode must declare exactly one composition entry file; received ${compositionFileCount.toString()}.`,
+    );
+  }
+}
+
+export function defineCompositionRegistry<
+  const ComponentSlugs extends readonly string[],
+  const Entries extends readonly CompositionRegistryEntry<ComponentSlugs[number]>[],
+>(componentSlugs: ComponentSlugs, entries: Entries): Entries {
+  const knownComponents = new Set<string>(componentSlugs);
+  const slugs = new Set<string>();
+
+  entries.forEach((entry) => {
+    assertNonEmpty(entry.description, `${entry.slug} description`);
+    assertNonEmpty(entry.name, `${entry.slug} name`);
+    assertNonEmpty(entry.slug, "composition slug");
+    assertNonEmpty(entry.accessibility.pattern, `${entry.slug} accessibility pattern`);
+    assertUnique(slugs, entry.slug, "composition slug");
+
+    if (entry.componentDependencies.length === 0) {
+      throw new Error(`Composition registry ${entry.slug} must reference at least one component.`);
+    }
+
+    const dependencies = new Set<string>();
+    entry.componentDependencies.forEach((dependency) => {
+      assertUnique(dependencies, dependency, `${entry.slug} component dependency`);
+
+      if (!knownComponents.has(dependency)) {
+        throw new Error(
+          `Composition registry ${entry.slug} references an unknown component: ${dependency}`,
+        );
+      }
+    });
+
+    if (entry.tags.length === 0) {
+      throw new Error(`Composition registry ${entry.slug} must declare at least one tag.`);
+    }
+  });
+
+  return entries;
+}
+
+export function defineCompositionManifests<
+  const CompositionSlugs extends readonly string[],
+  const ComponentSlugs extends readonly string[],
+  const Manifests extends CompositionManifestMap<CompositionSlugs[number], ComponentSlugs[number]>,
+>(
+  compositionSlugs: CompositionSlugs,
+  componentSlugs: ComponentSlugs,
+  manifests: Manifests,
+): Manifests {
+  const expectedCompositions = new Set<string>(compositionSlugs);
+  const knownComponents = new Set<string>(componentSlugs);
+
+  Object.keys(manifests).forEach((key) => {
+    if (!expectedCompositions.has(key)) {
+      throw new Error(`Composition manifest references an unknown composition: ${key}`);
+    }
+  });
+
+  compositionSlugs.forEach((slug) => {
+    if (!Object.hasOwn(manifests, slug)) {
+      throw new Error(`Composition manifest is missing composition: ${slug}`);
+    }
+
+    const manifest = manifests[slug as keyof Manifests] as CompositionManifest;
+
+    if (manifest.slug !== slug) {
+      throw new Error(`Composition manifest key must match its slug: ${slug} -> ${manifest.slug}`);
+    }
+
+    const dependencies = new Set<string>();
+    manifest.componentDependencies.forEach((dependency) => {
+      assertUnique(dependencies, dependency, `${slug} component dependency`);
+
+      if (!knownComponents.has(dependency)) {
+        throw new Error(
+          `Composition manifest ${slug} references an unknown component: ${dependency}`,
+        );
+      }
+    });
+
+    validateCompositionFiles(slug, "package", manifest.packageFiles);
+    validateCompositionFiles(slug, "copy-source", manifest.copySourceFiles);
   });
 
   return manifests;

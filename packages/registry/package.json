@@ -7,7 +7,8 @@
   "type": "module",
   "sideEffects": false,
   "files": [
-    "dist"
+    "dist",
+    "source"
   ],
   "main": "./dist/index.js",
   "module": "./dist/index.js",
@@ -28,9 +29,19 @@
     "typecheck": "tsc --noEmit --project tsconfig.json"
   },
   "devDependencies": {
+    "@radix-ui/react-dialog": "1.1.23",
+    "@testing-library/react": "16.3.2",
     "@types/node": "26.1.1",
+    "@types/react": "19.2.17",
+    "@types/react-dom": "19.2.3",
+    "animejs": "4.5.0",
+    "easecraft": "workspace:*",
     "easecraft-eslint-config": "workspace:*",
+    "easecraft-tokens": "workspace:*",
     "easecraft-typescript-config": "workspace:*",
+    "jsdom": "29.1.1",
+    "react": "19.2.8",
+    "react-dom": "19.2.8",
     "typescript": "6.0.3",
     "vite": "8.1.5",
     "vite-plugin-dts": "5.0.3",

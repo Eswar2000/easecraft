@@ -1,7 +1,14 @@
 {
-  "extends": "easecraft-typescript-config/base.json",
+  "extends": "easecraft-typescript-config/react.json",
   "compilerOptions": {
+    "rootDirs": ["source", "../react/src"],
     "types": ["node"]
   },
-  "include": ["src/**/*.ts"]
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "source/compositions/command-palette-core.tsx",
+    "source/compositions/command-palette.copy.tsx",
+    "source/compositions/command-palette.package.tsx"
+  ]
 }
