@@ -19,6 +19,11 @@
       "import": "./dist/index.js",
       "default": "./dist/index.js"
     },
+    "./compositions/animated-pricing-comparison": {
+      "types": "./dist/compositions/animated-pricing-comparison.d.ts",
+      "import": "./dist/compositions/animated-pricing-comparison.js",
+      "default": "./dist/compositions/animated-pricing-comparison.js"
+    },
     "./compositions/command-palette": {
       "types": "./dist/compositions/command-palette.d.ts",
       "import": "./dist/compositions/command-palette.js",

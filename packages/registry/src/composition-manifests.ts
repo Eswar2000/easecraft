@@ -27,6 +27,7 @@ function supportFile(name: string): CopySourceFile {
 
 const componentSlugs = componentEntries.map((component) => component.slug);
 const compositionSlugs = compositionEntries.map((composition) => composition.slug);
+const animatedPricingComparisonCore = supportFile("animated-pricing-comparison-core");
 const commandPaletteCore = supportFile("command-palette-core");
 const expandableProjectCardCore = supportFile("expandable-project-card-core");
 const filterableWorkGalleryCore = supportFile("filterable-work-gallery-core");
@@ -35,6 +36,18 @@ const notificationCenterCore = supportFile("notification-center-core");
 const onboardingProgressSequenceCore = supportFile("onboarding-progress-sequence-core");
 
 export const compositionManifests = defineCompositionManifests(compositionSlugs, componentSlugs, {
+  "animated-pricing-comparison": {
+    componentDependencies: ["number-ticker"],
+    copySourceFiles: [
+      animatedPricingComparisonCore,
+      compositionFile("animated-pricing-comparison.copy", "animated-pricing-comparison"),
+    ],
+    packageFiles: [
+      animatedPricingComparisonCore,
+      compositionFile("animated-pricing-comparison.package", "animated-pricing-comparison"),
+    ],
+    slug: "animated-pricing-comparison",
+  },
   "command-palette": {
     componentDependencies: ["motion-dialog"],
     copySourceFiles: [

@@ -41,6 +41,7 @@ describe("compositionRegistry", () => {
       "filterable-work-gallery",
       "onboarding-progress-sequence",
       "mobile-navigation-panel",
+      "animated-pricing-comparison",
     ]);
     expect(listCompositions()).toBe(compositionRegistry);
     expect(getComposition("command-palette")).toMatchObject({
@@ -81,6 +82,12 @@ describe("compositionRegistry", () => {
       name: "Mobile Navigation Panel",
       status: "implemented",
     });
+    expect(getComposition("animated-pricing-comparison")).toMatchObject({
+      category: "Commerce",
+      componentDependencies: ["number-ticker"],
+      name: "Animated Pricing Comparison",
+      status: "implemented",
+    });
     expect(isCompositionSlug("missing-composition")).toBe(false);
   });
 
@@ -108,6 +115,24 @@ describe("compositionRegistry", () => {
 
 describe("compositionManifests", () => {
   it("defines package and copy-source entry variants", () => {
+    expect(compositionManifests["animated-pricing-comparison"]).toEqual({
+      componentDependencies: ["number-ticker"],
+      copySourceFiles: [
+        compositionFile("animated-pricing-comparison-core", "utility"),
+        {
+          ...compositionFile("animated-pricing-comparison.copy"),
+          destinationPath: "components/easecraft/compositions/animated-pricing-comparison.tsx",
+        },
+      ],
+      packageFiles: [
+        compositionFile("animated-pricing-comparison-core", "utility"),
+        {
+          ...compositionFile("animated-pricing-comparison.package"),
+          destinationPath: "components/easecraft/compositions/animated-pricing-comparison.tsx",
+        },
+      ],
+      slug: "animated-pricing-comparison",
+    });
     expect(compositionManifests["command-palette"]).toEqual({
       componentDependencies: ["motion-dialog"],
       copySourceFiles: [
@@ -380,6 +405,26 @@ describe("getCompositionInstallPlan", () => {
     ]);
     expect(copySourcePlan.dependencies.npm).toEqual([
       { name: "@radix-ui/react-dialog", type: "npm", version: "1.1.23" },
+      { name: "animejs", type: "npm", version: "4.5.0" },
+    ]);
+  });
+
+  it("creates package and copy-source Animated Pricing Comparison plans", () => {
+    const packagePlan = getCompositionInstallPlan("animated-pricing-comparison", "package");
+    const copySourcePlan = getCompositionInstallPlan("animated-pricing-comparison", "copy-source");
+
+    expect(packagePlan.componentDependencies).toEqual(["number-ticker"]);
+    expect(packagePlan.dependencies.npm).toEqual([
+      { name: "easecraft", type: "npm", version: "0.0.0" },
+    ]);
+    expect(copySourcePlan.files.map((file) => file.destinationPath)).toEqual([
+      "components/easecraft/motion-provider.tsx",
+      "components/easecraft/use-anime.ts",
+      "components/easecraft/number-ticker.tsx",
+      "components/easecraft/compositions/animated-pricing-comparison-core.tsx",
+      "components/easecraft/compositions/animated-pricing-comparison.tsx",
+    ]);
+    expect(copySourcePlan.dependencies.npm).toEqual([
       { name: "animejs", type: "npm", version: "4.5.0" },
     ]);
   });

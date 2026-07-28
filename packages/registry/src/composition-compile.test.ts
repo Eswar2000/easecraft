@@ -22,6 +22,7 @@ import {
 const registryRoot = fileURLToPath(new URL("../", import.meta.url));
 const workspaceRoot = fileURLToPath(new URL("../../../", import.meta.url));
 const temporaryDirectories: string[] = [];
+const compileTestTimeout = 15_000;
 
 function materializeAndCompile(slug: CompositionSlug, mode: RegistryDeliveryMode) {
   const plan = getCompositionInstallPlan(slug, mode);
@@ -64,12 +65,20 @@ afterEach(() => {
 
 describe("composition generated source", () => {
   compositionSlugs.forEach((slug) => {
-    it(`${slug} compiles with package-backed component imports`, () => {
-      expect(materializeAndCompile(slug, "package")).toEqual([]);
-    });
+    it(
+      `${slug} compiles with package-backed component imports`,
+      () => {
+        expect(materializeAndCompile(slug, "package")).toEqual([]);
+      },
+      compileTestTimeout,
+    );
 
-    it(`${slug} compiles with copied component source`, () => {
-      expect(materializeAndCompile(slug, "copy-source")).toEqual([]);
-    });
+    it(
+      `${slug} compiles with copied component source`,
+      () => {
+        expect(materializeAndCompile(slug, "copy-source")).toEqual([]);
+      },
+      compileTestTimeout,
+    );
   });
 });

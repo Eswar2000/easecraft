@@ -1170,6 +1170,234 @@
   font-size: 8px;
 }
 
+.composition-pricing-preview {
+  display: grid;
+  min-width: 0;
+  gap: 18px;
+}
+
+.composition-pricing-heading {
+  display: grid;
+  gap: 5px;
+}
+
+.composition-pricing-heading > span {
+  color: var(--signal);
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 8px;
+  text-transform: uppercase;
+}
+
+.composition-pricing-heading > strong {
+  font-family: "Bricolage Grotesque", sans-serif;
+  font-size: 24px;
+  line-height: 1.05;
+}
+
+.composition-pricing-heading > p {
+  margin: 0;
+  color: var(--muted);
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 8px;
+  text-transform: uppercase;
+}
+
+.composition-pricing {
+  display: grid;
+  min-width: 0;
+  gap: 10px;
+}
+
+.composition-pricing-controls {
+  display: flex;
+  justify-self: center;
+  border: 1px solid var(--ink);
+  background: #fff;
+}
+
+.composition-pricing-period {
+  display: flex;
+  min-width: 112px;
+  min-height: 36px;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 0 10px;
+  border: 0;
+  border-right: 1px solid var(--ink);
+  border-radius: 0;
+  color: var(--ink);
+  background: #fff;
+  font-size: 9px;
+}
+
+.composition-pricing-period:last-child {
+  border-right: 0;
+}
+
+.composition-pricing-period[aria-pressed="true"] {
+  color: #fff;
+  background: var(--ink);
+}
+
+.composition-pricing-period-badge {
+  padding: 2px 4px;
+  border: 1px solid currentColor;
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 6px;
+  text-transform: uppercase;
+}
+
+.composition-pricing-status {
+  margin: 0;
+  color: var(--muted);
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 7px;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.composition-pricing-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  min-width: 0;
+  gap: 8px;
+}
+
+.composition-pricing-plan {
+  position: relative;
+  display: flex;
+  min-width: 0;
+  min-height: 280px;
+  flex-direction: column;
+  padding: 13px;
+  border: 1px solid var(--ink);
+  background: #fff;
+}
+
+.composition-pricing-plan[data-recommended="true"] {
+  color: #fff;
+  background: var(--ink);
+  box-shadow: 6px 6px 0 var(--yellow);
+}
+
+.composition-pricing-plan [data-easecraft-pricing-plan-header] {
+  display: flex;
+  min-height: 28px;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.composition-pricing-title {
+  margin: 0;
+  font-size: 16px;
+}
+
+.composition-pricing-badge {
+  max-width: 74px;
+  padding: 3px 5px;
+  color: var(--ink);
+  background: var(--yellow);
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 6px;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.composition-pricing-description {
+  min-height: 35px;
+  margin: 7px 0 10px;
+  color: var(--muted);
+  font-size: 8px;
+  line-height: 1.35;
+}
+
+.composition-pricing-plan[data-recommended="true"] .composition-pricing-description {
+  color: rgb(255 255 255 / 68%);
+}
+
+.composition-pricing-price {
+  min-height: 44px;
+  margin: 0 0 10px;
+  font-family: "Bricolage Grotesque", sans-serif;
+  font-size: 21px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.composition-pricing-features {
+  display: grid;
+  gap: 7px;
+  margin: 0 0 14px;
+  padding: 11px 0 0;
+  border-top: 1px solid var(--line);
+  list-style: none;
+}
+
+.composition-pricing-plan[data-recommended="true"] .composition-pricing-features {
+  border-color: rgb(255 255 255 / 28%);
+}
+
+.composition-pricing-feature {
+  display: grid;
+  grid-template-columns: 12px minmax(0, 1fr);
+  gap: 5px;
+  align-items: start;
+  color: var(--muted);
+  font-size: 7px;
+  line-height: 1.35;
+}
+
+.composition-pricing-plan[data-recommended="true"] .composition-pricing-feature {
+  color: rgb(255 255 255 / 72%);
+}
+
+.composition-pricing-feature-state {
+  width: 12px;
+  height: 12px;
+  overflow: hidden;
+  color: transparent;
+  white-space: nowrap;
+}
+
+.composition-pricing-feature-state::before {
+  color: var(--signal);
+  font-size: 9px;
+  content: "\2713";
+}
+
+.composition-pricing-feature[data-included="false"] {
+  opacity: 0.48;
+  text-decoration: line-through;
+}
+
+.composition-pricing-feature[data-included="false"] .composition-pricing-feature-state::before {
+  content: "\00d7";
+}
+
+.composition-pricing-action {
+  display: grid;
+  width: 100%;
+  min-height: 34px;
+  margin-top: auto;
+  padding: 0 7px;
+  border: 1px solid var(--ink);
+  border-radius: 0;
+  place-items: center;
+  color: #fff;
+  background: var(--ink);
+  font-size: 8px;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.composition-pricing-plan[data-recommended="true"] .composition-pricing-action {
+  color: var(--ink);
+  border-color: var(--yellow);
+  background: var(--yellow);
+}
+
 .composition-detail-main {
   display: grid;
   gap: 30px;
@@ -1512,6 +1740,23 @@
   .composition-mobile-panel {
     border-left: 0;
     box-shadow: none;
+  }
+
+  .composition-pricing-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .composition-pricing-plan {
+    min-height: 246px;
+  }
+
+  .composition-pricing-controls {
+    width: 100%;
+  }
+
+  .composition-pricing-period {
+    min-width: 0;
+    flex: 1;
   }
 
   .composition-project-trigger {

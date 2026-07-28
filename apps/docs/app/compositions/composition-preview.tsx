@@ -1,6 +1,11 @@
 "use client";
 
 import { MotionProvider } from "easecraft";
+import {
+  AnimatedPricingComparison,
+  type PricingPeriod,
+  type PricingPlan,
+} from "easecraft-registry/compositions/animated-pricing-comparison";
 import { CommandPalette } from "easecraft-registry/compositions/command-palette";
 import { ExpandableProjectCard } from "easecraft-registry/compositions/expandable-project-card";
 import {
@@ -258,6 +263,63 @@ const navigationSections = [
   },
 ] as const satisfies readonly MobileNavigationSection[];
 
+const pricingPeriods = [
+  {
+    announcement: "Monthly billing selected.",
+    id: "monthly",
+    label: "Monthly",
+    suffix: "/mo",
+  },
+  {
+    announcement: "Annual billing selected. Save up to 20 percent.",
+    badge: "Save 20%",
+    id: "annual",
+    label: "Annual",
+    suffix: "/mo, annual",
+  },
+] as const satisfies readonly PricingPeriod[];
+
+const pricingPlans = [
+  {
+    actionLabel: "Choose Solo",
+    description: "For independent makers shipping focused work.",
+    features: [
+      { id: "projects", label: "3 active projects" },
+      { id: "history", label: "30-day history" },
+      { id: "collaboration", included: false, label: "Team collaboration" },
+    ],
+    id: "solo",
+    name: "Solo",
+    prices: { annual: 10, monthly: 12 },
+  },
+  {
+    actionLabel: "Choose Studio",
+    badge: "Most popular",
+    description: "For teams building systems together.",
+    features: [
+      { id: "projects", label: "Unlimited projects" },
+      { id: "history", label: "Unlimited history" },
+      { id: "collaboration", label: "Up to 10 teammates" },
+    ],
+    id: "studio",
+    name: "Studio",
+    prices: { annual: 26, monthly: 32 },
+    recommended: true,
+  },
+  {
+    actionLabel: "Choose Scale",
+    description: "For organizations coordinating many teams.",
+    features: [
+      { id: "projects", label: "Unlimited projects" },
+      { id: "history", label: "Audit log and SSO" },
+      { id: "collaboration", label: "Unlimited teammates" },
+    ],
+    id: "scale",
+    name: "Scale",
+    prices: { annual: 58, monthly: 72 },
+  },
+] as const satisfies readonly PricingPlan[];
+
 interface CompositionPreviewProps {
   readonly reducedMotion?: boolean;
   readonly slug: CompositionSlug;
@@ -269,6 +331,7 @@ export function CompositionPreview({ reducedMotion = false, slug }: CompositionP
     useState<readonly NotificationCenterItem[]>(previewNotifications);
   const [onboardingComplete, setOnboardingComplete] = useState(false);
   const [lastDestination, setLastDestination] = useState("overview");
+  const [selectedPricingPlan, setSelectedPricingPlan] = useState("No plan selected");
 
   return (
     <MotionProvider reducedMotion={reducedMotion ? "always" : "never"}>
@@ -325,7 +388,7 @@ export function CompositionPreview({ reducedMotion = false, slug }: CompositionP
             </div>
             <div>
               <dt>Compositions</dt>
-              <dd>06</dd>
+              <dd>07</dd>
             </div>
           </dl>
         </ExpandableProjectCard>
@@ -377,7 +440,7 @@ export function CompositionPreview({ reducedMotion = false, slug }: CompositionP
           stepLabelClassName="composition-onboarding-label"
           steps={onboardingSteps}
         />
-      ) : (
+      ) : slug === "mobile-navigation-panel" ? (
         <div className="composition-mobile-launcher">
           <div className="composition-mobile-launcher-header">
             <span className="composition-mobile-launcher-brand" aria-label="Easecraft">
@@ -441,6 +504,38 @@ export function CompositionPreview({ reducedMotion = false, slug }: CompositionP
             <h3>Everything in reach.</h3>
             <p>Last destination: {lastDestination}</p>
           </div>
+        </div>
+      ) : (
+        <div className="composition-pricing-preview">
+          <div className="composition-pricing-heading">
+            <span>07 / Flexible billing</span>
+            <strong>Plans that move with you.</strong>
+            <p>{selectedPricingPlan}</p>
+          </div>
+          <AnimatedPricingComparison
+            actionClassName="composition-pricing-action"
+            badgeClassName="composition-pricing-badge"
+            controlsClassName="composition-pricing-controls"
+            descriptionClassName="composition-pricing-description"
+            featureClassName="composition-pricing-feature"
+            featureListClassName="composition-pricing-features"
+            featureStateClassName="composition-pricing-feature-state"
+            gridClassName="composition-pricing-grid"
+            onSelectPlan={(plan) => {
+              const selectedPlan = pricingPlans.find((entry) => entry.id === plan.id);
+
+              setSelectedPricingPlan(`${selectedPlan?.name ?? plan.id} selected`);
+            }}
+            periodBadgeClassName="composition-pricing-period-badge"
+            periodButtonClassName="composition-pricing-period"
+            periods={pricingPeriods}
+            planClassName="composition-pricing-plan"
+            plans={pricingPlans}
+            priceClassName="composition-pricing-price"
+            rootClassName="composition-pricing"
+            statusClassName="composition-pricing-status"
+            titleClassName="composition-pricing-title"
+          />
         </div>
       )}
     </MotionProvider>

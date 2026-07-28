@@ -231,6 +231,45 @@ export const compositionEntries = defineCompositionRegistry(componentSlugs, [
     status: "implemented",
     tags: ["dialog", "mobile", "navigation", "sheet"],
   },
+  {
+    accessibility: {
+      announcement: "polite",
+      focusManagement: false,
+      keyboard: [
+        {
+          behavior: "Moves through billing-period controls and plan actions.",
+          keys: ["Tab", "Shift+Tab"],
+        },
+        {
+          behavior: "Selects the focused billing period or pricing action.",
+          keys: ["Enter", "Space"],
+        },
+      ],
+      notes: [
+        "Uses native pressed buttons for billing periods and labelled articles for each plan.",
+        "Announces the selected billing period once while NumberTicker keeps each final price stable for assistive technology.",
+      ],
+      pattern: "pricing-comparison",
+    },
+    category: "Commerce",
+    componentDependencies: ["number-ticker"],
+    description:
+      "Compare stable plan cards while animated prices respond to monthly or annual billing.",
+    motion: {
+      controlled: true,
+      enter: true,
+      exit: false,
+      intrinsicSize: false,
+      layout: false,
+      reducedMotion: true,
+      replay: true,
+      viewport: false,
+    },
+    name: "Animated Pricing Comparison",
+    slug: "animated-pricing-comparison",
+    status: "implemented",
+    tags: ["billing", "commerce", "pricing", "ticker"],
+  },
 ] as const satisfies readonly CompositionRegistryEntry<ComponentSlug>[]);
 
 export type CompositionSlug = (typeof compositionEntries)[number]["slug"];

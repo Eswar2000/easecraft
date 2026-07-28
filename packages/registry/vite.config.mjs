@@ -16,6 +16,9 @@ export default defineConfig({
     lib: {
       entry: {
         index: fileURLToPath(new URL("./src/index.ts", import.meta.url)),
+        "compositions/animated-pricing-comparison": fileURLToPath(
+          new URL("./source/compositions/animated-pricing-comparison.package.tsx", import.meta.url),
+        ),
         "compositions/command-palette": fileURLToPath(
           new URL("./source/compositions/command-palette.package.tsx", import.meta.url),
         ),

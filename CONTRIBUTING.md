@@ -8,9 +8,9 @@ By participating, you agree to follow the [Code of Conduct](CODE_OF_CONDUCT.md).
 
 ## Current Stage
 
-Easecraft has completed its core motion foundation, including `Stagger`, all nine planned component vertical slices, the typed component metadata and copy-source manifest registry, and visible docs for the Command Palette, Expandable Project Card, Notification Center, Filterable Work Gallery, Onboarding Progress Sequence, and Mobile Navigation Panel compositions across package code, tests, consumer usage, and interactive documentation.
+Easecraft has completed its core motion foundation, including `Stagger`, all nine planned component vertical slices, the typed component metadata and copy-source manifest registry, and visible docs for the Command Palette, Expandable Project Card, Notification Center, Filterable Work Gallery, Onboarding Progress Sequence, Mobile Navigation Panel, and Animated Pricing Comparison compositions across package code, tests, consumer usage, and interactive documentation.
 
-The immediate focus is the Animated Pricing Comparison composition, followed by the final Scroll-driven Article Timeline composition, copy actions, and the interactive playground. Remaining Phase 0 repository work includes public identifiers, CI, preview deployment, and architecture decision records.
+The immediate focus is the final Scroll-driven Article Timeline composition, followed by copy actions and the interactive playground. Remaining Phase 0 repository work includes public identifiers, CI, preview deployment, and architecture decision records.
 
 Useful contributions at this stage include:
 

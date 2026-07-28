@@ -10,6 +10,7 @@ import {
   listComponents,
   listCompositions,
 } from "easecraft-registry";
+import { AnimatedPricingComparison } from "easecraft-registry/compositions/animated-pricing-comparison";
 import { CommandPalette } from "easecraft-registry/compositions/command-palette";
 import { ExpandableProjectCard } from "easecraft-registry/compositions/expandable-project-card";
 import { FilterableWorkGallery } from "easecraft-registry/compositions/filterable-work-gallery";
@@ -78,6 +79,7 @@ describe("component explorer registry consumption", () => {
       "filterable-work-gallery",
       "onboarding-progress-sequence",
       "mobile-navigation-panel",
+      "animated-pricing-comparison",
     ]);
     expect(listCompositions()).toMatchObject([
       {
@@ -108,6 +110,11 @@ describe("component explorer registry consumption", () => {
       {
         componentDependencies: ["motion-dialog"],
         name: "Mobile Navigation Panel",
+        status: "implemented",
+      },
+      {
+        componentDependencies: ["number-ticker"],
+        name: "Animated Pricing Comparison",
         status: "implemented",
       },
     ]);
@@ -146,6 +153,11 @@ describe("component explorer registry consumption", () => {
     expect(mobileNavigationPlan.files.at(-1)?.destinationPath).toBe(
       "components/easecraft/compositions/mobile-navigation-panel.tsx",
     );
+
+    const pricingPlan = getCompositionInstallPlan("animated-pricing-comparison", "copy-source");
+    expect(pricingPlan.files.at(-1)?.destinationPath).toBe(
+      "components/easecraft/compositions/animated-pricing-comparison.tsx",
+    );
   });
 
   it("provides static detail routes and public live-preview exports", () => {
@@ -156,6 +168,7 @@ describe("component explorer registry consumption", () => {
       "/compositions/filterable-work-gallery",
       "/compositions/onboarding-progress-sequence",
       "/compositions/mobile-navigation-panel",
+      "/compositions/animated-pricing-comparison",
     ]);
     expect(typeof CommandPalette).toBe("function");
     expect(typeof ExpandableProjectCard).toBe("function");
@@ -163,5 +176,6 @@ describe("component explorer registry consumption", () => {
     expect(typeof FilterableWorkGallery).toBe("function");
     expect(typeof OnboardingProgressSequence).toBe("function");
     expect(typeof MobileNavigationPanel).toBe("function");
+    expect(typeof AnimatedPricingComparison).toBe("function");
   });
 });
