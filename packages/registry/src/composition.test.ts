@@ -40,6 +40,7 @@ describe("compositionRegistry", () => {
       "notification-center",
       "filterable-work-gallery",
       "onboarding-progress-sequence",
+      "mobile-navigation-panel",
     ]);
     expect(listCompositions()).toBe(compositionRegistry);
     expect(getComposition("command-palette")).toMatchObject({
@@ -72,6 +73,12 @@ describe("compositionRegistry", () => {
       category: "Workflow",
       componentDependencies: ["animated-tabs"],
       name: "Onboarding Progress Sequence",
+      status: "implemented",
+    });
+    expect(getComposition("mobile-navigation-panel")).toMatchObject({
+      category: "Navigation",
+      componentDependencies: ["motion-dialog"],
+      name: "Mobile Navigation Panel",
       status: "implemented",
     });
     expect(isCompositionSlug("missing-composition")).toBe(false);
@@ -190,6 +197,24 @@ describe("compositionManifests", () => {
         },
       ],
       slug: "onboarding-progress-sequence",
+    });
+    expect(compositionManifests["mobile-navigation-panel"]).toEqual({
+      componentDependencies: ["motion-dialog"],
+      copySourceFiles: [
+        compositionFile("mobile-navigation-panel-core", "utility"),
+        {
+          ...compositionFile("mobile-navigation-panel.copy"),
+          destinationPath: "components/easecraft/compositions/mobile-navigation-panel.tsx",
+        },
+      ],
+      packageFiles: [
+        compositionFile("mobile-navigation-panel-core", "utility"),
+        {
+          ...compositionFile("mobile-navigation-panel.package"),
+          destinationPath: "components/easecraft/compositions/mobile-navigation-panel.tsx",
+        },
+      ],
+      slug: "mobile-navigation-panel",
     });
   });
 
@@ -335,6 +360,26 @@ describe("getCompositionInstallPlan", () => {
       "components/easecraft/compositions/onboarding-progress-sequence.tsx",
     ]);
     expect(copySourcePlan.dependencies.npm).toEqual([
+      { name: "animejs", type: "npm", version: "4.5.0" },
+    ]);
+  });
+
+  it("creates package and copy-source Mobile Navigation Panel plans", () => {
+    const packagePlan = getCompositionInstallPlan("mobile-navigation-panel", "package");
+    const copySourcePlan = getCompositionInstallPlan("mobile-navigation-panel", "copy-source");
+
+    expect(packagePlan.componentDependencies).toEqual(["motion-dialog"]);
+    expect(packagePlan.dependencies.npm).toEqual([
+      { name: "easecraft", type: "npm", version: "0.0.0" },
+    ]);
+    expect(copySourcePlan.files.map((file) => file.destinationPath)).toEqual([
+      "components/easecraft/motion-provider.tsx",
+      "components/easecraft/motion-dialog.tsx",
+      "components/easecraft/compositions/mobile-navigation-panel-core.tsx",
+      "components/easecraft/compositions/mobile-navigation-panel.tsx",
+    ]);
+    expect(copySourcePlan.dependencies.npm).toEqual([
+      { name: "@radix-ui/react-dialog", type: "npm", version: "1.1.23" },
       { name: "animejs", type: "npm", version: "4.5.0" },
     ]);
   });

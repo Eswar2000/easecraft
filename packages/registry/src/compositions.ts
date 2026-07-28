@@ -194,6 +194,43 @@ export const compositionEntries = defineCompositionRegistry(componentSlugs, [
     status: "implemented",
     tags: ["onboarding", "progress", "stepper", "workflow"],
   },
+  {
+    accessibility: {
+      announcement: "none",
+      focusManagement: true,
+      keyboard: [
+        {
+          behavior: "Moves through enabled navigation destinations and footer actions.",
+          keys: ["Tab", "Shift+Tab"],
+        },
+        { behavior: "Activates the focused navigation destination.", keys: ["Enter"] },
+        { behavior: "Closes the modal panel and restores trigger focus.", keys: ["Escape"] },
+      ],
+      notes: [
+        "Uses a modal dialog containing a labelled navigation landmark and semantic section lists.",
+        "Marks the current page, removes disabled destinations from focus, and closes after enabled navigation by default.",
+      ],
+      pattern: "modal-navigation",
+    },
+    category: "Navigation",
+    componentDependencies: ["motion-dialog"],
+    description:
+      "Open a focus-safe mobile navigation sheet with grouped destinations and current-page state.",
+    motion: {
+      controlled: true,
+      enter: true,
+      exit: true,
+      intrinsicSize: false,
+      layout: false,
+      reducedMotion: true,
+      replay: true,
+      viewport: false,
+    },
+    name: "Mobile Navigation Panel",
+    slug: "mobile-navigation-panel",
+    status: "implemented",
+    tags: ["dialog", "mobile", "navigation", "sheet"],
+  },
 ] as const satisfies readonly CompositionRegistryEntry<ComponentSlug>[]);
 
 export type CompositionSlug = (typeof compositionEntries)[number]["slug"];

@@ -9,6 +9,10 @@ import {
   type FilterableWorkItem,
 } from "easecraft-registry/compositions/filterable-work-gallery";
 import {
+  MobileNavigationPanel,
+  type MobileNavigationSection,
+} from "easecraft-registry/compositions/mobile-navigation-panel";
+import {
   NotificationCenter,
   type NotificationCenterItem,
 } from "easecraft-registry/compositions/notification-center";
@@ -201,6 +205,59 @@ const onboardingSteps = [
   },
 ] as const satisfies readonly OnboardingStep[];
 
+const navigationSections = [
+  {
+    id: "workspace",
+    items: [
+      {
+        current: true,
+        description: "Team activity and status",
+        href: "#overview",
+        icon: "01",
+        id: "overview",
+        label: "Overview",
+      },
+      {
+        badge: "12",
+        description: "Active motion systems",
+        href: "#projects",
+        icon: "02",
+        id: "projects",
+        label: "Projects",
+      },
+      {
+        description: "Components and compositions",
+        href: "#library",
+        icon: "03",
+        id: "library",
+        label: "Library",
+      },
+    ],
+    label: "Workspace",
+  },
+  {
+    id: "manage",
+    items: [
+      {
+        description: "Members and permissions",
+        href: "#team",
+        icon: "04",
+        id: "team",
+        label: "Team",
+      },
+      {
+        description: "Available after launch",
+        disabled: true,
+        href: "#billing",
+        icon: "05",
+        id: "billing",
+        label: "Billing",
+      },
+    ],
+    label: "Manage",
+  },
+] as const satisfies readonly MobileNavigationSection[];
+
 interface CompositionPreviewProps {
   readonly reducedMotion?: boolean;
   readonly slug: CompositionSlug;
@@ -211,6 +268,7 @@ export function CompositionPreview({ reducedMotion = false, slug }: CompositionP
   const [notifications, setNotifications] =
     useState<readonly NotificationCenterItem[]>(previewNotifications);
   const [onboardingComplete, setOnboardingComplete] = useState(false);
+  const [lastDestination, setLastDestination] = useState("overview");
 
   return (
     <MotionProvider reducedMotion={reducedMotion ? "always" : "never"}>
@@ -267,7 +325,7 @@ export function CompositionPreview({ reducedMotion = false, slug }: CompositionP
             </div>
             <div>
               <dt>Compositions</dt>
-              <dd>05</dd>
+              <dd>06</dd>
             </div>
           </dl>
         </ExpandableProjectCard>
@@ -304,7 +362,7 @@ export function CompositionPreview({ reducedMotion = false, slug }: CompositionP
           resultClassName="composition-gallery-results"
           tagsClassName="composition-gallery-tags"
         />
-      ) : (
+      ) : slug === "onboarding-progress-sequence" ? (
         <OnboardingProgressSequence
           actionsClassName="composition-onboarding-actions"
           backButtonClassName="composition-onboarding-back"
@@ -319,6 +377,71 @@ export function CompositionPreview({ reducedMotion = false, slug }: CompositionP
           stepLabelClassName="composition-onboarding-label"
           steps={onboardingSteps}
         />
+      ) : (
+        <div className="composition-mobile-launcher">
+          <div className="composition-mobile-launcher-header">
+            <span className="composition-mobile-launcher-brand" aria-label="Easecraft">
+              EC
+            </span>
+            <MobileNavigationPanel
+              badgeClassName="composition-mobile-badge"
+              brand={
+                <div className="composition-mobile-brand-lockup">
+                  <span>EC</span>
+                  <div>
+                    <strong>Easecraft</strong>
+                    <small>Motion systems</small>
+                  </div>
+                </div>
+              }
+              brandClassName="composition-mobile-brand"
+              className="composition-mobile-navigation"
+              closeClassName="composition-mobile-close"
+              contentClassName="composition-mobile-panel"
+              footer={
+                <div className="composition-mobile-profile">
+                  <span aria-hidden="true">AS</span>
+                  <div>
+                    <strong>Avery Stone</strong>
+                    <small>Designer</small>
+                  </div>
+                  <button type="button">Sign out</button>
+                </div>
+              }
+              footerClassName="composition-mobile-footer"
+              itemClassName="composition-mobile-item"
+              itemCopyClassName="composition-mobile-item-copy"
+              itemDescriptionClassName="composition-mobile-item-description"
+              itemLabelClassName="composition-mobile-item-label"
+              listClassName="composition-mobile-list"
+              onNavigate={(item, event) => {
+                event.preventDefault();
+                setLastDestination(item.id);
+              }}
+              overlayClassName="composition-mobile-overlay"
+              positionerClassName="composition-mobile-positioner"
+              sectionClassName="composition-mobile-section"
+              sectionLabelClassName="composition-mobile-section-label"
+              sections={navigationSections}
+              title="Menu"
+              trigger={
+                <button
+                  aria-label="Open mobile navigation"
+                  className="composition-mobile-trigger"
+                  title="Open mobile navigation"
+                  type="button"
+                >
+                  <span aria-hidden="true" className="composition-mobile-menu-icon" />
+                </button>
+              }
+            />
+          </div>
+          <div className="composition-mobile-launcher-copy">
+            <span>06 / Navigation sheet</span>
+            <h3>Everything in reach.</h3>
+            <p>Last destination: {lastDestination}</p>
+          </div>
+        </div>
       )}
     </MotionProvider>
   );

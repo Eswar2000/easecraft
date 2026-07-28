@@ -30,6 +30,7 @@ const compositionSlugs = compositionEntries.map((composition) => composition.slu
 const commandPaletteCore = supportFile("command-palette-core");
 const expandableProjectCardCore = supportFile("expandable-project-card-core");
 const filterableWorkGalleryCore = supportFile("filterable-work-gallery-core");
+const mobileNavigationPanelCore = supportFile("mobile-navigation-panel-core");
 const notificationCenterCore = supportFile("notification-center-core");
 const onboardingProgressSequenceCore = supportFile("onboarding-progress-sequence-core");
 
@@ -69,6 +70,18 @@ export const compositionManifests = defineCompositionManifests(compositionSlugs,
       compositionFile("filterable-work-gallery.package", "filterable-work-gallery"),
     ],
     slug: "filterable-work-gallery",
+  },
+  "mobile-navigation-panel": {
+    componentDependencies: ["motion-dialog"],
+    copySourceFiles: [
+      mobileNavigationPanelCore,
+      compositionFile("mobile-navigation-panel.copy", "mobile-navigation-panel"),
+    ],
+    packageFiles: [
+      mobileNavigationPanelCore,
+      compositionFile("mobile-navigation-panel.package", "mobile-navigation-panel"),
+    ],
+    slug: "mobile-navigation-panel",
   },
   "notification-center": {
     componentDependencies: ["toast-stack"],

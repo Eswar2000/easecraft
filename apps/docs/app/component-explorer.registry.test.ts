@@ -13,6 +13,7 @@ import {
 import { CommandPalette } from "easecraft-registry/compositions/command-palette";
 import { ExpandableProjectCard } from "easecraft-registry/compositions/expandable-project-card";
 import { FilterableWorkGallery } from "easecraft-registry/compositions/filterable-work-gallery";
+import { MobileNavigationPanel } from "easecraft-registry/compositions/mobile-navigation-panel";
 import { NotificationCenter } from "easecraft-registry/compositions/notification-center";
 import { OnboardingProgressSequence } from "easecraft-registry/compositions/onboarding-progress-sequence";
 
@@ -76,6 +77,7 @@ describe("component explorer registry consumption", () => {
       "notification-center",
       "filterable-work-gallery",
       "onboarding-progress-sequence",
+      "mobile-navigation-panel",
     ]);
     expect(listCompositions()).toMatchObject([
       {
@@ -101,6 +103,11 @@ describe("component explorer registry consumption", () => {
       {
         componentDependencies: ["animated-tabs"],
         name: "Onboarding Progress Sequence",
+        status: "implemented",
+      },
+      {
+        componentDependencies: ["motion-dialog"],
+        name: "Mobile Navigation Panel",
         status: "implemented",
       },
     ]);
@@ -131,6 +138,14 @@ describe("component explorer registry consumption", () => {
     expect(onboardingPlan.files.at(-1)?.destinationPath).toBe(
       "components/easecraft/compositions/onboarding-progress-sequence.tsx",
     );
+
+    const mobileNavigationPlan = getCompositionInstallPlan(
+      "mobile-navigation-panel",
+      "copy-source",
+    );
+    expect(mobileNavigationPlan.files.at(-1)?.destinationPath).toBe(
+      "components/easecraft/compositions/mobile-navigation-panel.tsx",
+    );
   });
 
   it("provides static detail routes and public live-preview exports", () => {
@@ -140,11 +155,13 @@ describe("component explorer registry consumption", () => {
       "/compositions/notification-center",
       "/compositions/filterable-work-gallery",
       "/compositions/onboarding-progress-sequence",
+      "/compositions/mobile-navigation-panel",
     ]);
     expect(typeof CommandPalette).toBe("function");
     expect(typeof ExpandableProjectCard).toBe("function");
     expect(typeof NotificationCenter).toBe("function");
     expect(typeof FilterableWorkGallery).toBe("function");
     expect(typeof OnboardingProgressSequence).toBe("function");
+    expect(typeof MobileNavigationPanel).toBe("function");
   });
 });

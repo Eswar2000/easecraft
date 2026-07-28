@@ -863,6 +863,313 @@
   background: var(--ink);
 }
 
+.composition-mobile-launcher {
+  display: grid;
+  min-width: 0;
+  min-height: 270px;
+  align-content: space-between;
+  padding: 24px;
+  border: 1px solid var(--ink);
+  background:
+    linear-gradient(rgb(0 194 209 / 10%) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(0 194 209 / 10%) 1px, transparent 1px), #fff;
+  background-size: 22px 22px;
+  box-shadow: 10px 10px 0 rgb(0 194 209 / 38%);
+}
+
+.composition-mobile-launcher-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.composition-mobile-launcher-brand {
+  display: grid;
+  width: 38px;
+  height: 38px;
+  place-items: center;
+  color: #fff;
+  background: var(--ink);
+  font-family: "Bricolage Grotesque", sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.composition-mobile-trigger {
+  display: grid;
+  width: 42px;
+  height: 42px;
+  padding: 0;
+  border: 1px solid var(--ink);
+  border-radius: 0;
+  place-items: center;
+  color: #fff;
+  background: var(--ink);
+}
+
+.composition-mobile-menu-icon,
+.composition-mobile-menu-icon::before,
+.composition-mobile-menu-icon::after {
+  display: block;
+  width: 17px;
+  height: 2px;
+  background: currentColor;
+  content: "";
+}
+
+.composition-mobile-menu-icon {
+  position: relative;
+}
+
+.composition-mobile-menu-icon::before,
+.composition-mobile-menu-icon::after {
+  position: absolute;
+  left: 0;
+}
+
+.composition-mobile-menu-icon::before {
+  top: -6px;
+}
+
+.composition-mobile-menu-icon::after {
+  top: 6px;
+}
+
+.composition-mobile-launcher-copy > span {
+  color: var(--signal);
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 8px;
+  text-transform: uppercase;
+}
+
+.composition-mobile-launcher-copy h3 {
+  margin: 8px 0 4px;
+  font-size: 25px;
+}
+
+.composition-mobile-launcher-copy p {
+  margin: 0;
+  color: var(--muted);
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 8px;
+  text-transform: uppercase;
+}
+
+.composition-mobile-overlay {
+  --easecraft-dialog-overlay: rgb(23 23 21 / 72%);
+
+  backdrop-filter: blur(3px);
+}
+
+.composition-mobile-panel {
+  --easecraft-dialog-background: #fdfdf9;
+
+  position: relative;
+  display: grid;
+  grid-template-rows: auto auto minmax(0, 1fr);
+  overflow: hidden !important;
+  border-left: 1px solid var(--ink);
+  box-shadow: -12px 0 0 rgb(244 210 37 / 80%);
+}
+
+.composition-mobile-panel [data-easecraft-dialog-title] {
+  margin: 0;
+  padding: 24px 64px 3px 24px;
+  font-size: 27px;
+}
+
+.composition-mobile-panel [data-easecraft-dialog-description] {
+  margin: 0;
+  padding: 0 64px 20px 24px;
+  border-bottom: 1px solid var(--ink);
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.4;
+}
+
+.composition-mobile-panel [data-easecraft-dialog-body] {
+  min-height: 0;
+  overflow: auto;
+}
+
+.composition-mobile-close {
+  position: absolute;
+  z-index: 1;
+  top: 19px;
+  right: 19px;
+  width: 36px;
+  min-height: 36px;
+  padding: 0;
+  border: 1px solid var(--ink);
+  border-radius: 0;
+  color: var(--ink);
+  background: var(--yellow);
+  font-size: 0;
+}
+
+.composition-mobile-close::before {
+  font-size: 20px;
+  content: "\00d7";
+}
+
+.composition-mobile-navigation {
+  display: flex;
+  min-height: 100%;
+  flex-direction: column;
+}
+
+.composition-mobile-brand {
+  padding: 17px 20px;
+  border-bottom: 1px solid var(--line);
+}
+
+.composition-mobile-brand-lockup,
+.composition-mobile-profile {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+}
+
+.composition-mobile-brand-lockup > span,
+.composition-mobile-profile > span {
+  display: grid;
+  width: 34px;
+  height: 34px;
+  flex: 0 0 34px;
+  place-items: center;
+  color: #fff;
+  background: var(--ink);
+  font-family: "Bricolage Grotesque", sans-serif;
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.composition-mobile-brand-lockup > div,
+.composition-mobile-profile > div {
+  display: grid;
+  min-width: 0;
+  gap: 1px;
+}
+
+.composition-mobile-brand-lockup strong,
+.composition-mobile-profile strong {
+  font-family: "Bricolage Grotesque", sans-serif;
+  font-size: 12px;
+}
+
+.composition-mobile-brand-lockup small,
+.composition-mobile-profile small {
+  color: var(--muted);
+  font-size: 8px;
+}
+
+.composition-mobile-section {
+  padding: 17px 14px 0;
+}
+
+.composition-mobile-section-label {
+  margin: 0 0 7px;
+  padding: 0 7px;
+  color: var(--muted);
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 7px;
+  font-weight: 500;
+  text-transform: uppercase;
+}
+
+.composition-mobile-list {
+  display: grid;
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.composition-mobile-item {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  min-height: 54px;
+  align-items: center;
+  gap: 10px;
+  padding: 8px;
+  border: 1px solid transparent;
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.composition-mobile-item:hover,
+.composition-mobile-item:focus-visible {
+  border-color: var(--ink);
+}
+
+.composition-mobile-item[data-current="true"] {
+  color: #fff;
+  background: var(--ink);
+}
+
+.composition-mobile-item[data-disabled="true"] {
+  opacity: 0.42;
+  text-decoration: line-through;
+}
+
+.composition-mobile-item [data-easecraft-mobile-navigation-icon] {
+  display: grid;
+  width: 29px;
+  height: 29px;
+  place-items: center;
+  border: 1px solid currentColor;
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 7px;
+}
+
+.composition-mobile-item-copy {
+  display: grid;
+  min-width: 0;
+  gap: 2px;
+}
+
+.composition-mobile-item-label {
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.composition-mobile-item-description {
+  overflow: hidden;
+  color: var(--muted);
+  font-size: 8px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.composition-mobile-item[data-current="true"] .composition-mobile-item-description {
+  color: rgb(255 255 255 / 68%);
+}
+
+.composition-mobile-badge {
+  min-width: 24px;
+  padding: 3px 5px;
+  border: 1px solid currentColor;
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 7px;
+  text-align: center;
+}
+
+.composition-mobile-footer {
+  margin-top: auto;
+  padding: 18px 20px;
+  border-top: 1px solid var(--ink);
+}
+
+.composition-mobile-profile > button {
+  min-height: 30px;
+  margin-left: auto;
+  padding: 0 8px;
+  border: 1px solid var(--ink);
+  border-radius: 0;
+  background: #fff;
+  font-size: 8px;
+}
+
 .composition-detail-main {
   display: grid;
   gap: 30px;
@@ -1194,6 +1501,17 @@
   .composition-onboarding-actions button {
     min-width: 0;
     flex: 1;
+  }
+
+  .composition-mobile-launcher {
+    min-height: 240px;
+    padding: 18px;
+    box-shadow: 6px 6px 0 rgb(0 194 209 / 38%);
+  }
+
+  .composition-mobile-panel {
+    border-left: 0;
+    box-shadow: none;
   }
 
   .composition-project-trigger {

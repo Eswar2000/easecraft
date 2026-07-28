@@ -25,6 +25,9 @@ export default defineConfig({
         "compositions/filterable-work-gallery": fileURLToPath(
           new URL("./source/compositions/filterable-work-gallery.package.tsx", import.meta.url),
         ),
+        "compositions/mobile-navigation-panel": fileURLToPath(
+          new URL("./source/compositions/mobile-navigation-panel.package.tsx", import.meta.url),
+        ),
         "compositions/notification-center": fileURLToPath(
           new URL("./source/compositions/notification-center.package.tsx", import.meta.url),
         ),

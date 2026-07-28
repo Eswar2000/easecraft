@@ -34,6 +34,11 @@
       "import": "./dist/compositions/filterable-work-gallery.js",
       "default": "./dist/compositions/filterable-work-gallery.js"
     },
+    "./compositions/mobile-navigation-panel": {
+      "types": "./dist/compositions/mobile-navigation-panel.d.ts",
+      "import": "./dist/compositions/mobile-navigation-panel.js",
+      "default": "./dist/compositions/mobile-navigation-panel.js"
+    },
     "./compositions/notification-center": {
       "types": "./dist/compositions/notification-center.d.ts",
       "import": "./dist/compositions/notification-center.js",
