@@ -6,7 +6,7 @@ Easecraft is an open-source motion design system planned for React. It will comb
 
 ## Project Status
 
-Easecraft is currently in the **registry and playground stage**. The motion foundation plus all nine planned component vertical slices are implemented across the package, tests, consumer fixture, and interactive documentation. The typed registry defines the explorer catalog, copy-source file graphs, dependency metadata, deterministic install plans, and four complete compositions now visible in the composition explorer: Command Palette, Expandable Project Card, Notification Center, and Filterable Work Gallery; no npm package has been published yet.
+Easecraft is currently in the **registry and playground stage**. The motion foundation plus all nine planned component vertical slices are implemented across the package, tests, consumer fixture, and interactive documentation. The typed registry defines the explorer catalog, copy-source file graphs, dependency metadata, deterministic install plans, and five complete compositions now visible in the composition explorer: Command Palette, Expandable Project Card, Notification Center, Filterable Work Gallery, and Onboarding Progress Sequence; no npm package has been published yet.
 
 The complete product scope, architecture, delivery plan, and initial backlog are documented in the [project proposal](PROPOSAL.md).
 
@@ -61,7 +61,7 @@ The proposed first release includes five foundations, five hooks, and nine high-
 
 `TextReveal`, `NumberTicker`, `StaggeredList`, `AnimatedTabs`, `AnimatedAccordion`, `MotionDialog`, `ToastStack`, `FilterGrid`, and `ScrollReveal` are completed vertical slices, proving the package API, Anime.js lifecycle integration, reduced-motion behavior, accessible output, documentation, tests, and consumer build.
 
-The `Stagger` foundation is also implemented with bounded forward and reverse child sequencing, scoped cleanup, and an immediate reduced-motion fallback. The next composition is Onboarding Progress Sequence, followed by the remaining three registry compositions, copy actions, and the interactive playground.
+The `Stagger` foundation is also implemented with bounded forward and reverse child sequencing, scoped cleanup, and an immediate reduced-motion fallback. The next composition is Mobile Navigation Panel, followed by the remaining two registry compositions, copy actions, and the interactive playground.
 
 ## Principles
 

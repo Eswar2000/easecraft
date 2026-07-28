@@ -12,6 +12,10 @@ import {
   NotificationCenter,
   type NotificationCenterItem,
 } from "easecraft-registry/compositions/notification-center";
+import {
+  OnboardingProgressSequence,
+  type OnboardingStep,
+} from "easecraft-registry/compositions/onboarding-progress-sequence";
 import { useState } from "react";
 import type { CompositionSlug } from "easecraft-registry";
 
@@ -106,6 +110,97 @@ const galleryItems = [
   },
 ] as const satisfies readonly FilterableWorkItem[];
 
+const onboardingSteps = [
+  {
+    content: (
+      <div className="composition-onboarding-step">
+        <span>01 / Identity</span>
+        <h3>Set up your profile</h3>
+        <p>Choose how your teammates will recognize you across the workspace.</p>
+        <div className="composition-onboarding-fields">
+          <label>
+            Display name
+            <input defaultValue="Avery Stone" />
+          </label>
+          <label>
+            Role
+            <select defaultValue="Design">
+              <option>Design</option>
+              <option>Engineering</option>
+              <option>Product</option>
+            </select>
+          </label>
+        </div>
+      </div>
+    ),
+    description: "Your basics",
+    id: "profile",
+    label: "Profile",
+  },
+  {
+    content: (
+      <div className="composition-onboarding-step">
+        <span>02 / Workspace</span>
+        <h3>Name your shared space</h3>
+        <p>This is where projects, motion decisions, and collaborators come together.</p>
+        <div className="composition-onboarding-fields">
+          <label>
+            Workspace name
+            <input defaultValue="Northstar Studio" />
+          </label>
+          <label>
+            Team size
+            <select defaultValue="2-10 people">
+              <option>Just me</option>
+              <option>2-10 people</option>
+              <option>11-50 people</option>
+            </select>
+          </label>
+        </div>
+      </div>
+    ),
+    description: "Shared context",
+    id: "workspace",
+    label: "Workspace",
+  },
+  {
+    content: (
+      <div className="composition-onboarding-step">
+        <span>03 / Collaborate</span>
+        <h3>Invite your team</h3>
+        <p>Add a collaborator now or continue and return to invitations later.</p>
+        <div className="composition-onboarding-fields composition-onboarding-fields-single">
+          <label>
+            Teammate email
+            <input inputMode="email" placeholder="name@company.com" type="email" />
+          </label>
+        </div>
+      </div>
+    ),
+    description: "Invite people",
+    id: "team",
+    label: "Team",
+    optional: true,
+  },
+  {
+    content: (
+      <div className="composition-onboarding-step composition-onboarding-ready">
+        <span>04 / Ready</span>
+        <h3>Your workspace is ready</h3>
+        <p>Review the setup, then finish onboarding and start your first project.</p>
+        <ul>
+          <li>Profile details added</li>
+          <li>Workspace preferences selected</li>
+          <li>Invitations can be managed later</li>
+        </ul>
+      </div>
+    ),
+    description: "Review setup",
+    id: "ready",
+    label: "Ready",
+  },
+] as const satisfies readonly OnboardingStep[];
+
 interface CompositionPreviewProps {
   readonly reducedMotion?: boolean;
   readonly slug: CompositionSlug;
@@ -115,6 +210,7 @@ export function CompositionPreview({ reducedMotion = false, slug }: CompositionP
   const [lastCommand, setLastCommand] = useState("No command selected");
   const [notifications, setNotifications] =
     useState<readonly NotificationCenterItem[]>(previewNotifications);
+  const [onboardingComplete, setOnboardingComplete] = useState(false);
 
   return (
     <MotionProvider reducedMotion={reducedMotion ? "always" : "never"}>
@@ -171,7 +267,7 @@ export function CompositionPreview({ reducedMotion = false, slug }: CompositionP
             </div>
             <div>
               <dt>Compositions</dt>
-              <dd>04</dd>
+              <dd>05</dd>
             </div>
           </dl>
         </ExpandableProjectCard>
@@ -194,7 +290,7 @@ export function CompositionPreview({ reducedMotion = false, slug }: CompositionP
           viewportClassName="composition-notification-viewport"
           viewportStyle={{ inset: "auto", position: "relative", width: "100%" }}
         />
-      ) : (
+      ) : slug === "filterable-work-gallery" ? (
         <FilterableWorkGallery
           categories={galleryCategories}
           controlClassName="composition-gallery-control"
@@ -207,6 +303,21 @@ export function CompositionPreview({ reducedMotion = false, slug }: CompositionP
           metaClassName="composition-gallery-meta"
           resultClassName="composition-gallery-results"
           tagsClassName="composition-gallery-tags"
+        />
+      ) : (
+        <OnboardingProgressSequence
+          actionsClassName="composition-onboarding-actions"
+          backButtonClassName="composition-onboarding-back"
+          className="composition-onboarding"
+          completeLabel={onboardingComplete ? "Setup complete" : "Finish setup"}
+          continueButtonClassName="composition-onboarding-continue"
+          onComplete={() => {
+            setOnboardingComplete(true);
+          }}
+          panelClassName="composition-onboarding-panel"
+          statusClassName="composition-onboarding-status"
+          stepLabelClassName="composition-onboarding-label"
+          steps={onboardingSteps}
         />
       )}
     </MotionProvider>

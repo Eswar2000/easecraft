@@ -28,6 +28,12 @@ export default defineConfig({
         "compositions/notification-center": fileURLToPath(
           new URL("./source/compositions/notification-center.package.tsx", import.meta.url),
         ),
+        "compositions/onboarding-progress-sequence": fileURLToPath(
+          new URL(
+            "./source/compositions/onboarding-progress-sequence.package.tsx",
+            import.meta.url,
+          ),
+        ),
       },
       fileName: (_format, entryName) => `${entryName}.js`,
       formats: ["es"],

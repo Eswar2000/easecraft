@@ -14,6 +14,7 @@ import { CommandPalette } from "easecraft-registry/compositions/command-palette"
 import { ExpandableProjectCard } from "easecraft-registry/compositions/expandable-project-card";
 import { FilterableWorkGallery } from "easecraft-registry/compositions/filterable-work-gallery";
 import { NotificationCenter } from "easecraft-registry/compositions/notification-center";
+import { OnboardingProgressSequence } from "easecraft-registry/compositions/onboarding-progress-sequence";
 
 describe("component explorer registry consumption", () => {
   it("provides the categories and nine cards rendered by the explorer", () => {
@@ -74,6 +75,7 @@ describe("component explorer registry consumption", () => {
       "expandable-project-card",
       "notification-center",
       "filterable-work-gallery",
+      "onboarding-progress-sequence",
     ]);
     expect(listCompositions()).toMatchObject([
       {
@@ -94,6 +96,11 @@ describe("component explorer registry consumption", () => {
       {
         componentDependencies: ["filter-grid"],
         name: "Filterable Work Gallery",
+        status: "implemented",
+      },
+      {
+        componentDependencies: ["animated-tabs"],
+        name: "Onboarding Progress Sequence",
         status: "implemented",
       },
     ]);
@@ -119,6 +126,11 @@ describe("component explorer registry consumption", () => {
     expect(galleryPlan.files.at(-1)?.destinationPath).toBe(
       "components/easecraft/compositions/filterable-work-gallery.tsx",
     );
+
+    const onboardingPlan = getCompositionInstallPlan("onboarding-progress-sequence", "copy-source");
+    expect(onboardingPlan.files.at(-1)?.destinationPath).toBe(
+      "components/easecraft/compositions/onboarding-progress-sequence.tsx",
+    );
   });
 
   it("provides static detail routes and public live-preview exports", () => {
@@ -127,10 +139,12 @@ describe("component explorer registry consumption", () => {
       "/compositions/expandable-project-card",
       "/compositions/notification-center",
       "/compositions/filterable-work-gallery",
+      "/compositions/onboarding-progress-sequence",
     ]);
     expect(typeof CommandPalette).toBe("function");
     expect(typeof ExpandableProjectCard).toBe("function");
     expect(typeof NotificationCenter).toBe("function");
     expect(typeof FilterableWorkGallery).toBe("function");
+    expect(typeof OnboardingProgressSequence).toBe("function");
   });
 });

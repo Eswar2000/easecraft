@@ -153,6 +153,47 @@ export const compositionEntries = defineCompositionRegistry(componentSlugs, [
     status: "implemented",
     tags: ["filter", "gallery", "layout", "portfolio"],
   },
+  {
+    accessibility: {
+      announcement: "polite",
+      focusManagement: true,
+      keyboard: [
+        {
+          behavior: "Moves focus through enabled progress steps without changing the active step.",
+          keys: ["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown"],
+        },
+        { behavior: "Moves focus to the first or last enabled step.", keys: ["Home", "End"] },
+        { behavior: "Activates the focused step or navigation control.", keys: ["Enter", "Space"] },
+        {
+          behavior: "Moves between the step list, active panel, and navigation controls.",
+          keys: ["Tab", "Shift+Tab"],
+        },
+      ],
+      notes: [
+        "Uses linked tab and tabpanel semantics with ordered complete, current, and upcoming states.",
+        "Announces the active step position in one polite live region and skips disabled steps.",
+      ],
+      pattern: "onboarding-stepper",
+    },
+    category: "Workflow",
+    componentDependencies: ["animated-tabs"],
+    description:
+      "Guide a controlled or self-managed setup flow with animated panels and explicit progress.",
+    motion: {
+      controlled: true,
+      enter: true,
+      exit: false,
+      intrinsicSize: false,
+      layout: true,
+      reducedMotion: true,
+      replay: true,
+      viewport: false,
+    },
+    name: "Onboarding Progress Sequence",
+    slug: "onboarding-progress-sequence",
+    status: "implemented",
+    tags: ["onboarding", "progress", "stepper", "workflow"],
+  },
 ] as const satisfies readonly CompositionRegistryEntry<ComponentSlug>[]);
 
 export type CompositionSlug = (typeof compositionEntries)[number]["slug"];

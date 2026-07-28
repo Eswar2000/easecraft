@@ -39,6 +39,7 @@ describe("compositionRegistry", () => {
       "expandable-project-card",
       "notification-center",
       "filterable-work-gallery",
+      "onboarding-progress-sequence",
     ]);
     expect(listCompositions()).toBe(compositionRegistry);
     expect(getComposition("command-palette")).toMatchObject({
@@ -65,6 +66,12 @@ describe("compositionRegistry", () => {
       category: "Content",
       componentDependencies: ["filter-grid"],
       name: "Filterable Work Gallery",
+      status: "implemented",
+    });
+    expect(getComposition("onboarding-progress-sequence")).toMatchObject({
+      category: "Workflow",
+      componentDependencies: ["animated-tabs"],
+      name: "Onboarding Progress Sequence",
       status: "implemented",
     });
     expect(isCompositionSlug("missing-composition")).toBe(false);
@@ -165,6 +172,24 @@ describe("compositionManifests", () => {
         },
       ],
       slug: "filterable-work-gallery",
+    });
+    expect(compositionManifests["onboarding-progress-sequence"]).toEqual({
+      componentDependencies: ["animated-tabs"],
+      copySourceFiles: [
+        compositionFile("onboarding-progress-sequence-core", "utility"),
+        {
+          ...compositionFile("onboarding-progress-sequence.copy"),
+          destinationPath: "components/easecraft/compositions/onboarding-progress-sequence.tsx",
+        },
+      ],
+      packageFiles: [
+        compositionFile("onboarding-progress-sequence-core", "utility"),
+        {
+          ...compositionFile("onboarding-progress-sequence.package"),
+          destinationPath: "components/easecraft/compositions/onboarding-progress-sequence.tsx",
+        },
+      ],
+      slug: "onboarding-progress-sequence",
     });
   });
 
@@ -289,6 +314,25 @@ describe("getCompositionInstallPlan", () => {
       "components/easecraft/filter-grid.tsx",
       "components/easecraft/compositions/filterable-work-gallery-core.tsx",
       "components/easecraft/compositions/filterable-work-gallery.tsx",
+    ]);
+    expect(copySourcePlan.dependencies.npm).toEqual([
+      { name: "animejs", type: "npm", version: "4.5.0" },
+    ]);
+  });
+
+  it("creates package and copy-source Onboarding Progress Sequence plans", () => {
+    const packagePlan = getCompositionInstallPlan("onboarding-progress-sequence", "package");
+    const copySourcePlan = getCompositionInstallPlan("onboarding-progress-sequence", "copy-source");
+
+    expect(packagePlan.componentDependencies).toEqual(["animated-tabs"]);
+    expect(packagePlan.dependencies.npm).toEqual([
+      { name: "easecraft", type: "npm", version: "0.0.0" },
+    ]);
+    expect(copySourcePlan.files.map((file) => file.destinationPath)).toEqual([
+      "components/easecraft/motion-provider.tsx",
+      "components/easecraft/animated-tabs.tsx",
+      "components/easecraft/compositions/onboarding-progress-sequence-core.tsx",
+      "components/easecraft/compositions/onboarding-progress-sequence.tsx",
     ]);
     expect(copySourcePlan.dependencies.npm).toEqual([
       { name: "animejs", type: "npm", version: "4.5.0" },

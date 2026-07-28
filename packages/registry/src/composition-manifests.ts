@@ -31,6 +31,7 @@ const commandPaletteCore = supportFile("command-palette-core");
 const expandableProjectCardCore = supportFile("expandable-project-card-core");
 const filterableWorkGalleryCore = supportFile("filterable-work-gallery-core");
 const notificationCenterCore = supportFile("notification-center-core");
+const onboardingProgressSequenceCore = supportFile("onboarding-progress-sequence-core");
 
 export const compositionManifests = defineCompositionManifests(compositionSlugs, componentSlugs, {
   "command-palette": {
@@ -80,5 +81,17 @@ export const compositionManifests = defineCompositionManifests(compositionSlugs,
       compositionFile("notification-center.package", "notification-center"),
     ],
     slug: "notification-center",
+  },
+  "onboarding-progress-sequence": {
+    componentDependencies: ["animated-tabs"],
+    copySourceFiles: [
+      onboardingProgressSequenceCore,
+      compositionFile("onboarding-progress-sequence.copy", "onboarding-progress-sequence"),
+    ],
+    packageFiles: [
+      onboardingProgressSequenceCore,
+      compositionFile("onboarding-progress-sequence.package", "onboarding-progress-sequence"),
+    ],
+    slug: "onboarding-progress-sequence",
   },
 } satisfies CompositionManifestMap<CompositionSlug, ComponentSlug>);

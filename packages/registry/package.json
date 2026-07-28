@@ -38,6 +38,11 @@
       "types": "./dist/compositions/notification-center.d.ts",
       "import": "./dist/compositions/notification-center.js",
       "default": "./dist/compositions/notification-center.js"
+    },
+    "./compositions/onboarding-progress-sequence": {
+      "types": "./dist/compositions/onboarding-progress-sequence.d.ts",
+      "import": "./dist/compositions/onboarding-progress-sequence.js",
+      "default": "./dist/compositions/onboarding-progress-sequence.js"
     }
   },
   "scripts": {
