@@ -1,4 +1,4 @@
-import { componentEntries } from "./components.js";
+import { componentEntries, type ComponentSlug } from "./components.js";
 import {
   defineComponentRegistry,
   type ComponentCategory,
@@ -7,9 +7,6 @@ import {
 
 export const componentRegistry = defineComponentRegistry(componentEntries);
 
-type ComponentRegistryLiteral = (typeof componentRegistry)[number];
-
-export type ComponentSlug = ComponentRegistryLiteral["slug"];
 export type RegisteredComponent = Omit<ComponentRegistryEntry, "slug"> & {
   readonly slug: ComponentSlug;
 };
@@ -53,6 +50,10 @@ export function listComponentsByCategory(
 export {
   componentCategories,
   defineComponentRegistry,
+  defineCopySourceManifests,
+  registryDeliveryModes,
+  registryPackageManagers,
+  type ComponentInstallPlan,
   type ComponentAccessibility,
   type ComponentAnnouncement,
   type ComponentCategory,
@@ -64,4 +65,17 @@ export {
   type ComponentSourceFile,
   type ComponentSourceRole,
   type ComponentStatus,
+  type CopySourceFile,
+  type CopySourceFileRole,
+  type CopySourceInstallPlan,
+  type CopySourceManifest,
+  type CopySourceManifestMap,
+  type InstallDependencyGroups,
+  type PackageInstallPlan,
+  type RegistryDeliveryMode,
+  type RegistryPackageManager,
 } from "./schema.js";
+
+export { getInstallCommand, getInstallPlan } from "./install-plan.js";
+export { copySourceManifests } from "./manifests.js";
+export type { ComponentSlug } from "./components.js";

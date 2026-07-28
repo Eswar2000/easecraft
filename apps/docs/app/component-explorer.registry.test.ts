@@ -1,6 +1,12 @@
 import { describe, expect, it } from "vitest";
 
-import { componentCategories, componentSlugs, listComponents } from "easecraft-registry";
+import {
+  componentCategories,
+  componentSlugs,
+  getInstallCommand,
+  getInstallPlan,
+  listComponents,
+} from "easecraft-registry";
 
 describe("component explorer registry consumption", () => {
   it("provides the categories and nine cards rendered by the explorer", () => {
@@ -41,5 +47,17 @@ describe("component explorer registry consumption", () => {
         status: "implemented",
       },
     ]);
+  });
+
+  it("provides deterministic package and copy-source plans for every explorer card", () => {
+    componentSlugs.forEach((slug) => {
+      const packagePlan = getInstallPlan(slug, "package");
+      const copySourcePlan = getInstallPlan(slug, "copy-source");
+
+      expect(packagePlan.files).toEqual([]);
+      expect(getInstallCommand(packagePlan)).toBe("pnpm add easecraft@0.0.0");
+      expect(copySourcePlan.files.at(-1)?.destinationPath).toBe(`components/easecraft/${slug}.tsx`);
+      expect(getInstallCommand(copySourcePlan)).toMatch(/^pnpm add /u);
+    });
   });
 });

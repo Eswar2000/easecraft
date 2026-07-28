@@ -173,12 +173,18 @@ importers:
 
   packages/registry:
     devDependencies:
+      '@types/node':
+        specifier: 26.1.1
+        version: 26.1.1
       easecraft-eslint-config:
         specifier: workspace:*
         version: link:../eslint-config
       easecraft-typescript-config:
         specifier: workspace:*
         version: link:../typescript-config
+      typescript:
+        specifier: 6.0.3
+        version: 6.0.3
       vite:
         specifier: 8.1.5
         version: 8.1.5(@types/node@26.1.1)

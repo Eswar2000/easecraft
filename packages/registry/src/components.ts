@@ -1,14 +1,14 @@
 import type { ComponentDependency, ComponentRegistryEntry, ComponentSourceFile } from "./schema.js";
 
 const motionDependencies = [
-  { name: "animejs", type: "runtime" },
-  { name: "easecraft-tokens", type: "workspace" },
-  { name: "react", type: "peer" },
-  { name: "react-dom", type: "peer" },
+  { name: "animejs", type: "npm", version: "4.5.0" },
+  { name: "easecraft-tokens", type: "workspace", version: "0.0.0" },
+  { name: "react", type: "peer", version: ">=18.2.0 <20.0.0" },
+  { name: "react-dom", type: "peer", version: ">=18.2.0 <20.0.0" },
 ] as const satisfies readonly ComponentDependency[];
 
-function withRadixDependency(name: string): readonly ComponentDependency[] {
-  return [{ name, type: "runtime" }, ...motionDependencies];
+function withRadixDependency(name: string, version: string): readonly ComponentDependency[] {
+  return [{ name, type: "npm", version }, ...motionDependencies];
 }
 
 function sourceFiles(name: string, integration = true): readonly ComponentSourceFile[] {
@@ -180,7 +180,7 @@ export const componentEntries = [
       pattern: "dialog",
     },
     category: "Overlay",
-    dependencies: withRadixDependency("@radix-ui/react-dialog"),
+    dependencies: withRadixDependency("@radix-ui/react-dialog", "1.1.23"),
     description: "Focus-safe presence with retained exit content.",
     docsPath: "/components/motion-dialog",
     exportName: "MotionDialog",
@@ -216,7 +216,7 @@ export const componentEntries = [
       pattern: "toast",
     },
     category: "Feedback",
-    dependencies: withRadixDependency("@radix-ui/react-toast"),
+    dependencies: withRadixDependency("@radix-ui/react-toast", "1.2.23"),
     description: "Live-region notifications with controlled reflow.",
     docsPath: "/components/toast-stack",
     exportName: "ToastStack",
@@ -325,7 +325,7 @@ export const componentEntries = [
       pattern: "accordion",
     },
     category: "Layout",
-    dependencies: withRadixDependency("@radix-ui/react-accordion"),
+    dependencies: withRadixDependency("@radix-ui/react-accordion", "1.2.20"),
     description: "Intrinsic-height disclosure with retained panel exits.",
     docsPath: "/components/animated-accordion",
     exportName: "AnimatedAccordion",
@@ -346,3 +346,5 @@ export const componentEntries = [
     status: "implemented",
   },
 ] as const satisfies readonly ComponentRegistryEntry[];
+
+export type ComponentSlug = (typeof componentEntries)[number]["slug"];
