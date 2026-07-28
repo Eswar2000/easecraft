@@ -4,6 +4,11 @@ import { MotionProvider } from "easecraft";
 import { CommandPalette } from "easecraft-registry/compositions/command-palette";
 import { ExpandableProjectCard } from "easecraft-registry/compositions/expandable-project-card";
 import {
+  FilterableWorkGallery,
+  type FilterableWorkCategory,
+  type FilterableWorkItem,
+} from "easecraft-registry/compositions/filterable-work-gallery";
+import {
   NotificationCenter,
   type NotificationCenterItem,
 } from "easecraft-registry/compositions/notification-center";
@@ -57,6 +62,49 @@ const previewNotifications = [
     title: "Production build complete",
   },
 ] as const satisfies readonly NotificationCenterItem[];
+
+const galleryCategories = [
+  { label: "Product", value: "product" },
+  { label: "Editorial", value: "editorial" },
+  { label: "Identity", value: "identity" },
+] as const satisfies readonly FilterableWorkCategory[];
+
+const galleryItems = [
+  {
+    categories: ["product"],
+    description: "Accessible motion infrastructure.",
+    id: "easecraft",
+    media: "EC",
+    meta: "Open source",
+    title: "Easecraft",
+    year: "2026",
+  },
+  {
+    categories: ["editorial", "identity"],
+    description: "Publication and identity system.",
+    id: "field-notes",
+    media: "FN",
+    meta: "Studio",
+    title: "Field Notes",
+    year: "2025",
+  },
+  {
+    categories: ["product", "identity"],
+    id: "relay",
+    media: "RL",
+    meta: "SaaS",
+    title: "Relay",
+    year: "2025",
+  },
+  {
+    categories: ["editorial"],
+    id: "index",
+    media: "IX",
+    meta: "Archive",
+    title: "Index",
+    year: "2024",
+  },
+] as const satisfies readonly FilterableWorkItem[];
 
 interface CompositionPreviewProps {
   readonly reducedMotion?: boolean;
@@ -123,11 +171,11 @@ export function CompositionPreview({ reducedMotion = false, slug }: CompositionP
             </div>
             <div>
               <dt>Compositions</dt>
-              <dd>03</dd>
+              <dd>04</dd>
             </div>
           </dl>
         </ExpandableProjectCard>
-      ) : (
+      ) : slug === "notification-center" ? (
         <NotificationCenter
           actionClassName="composition-notification-action"
           centerClassName="composition-notification-center"
@@ -145,6 +193,20 @@ export function CompositionPreview({ reducedMotion = false, slug }: CompositionP
           toastClassName="composition-notification-toast-item"
           viewportClassName="composition-notification-viewport"
           viewportStyle={{ inset: "auto", position: "relative", width: "100%" }}
+        />
+      ) : (
+        <FilterableWorkGallery
+          categories={galleryCategories}
+          controlClassName="composition-gallery-control"
+          controlsClassName="composition-gallery-controls"
+          emptyClassName="composition-gallery-empty"
+          galleryClassName="composition-gallery"
+          gridClassName="composition-gallery-grid"
+          itemClassName="composition-gallery-card"
+          items={galleryItems}
+          metaClassName="composition-gallery-meta"
+          resultClassName="composition-gallery-results"
+          tagsClassName="composition-gallery-tags"
         />
       )}
     </MotionProvider>

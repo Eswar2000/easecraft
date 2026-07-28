@@ -22,6 +22,9 @@ export default defineConfig({
         "compositions/expandable-project-card": fileURLToPath(
           new URL("./source/compositions/expandable-project-card.package.tsx", import.meta.url),
         ),
+        "compositions/filterable-work-gallery": fileURLToPath(
+          new URL("./source/compositions/filterable-work-gallery.package.tsx", import.meta.url),
+        ),
         "compositions/notification-center": fileURLToPath(
           new URL("./source/compositions/notification-center.package.tsx", import.meta.url),
         ),

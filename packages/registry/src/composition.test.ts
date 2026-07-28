@@ -38,6 +38,7 @@ describe("compositionRegistry", () => {
       "command-palette",
       "expandable-project-card",
       "notification-center",
+      "filterable-work-gallery",
     ]);
     expect(listCompositions()).toBe(compositionRegistry);
     expect(getComposition("command-palette")).toMatchObject({
@@ -58,6 +59,12 @@ describe("compositionRegistry", () => {
       category: "Feedback",
       componentDependencies: ["toast-stack"],
       name: "Notification Center",
+      status: "implemented",
+    });
+    expect(getComposition("filterable-work-gallery")).toMatchObject({
+      category: "Content",
+      componentDependencies: ["filter-grid"],
+      name: "Filterable Work Gallery",
       status: "implemented",
     });
     expect(isCompositionSlug("missing-composition")).toBe(false);
@@ -140,6 +147,24 @@ describe("compositionManifests", () => {
         },
       ],
       slug: "notification-center",
+    });
+    expect(compositionManifests["filterable-work-gallery"]).toEqual({
+      componentDependencies: ["filter-grid"],
+      copySourceFiles: [
+        compositionFile("filterable-work-gallery-core", "utility"),
+        {
+          ...compositionFile("filterable-work-gallery.copy"),
+          destinationPath: "components/easecraft/compositions/filterable-work-gallery.tsx",
+        },
+      ],
+      packageFiles: [
+        compositionFile("filterable-work-gallery-core", "utility"),
+        {
+          ...compositionFile("filterable-work-gallery.package"),
+          destinationPath: "components/easecraft/compositions/filterable-work-gallery.tsx",
+        },
+      ],
+      slug: "filterable-work-gallery",
     });
   });
 
@@ -244,6 +269,28 @@ describe("getCompositionInstallPlan", () => {
     ]);
     expect(copySourcePlan.dependencies.npm).toEqual([
       { name: "@radix-ui/react-toast", type: "npm", version: "1.2.23" },
+      { name: "animejs", type: "npm", version: "4.5.0" },
+    ]);
+  });
+
+  it("creates package and copy-source Filterable Work Gallery plans", () => {
+    const packagePlan = getCompositionInstallPlan("filterable-work-gallery", "package");
+    const copySourcePlan = getCompositionInstallPlan("filterable-work-gallery", "copy-source");
+
+    expect(packagePlan.componentDependencies).toEqual(["filter-grid"]);
+    expect(packagePlan.dependencies.npm).toEqual([
+      { name: "easecraft", type: "npm", version: "0.0.0" },
+    ]);
+    expect(copySourcePlan.files.map((file) => file.destinationPath)).toEqual([
+      "components/easecraft/motion-provider.tsx",
+      "components/easecraft/use-anime.ts",
+      "components/easecraft/stagger.tsx",
+      "components/easecraft/staggered-list.tsx",
+      "components/easecraft/filter-grid.tsx",
+      "components/easecraft/compositions/filterable-work-gallery-core.tsx",
+      "components/easecraft/compositions/filterable-work-gallery.tsx",
+    ]);
+    expect(copySourcePlan.dependencies.npm).toEqual([
       { name: "animejs", type: "npm", version: "4.5.0" },
     ]);
   });

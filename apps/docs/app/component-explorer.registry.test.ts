@@ -12,6 +12,7 @@ import {
 } from "easecraft-registry";
 import { CommandPalette } from "easecraft-registry/compositions/command-palette";
 import { ExpandableProjectCard } from "easecraft-registry/compositions/expandable-project-card";
+import { FilterableWorkGallery } from "easecraft-registry/compositions/filterable-work-gallery";
 import { NotificationCenter } from "easecraft-registry/compositions/notification-center";
 
 describe("component explorer registry consumption", () => {
@@ -72,6 +73,7 @@ describe("component explorer registry consumption", () => {
       "command-palette",
       "expandable-project-card",
       "notification-center",
+      "filterable-work-gallery",
     ]);
     expect(listCompositions()).toMatchObject([
       {
@@ -87,6 +89,11 @@ describe("component explorer registry consumption", () => {
       {
         componentDependencies: ["toast-stack"],
         name: "Notification Center",
+        status: "implemented",
+      },
+      {
+        componentDependencies: ["filter-grid"],
+        name: "Filterable Work Gallery",
         status: "implemented",
       },
     ]);
@@ -107,6 +114,11 @@ describe("component explorer registry consumption", () => {
     expect(notificationPlan.files.at(-1)?.destinationPath).toBe(
       "components/easecraft/compositions/notification-center.tsx",
     );
+
+    const galleryPlan = getCompositionInstallPlan("filterable-work-gallery", "copy-source");
+    expect(galleryPlan.files.at(-1)?.destinationPath).toBe(
+      "components/easecraft/compositions/filterable-work-gallery.tsx",
+    );
   });
 
   it("provides static detail routes and public live-preview exports", () => {
@@ -114,9 +126,11 @@ describe("component explorer registry consumption", () => {
       "/compositions/command-palette",
       "/compositions/expandable-project-card",
       "/compositions/notification-center",
+      "/compositions/filterable-work-gallery",
     ]);
     expect(typeof CommandPalette).toBe("function");
     expect(typeof ExpandableProjectCard).toBe("function");
     expect(typeof NotificationCenter).toBe("function");
+    expect(typeof FilterableWorkGallery).toBe("function");
   });
 });

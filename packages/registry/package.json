@@ -29,6 +29,11 @@
       "import": "./dist/compositions/expandable-project-card.js",
       "default": "./dist/compositions/expandable-project-card.js"
     },
+    "./compositions/filterable-work-gallery": {
+      "types": "./dist/compositions/filterable-work-gallery.d.ts",
+      "import": "./dist/compositions/filterable-work-gallery.js",
+      "default": "./dist/compositions/filterable-work-gallery.js"
+    },
     "./compositions/notification-center": {
       "types": "./dist/compositions/notification-center.d.ts",
       "import": "./dist/compositions/notification-center.js",

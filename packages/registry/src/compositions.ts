@@ -117,6 +117,42 @@ export const compositionEntries = defineCompositionRegistry(componentSlugs, [
     status: "implemented",
     tags: ["feedback", "live-region", "notifications", "toast"],
   },
+  {
+    accessibility: {
+      announcement: "polite",
+      focusManagement: true,
+      keyboard: [
+        {
+          behavior: "Moves through native category controls and project links.",
+          keys: ["Tab", "Shift+Tab"],
+        },
+        { behavior: "Activates the focused category or project action.", keys: ["Enter", "Space"] },
+      ],
+      notes: [
+        "Announces the filtered project count in one polite live region.",
+        "Filtered projects become inert and transfer focus before retained exits complete.",
+      ],
+      pattern: "filterable-gallery",
+    },
+    category: "Content",
+    componentDependencies: ["filter-grid"],
+    description:
+      "Filter a semantic project gallery with focus-safe exits and animated two-axis reflow.",
+    motion: {
+      controlled: true,
+      enter: true,
+      exit: true,
+      intrinsicSize: false,
+      layout: true,
+      reducedMotion: true,
+      replay: true,
+      viewport: false,
+    },
+    name: "Filterable Work Gallery",
+    slug: "filterable-work-gallery",
+    status: "implemented",
+    tags: ["filter", "gallery", "layout", "portfolio"],
+  },
 ] as const satisfies readonly CompositionRegistryEntry<ComponentSlug>[]);
 
 export type CompositionSlug = (typeof compositionEntries)[number]["slug"];
