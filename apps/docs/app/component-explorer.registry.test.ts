@@ -7,9 +7,11 @@ import {
   getCompositionInstallPlan,
   getInstallCommand,
   getInstallPlan,
-  listCompositions,
   listComponents,
+  listCompositions,
 } from "easecraft-registry";
+import { CommandPalette } from "easecraft-registry/compositions/command-palette";
+import { ExpandableProjectCard } from "easecraft-registry/compositions/expandable-project-card";
 
 describe("component explorer registry consumption", () => {
   it("provides the categories and nine cards rendered by the explorer", () => {
@@ -90,5 +92,14 @@ describe("component explorer registry consumption", () => {
     expect(projectCardPlan.files.at(-1)?.destinationPath).toBe(
       "components/easecraft/compositions/expandable-project-card.tsx",
     );
+  });
+
+  it("provides static detail routes and public live-preview exports", () => {
+    expect(compositionSlugs.map((slug) => `/compositions/${slug}`)).toEqual([
+      "/compositions/command-palette",
+      "/compositions/expandable-project-card",
+    ]);
+    expect(typeof CommandPalette).toBe("function");
+    expect(typeof ExpandableProjectCard).toBe("function");
   });
 });

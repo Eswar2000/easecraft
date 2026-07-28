@@ -18,6 +18,16 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js",
       "default": "./dist/index.js"
+    },
+    "./compositions/command-palette": {
+      "types": "./dist/compositions/command-palette.d.ts",
+      "import": "./dist/compositions/command-palette.js",
+      "default": "./dist/compositions/command-palette.js"
+    },
+    "./compositions/expandable-project-card": {
+      "types": "./dist/compositions/expandable-project-card.d.ts",
+      "import": "./dist/compositions/expandable-project-card.js",
+      "default": "./dist/compositions/expandable-project-card.js"
     }
   },
   "scripts": {
