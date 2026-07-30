@@ -10,26 +10,24 @@ import { getCompositionDeliverySources, readCompositionSourceFile } from "./comp
 import { serializeCompositionSources } from "./composition-delivery-types";
 
 describe("composition delivery sources", () => {
-  it("materializes both delivery modes for every registered composition", async () => {
-    await Promise.all(
-      compositionSlugs.map(async (slug) => {
-        const sources = await getCompositionDeliverySources(slug);
+  it("materializes both delivery modes for every registered composition", () => {
+    compositionSlugs.forEach((slug) => {
+      const sources = getCompositionDeliverySources(slug);
 
-        for (const mode of ["package", "copy-source"] as const) {
-          const plan = getCompositionInstallPlan(slug, mode);
+      for (const mode of ["package", "copy-source"] as const) {
+        const plan = getCompositionInstallPlan(slug, mode);
 
-          expect(sources[mode].map((file) => file.destinationPath)).toEqual(
-            plan.files.map((file) => file.destinationPath),
-          );
-          expect(sources[mode].every((file) => file.content.length > 0)).toBe(true);
-          expect(sources[mode].every((file) => !("sourcePath" in file))).toBe(true);
-        }
-      }),
-    );
+        expect(sources[mode].map((file) => file.destinationPath)).toEqual(
+          plan.files.map((file) => file.destinationPath),
+        );
+        expect(sources[mode].every((file) => file.content.length > 0)).toBe(true);
+        expect(sources[mode].every((file) => !("sourcePath" in file))).toBe(true);
+      }
+    });
   });
 
-  it("loads the delivery-specific composition adapter", async () => {
-    const sources = await getCompositionDeliverySources("command-palette");
+  it("loads the delivery-specific composition adapter", () => {
+    const sources = getCompositionDeliverySources("command-palette");
 
     expect(sources.package.at(-1)?.content).toContain('from "easecraft"');
     expect(sources["copy-source"].at(-1)?.content).toContain('from "../motion-dialog.js"');

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 
+import { ComponentDeliveryPanel } from "../component-delivery-panel";
 import { MotionDialogDemo } from "./motion-dialog-demo";
 
 export const metadata: Metadata = {
@@ -48,6 +49,7 @@ export default function MotionDialogPage() {
         </a>
         <nav aria-label="Component navigation">
           <a href="/#components">Components</a>
+          <a href="#delivery">Delivery</a>
           <a href="#api">API</a>
           <a href="#accessibility">Accessibility</a>
         </nav>
@@ -67,6 +69,10 @@ export default function MotionDialogPage() {
         </section>
 
         <MotionDialogDemo />
+
+        <div id="delivery">
+          <ComponentDeliveryPanel slug="motion-dialog" />
+        </div>
 
         <section className="component-doc-band usage-band" aria-labelledby="usage-title">
           <div>

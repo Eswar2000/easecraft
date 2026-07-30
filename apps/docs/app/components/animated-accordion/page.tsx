@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 
+import { ComponentDeliveryPanel } from "../component-delivery-panel";
 import { AnimatedAccordionDemo } from "./animated-accordion-demo";
 
 export const metadata: Metadata = {
@@ -51,6 +52,7 @@ export default function AnimatedAccordionPage() {
         </a>
         <nav aria-label="Component navigation">
           <a href="/#components">Components</a>
+          <a href="#delivery">Delivery</a>
           <a href="#api">API</a>
           <a href="#accessibility">Accessibility</a>
         </nav>
@@ -70,6 +72,10 @@ export default function AnimatedAccordionPage() {
         </section>
 
         <AnimatedAccordionDemo />
+
+        <div id="delivery">
+          <ComponentDeliveryPanel slug="animated-accordion" />
+        </div>
 
         <section className="component-doc-band usage-band" aria-labelledby="usage-title">
           <div>

@@ -1,22 +1,5 @@
-import type { CopySourceFileRole, RegistryDeliveryMode } from "easecraft-registry";
-
-export interface CompositionDeliverySourceFile {
-  readonly content: string;
-  readonly destinationPath: string;
-  readonly role: CopySourceFileRole;
-}
-
-export type CompositionDeliverySources = Readonly<
-  Record<RegistryDeliveryMode, readonly CompositionDeliverySourceFile[]>
->;
-
-export function serializeCompositionSources(
-  files: readonly CompositionDeliverySourceFile[],
-): string {
-  return files
-    .map(
-      (file) =>
-        `// File: ${file.destinationPath}\n${file.content}${file.content.endsWith("\n") ? "" : "\n"}`,
-    )
-    .join("\n");
-}
+export {
+  serializeRegistrySources as serializeCompositionSources,
+  type RegistryDeliverySourceFile as CompositionDeliverySourceFile,
+  type RegistryDeliverySources as CompositionDeliverySources,
+} from "../../registry-delivery/delivery-types";

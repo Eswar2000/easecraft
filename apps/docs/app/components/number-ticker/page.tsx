@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 
+import { ComponentDeliveryPanel } from "../component-delivery-panel";
 import { NumberTickerDemo } from "./number-ticker-demo";
 
 export const metadata: Metadata = {
@@ -42,6 +43,7 @@ export default function NumberTickerPage() {
         </a>
         <nav aria-label="Component navigation">
           <a href="/#components">Components</a>
+          <a href="#delivery">Delivery</a>
           <a href="#api">API</a>
           <a href="#accessibility">Accessibility</a>
         </nav>
@@ -62,6 +64,10 @@ export default function NumberTickerPage() {
         </section>
 
         <NumberTickerDemo />
+
+        <div id="delivery">
+          <ComponentDeliveryPanel slug="number-ticker" />
+        </div>
 
         <section className="component-doc-band usage-band" aria-labelledby="usage-title">
           <div>

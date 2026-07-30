@@ -44,7 +44,7 @@ export default async function CompositionPage({ params }: CompositionPageProps) 
   const foundations = composition.componentDependencies.map((dependency) =>
     getComponent(dependency),
   );
-  const deliverySources = await getCompositionDeliverySources(composition.slug);
+  const deliverySources = getCompositionDeliverySources(composition.slug);
 
   return (
     <div className="site-shell">

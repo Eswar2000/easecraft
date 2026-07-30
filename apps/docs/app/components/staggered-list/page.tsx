@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 
+import { ComponentDeliveryPanel } from "../component-delivery-panel";
 import { StaggeredListDemo } from "./staggered-list-demo";
 
 export const metadata: Metadata = {
@@ -46,6 +47,7 @@ export default function StaggeredListPage() {
         </a>
         <nav aria-label="Component navigation">
           <a href="/#components">Components</a>
+          <a href="#delivery">Delivery</a>
           <a href="#api">API</a>
           <a href="#accessibility">Accessibility</a>
         </nav>
@@ -65,6 +67,10 @@ export default function StaggeredListPage() {
         </section>
 
         <StaggeredListDemo />
+
+        <div id="delivery">
+          <ComponentDeliveryPanel slug="staggered-list" />
+        </div>
 
         <section className="component-doc-band usage-band" aria-labelledby="usage-title">
           <div>

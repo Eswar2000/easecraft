@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 
+import { ComponentDeliveryPanel } from "../component-delivery-panel";
 import { AnimatedTabsDemo } from "./animated-tabs-demo";
 
 export const metadata: Metadata = {
@@ -49,6 +50,7 @@ export default function AnimatedTabsPage() {
         </a>
         <nav aria-label="Component navigation">
           <a href="/#components">Components</a>
+          <a href="#delivery">Delivery</a>
           <a href="#api">API</a>
           <a href="#accessibility">Accessibility</a>
         </nav>
@@ -68,6 +70,10 @@ export default function AnimatedTabsPage() {
         </section>
 
         <AnimatedTabsDemo />
+
+        <div id="delivery">
+          <ComponentDeliveryPanel slug="animated-tabs" />
+        </div>
 
         <section className="component-doc-band usage-band" aria-labelledby="usage-title">
           <div>
