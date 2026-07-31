@@ -296,6 +296,7 @@ export function ComponentExplorer() {
         <nav aria-label="Primary navigation">
           <a href="#components">Components</a>
           <a href="/compositions">Compositions</a>
+          <a href="/playground">Playground</a>
           <a href="#motion-policy">Motion policy</a>
           <a href="https://github.com/Eswar2000/easecraft">GitHub</a>
         </nav>

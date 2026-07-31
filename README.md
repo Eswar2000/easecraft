@@ -6,7 +6,7 @@ Easecraft is an open-source motion design system planned for React. It will comb
 
 ## Project Status
 
-Easecraft is currently in the **registry and playground stage**. The motion foundation plus all nine planned component vertical slices and all eight planned registry compositions are implemented across the package, tests, consumer fixture, and interactive documentation. The typed registry defines the explorer catalog, copy-source file graphs, dependency metadata, deterministic install plans, and complete composition catalog. Every component and composition delivery page now copies install commands, individual source files, or deterministic multi-file payloads; no npm package has been published yet.
+Easecraft is currently in the **playground stage**. The motion foundation, all nine planned component vertical slices, all eight planned registry compositions, and package/copy-source delivery actions are implemented. The first interactive playground slice now provides validated controls, responsive previews, reduced-motion simulation, replay/reset actions, and generated package code for Text Reveal, Staggered List, and Motion Dialog; no npm package has been published yet.
 
 The complete product scope, architecture, delivery plan, and initial backlog are documented in the [project proposal](PROPOSAL.md).
 
@@ -61,7 +61,7 @@ The proposed first release includes five foundations, five hooks, and nine high-
 
 `TextReveal`, `NumberTicker`, `StaggeredList`, `AnimatedTabs`, `AnimatedAccordion`, `MotionDialog`, `ToastStack`, `FilterGrid`, and `ScrollReveal` are completed vertical slices, proving the package API, Anime.js lifecycle integration, reduced-motion behavior, accessible output, documentation, tests, and consumer build.
 
-The `Stagger` foundation is also implemented with bounded forward and reverse child sequencing, scoped cleanup, and an immediate reduced-motion fallback. With the registry catalog and delivery actions complete, the next milestone is the interactive playground.
+The `Stagger` foundation is also implemented with bounded forward and reverse child sequencing, scoped cleanup, and an immediate reduced-motion fallback. The next playground iteration adds local persistence, versioned share URLs, copy-source/token code templates, and the remaining six components.
 
 ## Principles
 

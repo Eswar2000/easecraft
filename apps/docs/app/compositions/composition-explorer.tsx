@@ -34,6 +34,7 @@ export function CompositionExplorer() {
           <a aria-current="page" href="/compositions">
             Compositions
           </a>
+          <a href="/playground">Playground</a>
           <a href="https://github.com/Eswar2000/easecraft">GitHub</a>
         </nav>
         <span className="release-status">Registry preview</span>
