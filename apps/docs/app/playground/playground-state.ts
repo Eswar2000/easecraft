@@ -4,6 +4,7 @@ export const playgroundComponents = [
   "text-reveal",
   "number-ticker",
   "animated-tabs",
+  "animated-accordion",
   "staggered-list",
   "motion-dialog",
 ] as const;
@@ -24,6 +25,8 @@ export const playgroundNumberLocales = ["en-US", "de-DE", "en-IN"] as const;
 export const playgroundTabActivationModes = ["automatic", "manual"] as const;
 export const playgroundTabOrientations = ["horizontal", "vertical"] as const;
 export const playgroundTabValues = ["overview", "activity", "metrics"] as const;
+export const playgroundAccordionModes = ["single", "multiple"] as const;
+export const playgroundAccordionValues = ["lifecycle", "semantics", "interruption"] as const;
 
 export type PlaygroundComponent = (typeof playgroundComponents)[number];
 export type PlaygroundCodeMode = (typeof playgroundCodeModes)[number];
@@ -38,6 +41,8 @@ export type PlaygroundNumberLocale = (typeof playgroundNumberLocales)[number];
 export type PlaygroundTabActivationMode = (typeof playgroundTabActivationModes)[number];
 export type PlaygroundTabOrientation = (typeof playgroundTabOrientations)[number];
 export type PlaygroundTabValue = (typeof playgroundTabValues)[number];
+export type PlaygroundAccordionMode = (typeof playgroundAccordionModes)[number];
+export type PlaygroundAccordionValue = (typeof playgroundAccordionValues)[number];
 
 export interface PlaygroundCommonState {
   readonly codeMode: PlaygroundCodeMode;
@@ -93,10 +98,18 @@ export interface AnimatedTabsPlaygroundState extends PlaygroundSpatialState {
   readonly tab: PlaygroundTabValue;
 }
 
+export interface AnimatedAccordionPlaygroundState extends PlaygroundCommonState {
+  readonly accordionMode: PlaygroundAccordionMode;
+  readonly collapsible: boolean;
+  readonly component: "animated-accordion";
+  readonly expanded: readonly PlaygroundAccordionValue[];
+}
+
 export type PlaygroundState =
   | TextRevealPlaygroundState
   | NumberTickerPlaygroundState
   | AnimatedTabsPlaygroundState
+  | AnimatedAccordionPlaygroundState
   | StaggeredListPlaygroundState
   | MotionDialogPlaygroundState;
 
@@ -124,6 +137,13 @@ const spatialDefaults = {
 } as const satisfies PlaygroundSpatialState;
 
 const componentDefaults = {
+  "animated-accordion": {
+    ...commonDefaults,
+    accordionMode: "single",
+    collapsible: true,
+    component: "animated-accordion",
+    expanded: ["lifecycle"],
+  },
   "animated-tabs": {
     ...spatialDefaults,
     activationMode: "automatic",
@@ -202,6 +222,28 @@ function readString(value: unknown, fallback: string): string {
   return typeof value === "string" ? value.slice(0, 12) : fallback;
 }
 
+function readEnumArray<const Value extends string>(
+  value: unknown,
+  values: readonly Value[],
+  fallback: readonly Value[],
+): Value[] {
+  if (!Array.isArray(value)) {
+    return [...fallback];
+  }
+
+  return value.reduce<Value[]>((result, item) => {
+    if (
+      typeof item === "string" &&
+      values.includes(item as Value) &&
+      !result.includes(item as Value)
+    ) {
+      result.push(item as Value);
+    }
+
+    return result;
+  }, []);
+}
+
 export function getDefaultPlaygroundState(
   component: PlaygroundComponent = "text-reveal",
 ): PlaygroundState {
@@ -221,6 +263,28 @@ export function parsePlaygroundState(value: unknown): PlaygroundState {
     version: 1 as const,
     viewport: readEnum(input["viewport"], playgroundViewports, defaults.viewport),
   };
+
+  if (component === "animated-accordion") {
+    const accordionDefaults = componentDefaults["animated-accordion"];
+    const accordionMode = readEnum(
+      input["accordionMode"],
+      playgroundAccordionModes,
+      accordionDefaults.accordionMode,
+    );
+    const defaultExpanded =
+      accordionMode === "multiple"
+        ? (["lifecycle", "semantics"] as const)
+        : accordionDefaults.expanded;
+    const expanded = readEnumArray(input["expanded"], playgroundAccordionValues, defaultExpanded);
+
+    return {
+      ...common,
+      accordionMode,
+      collapsible: readBoolean(input["collapsible"], accordionDefaults.collapsible),
+      component,
+      expanded: accordionMode === "single" ? expanded.slice(0, 1) : expanded,
+    };
+  }
 
   if (component === "animated-tabs") {
     const tabDefaults = componentDefaults["animated-tabs"];

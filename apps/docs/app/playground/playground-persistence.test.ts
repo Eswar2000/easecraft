@@ -36,6 +36,12 @@ describe("playground persistence", () => {
         value: 18_750,
       }),
       parsePlaygroundState({
+        accordionMode: "multiple",
+        collapsible: false,
+        component: "animated-accordion",
+        expanded: ["lifecycle", "interruption"],
+      }),
+      parsePlaygroundState({
         activationMode: "manual",
         component: "animated-tabs",
         loop: false,
@@ -107,6 +113,17 @@ describe("playground persistence", () => {
       activationMode: "manual",
       distance: playgroundRanges.distance.max,
       loop: false,
+    });
+    expect(
+      decodePlaygroundSearchParams(
+        new URLSearchParams(
+          "v=1&component=animated-accordion&accordionMode=single&collapsible=0&expanded=semantics,registry,interruption",
+        ),
+      ),
+    ).toEqual({
+      ...getDefaultPlaygroundState("animated-accordion"),
+      collapsible: false,
+      expanded: ["semantics"],
     });
   });
 

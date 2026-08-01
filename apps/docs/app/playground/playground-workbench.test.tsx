@@ -5,6 +5,71 @@ import { createElement, type ReactNode } from "react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 vi.mock("easecraft", () => ({
+  AnimatedAccordion: ({
+    "aria-label": ariaLabel,
+    children,
+    collapsible,
+    getLabel,
+    getValue,
+    isDisabled,
+    items,
+    mode,
+    onValueChange,
+    value,
+  }: {
+    readonly "aria-label"?: string;
+    readonly children: (item: { id: string; note: string }) => ReactNode;
+    readonly collapsible?: boolean;
+    readonly getLabel: (item: { id: string; label: string }) => ReactNode;
+    readonly getValue: (item: { id: string }) => string;
+    readonly isDisabled?: (item: { disabled?: boolean }) => boolean;
+    readonly items: readonly { disabled?: boolean; id: string; label: string; note: string }[];
+    readonly mode?: "single" | "multiple";
+    readonly onValueChange?: (value: string | readonly string[] | undefined) => void;
+    readonly value?: string | readonly string[];
+  }) => {
+    const openValues = new Set(Array.isArray(value) ? value : value ? [value] : []);
+
+    return createElement(
+      "div",
+      { "aria-label": ariaLabel, role: "group" },
+      items.map((item) => {
+        const itemValue = getValue(item);
+        const open = openValues.has(itemValue);
+
+        return createElement(
+          "div",
+          { key: itemValue },
+          createElement(
+            "button",
+            {
+              "aria-expanded": open,
+              disabled: isDisabled?.(item) ?? false,
+              onClick: () => {
+                if (mode === "multiple") {
+                  const nextValues = open
+                    ? [...openValues].filter((openValue) => openValue !== itemValue)
+                    : [...openValues, itemValue];
+                  onValueChange?.(nextValues);
+                } else {
+                  onValueChange?.(open && collapsible ? undefined : itemValue);
+                }
+              },
+              type: "button",
+            },
+            getLabel(item),
+          ),
+          open
+            ? createElement(
+                "div",
+                { "aria-label": `${item.label} details`, role: "region" },
+                children(item),
+              )
+            : null,
+        );
+      }),
+    );
+  },
   AnimatedTabs: ({
     "aria-label": ariaLabel,
     children,
@@ -267,6 +332,51 @@ describe("PlaygroundWorkbench", () => {
     });
   });
 
+  it("controls Animated Accordion single and multiple expansion", () => {
+    const view = render(createElement(PlaygroundWorkbench));
+
+    fireEvent.change(view.getByLabelText("Preview"), {
+      target: { value: "animated-accordion" },
+    });
+
+    expect(view.queryByLabelText("Delay")).toBeNull();
+    expect(view.queryByLabelText("Distance")).toBeNull();
+    expect(
+      view.getByRole("button", { name: /Intrinsic height/u }).getAttribute("aria-expanded"),
+    ).toBe("true");
+    expect(
+      (view.getByRole("button", { name: /Registry metadata/u }) as HTMLButtonElement).disabled,
+    ).toBe(true);
+
+    fireEvent.click(view.getByRole("button", { name: /Linked semantics/u }));
+    expect(view.getByRole("region", { name: "Linked semantics details" })).toBeTruthy();
+    fireEvent.click(view.getByRole("button", { name: /Linked semantics/u }));
+    expect(view.queryByRole("region", { name: "Linked semantics details" })).toBeNull();
+
+    fireEvent.click(view.getByRole("button", { name: "Multiple" }));
+    expect((view.getByLabelText("Allow all panels to close") as HTMLInputElement).disabled).toBe(
+      true,
+    );
+    fireEvent.click(view.getByRole("button", { name: /Intrinsic height/u }));
+    fireEvent.click(view.getByRole("button", { name: /Linked semantics/u }));
+
+    expect(view.getByRole("region", { name: "Intrinsic height details" })).toBeTruthy();
+    expect(view.getByRole("region", { name: "Linked semantics details" })).toBeTruthy();
+
+    const codePanel = view.getByLabelText("Generated React code");
+    expect(codePanel.textContent).toContain("<AnimatedAccordion");
+    expect(codePanel.textContent).toContain('defaultValue={["lifecycle","semantics"]}');
+    expect(codePanel.textContent).toContain('mode="multiple"');
+    expect(codePanel.textContent).not.toContain("collapsible=");
+    expect(
+      decodePlaygroundStorage(window.localStorage.getItem(playgroundStorageKey)),
+    ).toMatchObject({
+      accordionMode: "multiple",
+      component: "animated-accordion",
+      expanded: ["lifecycle", "semantics"],
+    });
+  });
+
   it("replays Staggered List when motion controls change", () => {
     const view = render(createElement(PlaygroundWorkbench));
 
@@ -456,6 +566,37 @@ describe("PlaygroundWorkbench", () => {
     );
     expect(view.getByLabelText("Generated React code").textContent).toContain(
       "@/components/easecraft/animated-tabs",
+    );
+  });
+
+  it("restores Animated Accordion expansion and templates from a shared URL", async () => {
+    window.history.replaceState(
+      null,
+      "",
+      "/playground?v=1&component=animated-accordion&codeMode=copy-source&duration=640&easing=enter&reducedMotion=0&viewport=mobile&contrast=ink&accordionMode=multiple&collapsible=0&expanded=lifecycle,interruption",
+    );
+    const view = render(createElement(PlaygroundWorkbench));
+
+    await waitFor(() => {
+      expect((view.getByLabelText("Preview") as HTMLSelectElement).value).toBe(
+        "animated-accordion",
+      );
+    });
+
+    expect(view.getByRole("button", { name: "Multiple" }).getAttribute("aria-pressed")).toBe(
+      "true",
+    );
+    expect((view.getByLabelText("Allow all panels to close") as HTMLInputElement).disabled).toBe(
+      true,
+    );
+    expect(view.getByRole("region", { name: "Intrinsic height details" })).toBeTruthy();
+    expect(view.getByRole("region", { name: "Rapid reversal details" })).toBeTruthy();
+    expect(view.queryByRole("region", { name: "Linked semantics details" })).toBeNull();
+    expect(view.getByRole("button", { name: "Copy source" }).getAttribute("aria-pressed")).toBe(
+      "true",
+    );
+    expect(view.getByLabelText("Generated React code").textContent).toContain(
+      "@/components/easecraft/animated-accordion",
     );
   });
 

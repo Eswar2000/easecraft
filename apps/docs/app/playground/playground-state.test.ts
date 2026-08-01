@@ -53,6 +53,13 @@ describe("playground state", () => {
       orientation: "horizontal",
       tab: "overview",
     });
+    expect(getDefaultPlaygroundState("animated-accordion")).toMatchObject({
+      accordionMode: "single",
+      collapsible: true,
+      component: "animated-accordion",
+      easing: "enter",
+      expanded: ["lifecycle"],
+    });
   });
 
   it("validates enums, ignores unknown fields, and clamps numeric controls", () => {
@@ -160,5 +167,31 @@ describe("playground state", () => {
     });
     expect("delay" in tabsState).toBe(false);
     expect("stagger" in tabsState).toBe(false);
+
+    const accordionState = parsePlaygroundState({
+      accordionMode: "multiple",
+      collapsible: false,
+      component: "animated-accordion",
+      distance: 24,
+      expanded: ["lifecycle", "registry", "semantics", "lifecycle"],
+      stagger: 120,
+    });
+
+    expect(accordionState).toEqual({
+      ...getDefaultPlaygroundState("animated-accordion"),
+      accordionMode: "multiple",
+      collapsible: false,
+      expanded: ["lifecycle", "semantics"],
+    });
+    expect("distance" in accordionState).toBe(false);
+    expect("stagger" in accordionState).toBe(false);
+
+    expect(
+      parsePlaygroundState({
+        accordionMode: "single",
+        component: "animated-accordion",
+        expanded: ["semantics", "interruption"],
+      }),
+    ).toMatchObject({ expanded: ["semantics"] });
   });
 });

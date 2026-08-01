@@ -56,6 +56,10 @@ function readSearchBoolean(value: string | undefined): boolean | undefined {
   return value === "1" ? true : value === "0" ? false : undefined;
 }
 
+function readSearchList(value: string | undefined): readonly string[] | undefined {
+  return value === undefined ? undefined : value.length === 0 ? [] : value.split(",");
+}
+
 export function decodePlaygroundSearchParams(
   params: PlaygroundSearchParams | URLSearchParams,
 ): PlaygroundState | undefined {
@@ -65,15 +69,18 @@ export function decodePlaygroundSearchParams(
 
   return parsePlaygroundState({
     activationMode: readSearchValue(params, "activationMode"),
+    accordionMode: readSearchValue(params, "accordionMode"),
     announce: readSearchValue(params, "announce"),
     codeMode: readSearchValue(params, "codeMode"),
     component: readSearchValue(params, "component"),
+    collapsible: readSearchBoolean(readSearchValue(params, "collapsible")),
     contrast: readSearchValue(params, "contrast"),
     delay: readSearchNumber(readSearchValue(params, "delay")),
     dismissible: readSearchBoolean(readSearchValue(params, "dismissible")),
     distance: readSearchNumber(readSearchValue(params, "distance")),
     duration: readSearchNumber(readSearchValue(params, "duration")),
     easing: readSearchValue(params, "easing"),
+    expanded: readSearchList(readSearchValue(params, "expanded")),
     from: readSearchNumber(readSearchValue(params, "from")),
     locale: readSearchValue(params, "locale"),
     loop: readSearchBoolean(readSearchValue(params, "loop")),
@@ -107,7 +114,11 @@ export function encodePlaygroundSearchParams(state: PlaygroundState): URLSearchP
   params.set("viewport", state.viewport);
   params.set("contrast", state.contrast);
 
-  if (state.component === "animated-tabs") {
+  if (state.component === "animated-accordion") {
+    params.set("accordionMode", state.accordionMode);
+    params.set("collapsible", state.collapsible ? "1" : "0");
+    params.set("expanded", state.expanded.join(","));
+  } else if (state.component === "animated-tabs") {
     params.set("activationMode", state.activationMode);
     params.set("orientation", state.orientation);
     params.set("loop", state.loop ? "1" : "0");

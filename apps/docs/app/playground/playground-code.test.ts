@@ -198,4 +198,52 @@ describe("playground code generation", () => {
     expect(tokenCode).toContain('duration="normal"');
     expect(tokenCode).not.toContain("stagger:");
   });
+
+  it("generates mode-correct Animated Accordion expansion props", () => {
+    const multipleCode = generatePlaygroundCode(
+      parsePlaygroundState({
+        accordionMode: "multiple",
+        component: "animated-accordion",
+        duration: 640,
+        expanded: ["lifecycle", "interruption"],
+      }),
+    );
+    const collapsedSingleCode = generatePlaygroundCode(
+      parsePlaygroundState({
+        accordionMode: "single",
+        collapsible: false,
+        component: "animated-accordion",
+        expanded: [],
+      }),
+    );
+
+    expect(multipleCode).toContain(
+      'import { MotionProvider, AnimatedAccordion } from "easecraft";',
+    );
+    expect(multipleCode).toContain("const systemDetails = [");
+    expect(multipleCode).toContain('defaultValue={["lifecycle","interruption"]}');
+    expect(multipleCode).toContain('mode="multiple"');
+    expect(multipleCode).toContain("duration={640}");
+    expect(multipleCode).not.toContain("collapsible=");
+    expect(collapsedSingleCode).toContain("collapsible={false}");
+    expect(collapsedSingleCode).toContain("defaultValue={undefined}");
+    expect(collapsedSingleCode).toContain('mode="single"');
+  });
+
+  it("derives Animated Accordion copy-source imports and duration token overrides", () => {
+    const state = getDefaultPlaygroundState("animated-accordion");
+    const copySourceCode = generatePlaygroundCode(state, "copy-source");
+    const tokenCode = generatePlaygroundCode(state, "token-override");
+
+    expect(copySourceCode).toContain(
+      'import { AnimatedAccordion } from "@/components/easecraft/animated-accordion";',
+    );
+    expect(getPlaygroundInstallCommand(state, "copy-source")).toContain(
+      "@radix-ui/react-accordion@",
+    );
+    expect(tokenCode).toContain("duration: { normal: 300 }");
+    expect(tokenCode).toContain('duration="normal"');
+    expect(tokenCode).not.toContain("distance:");
+    expect(tokenCode).not.toContain("stagger:");
+  });
 });

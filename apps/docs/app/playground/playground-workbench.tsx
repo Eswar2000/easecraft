@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  AnimatedAccordion,
   AnimatedTabs,
   MotionDialog,
   MotionProvider,
@@ -25,6 +26,7 @@ import {
 import {
   getDefaultPlaygroundState,
   parsePlaygroundState,
+  playgroundAccordionModes,
   playgroundComponents,
   playgroundContrasts,
   playgroundEasings,
@@ -39,17 +41,24 @@ import {
   playgroundTabValues,
   playgroundViewports,
   type PlaygroundComponent,
+  type PlaygroundAccordionValue,
   type PlaygroundState,
   type PlaygroundTabValue,
 } from "./playground-state";
 
 const componentNames = {
+  "animated-accordion": "Animated Accordion",
   "animated-tabs": "Animated Tabs",
   "motion-dialog": "Motion Dialog",
   "number-ticker": "Number Ticker",
   "staggered-list": "Staggered List",
   "text-reveal": "Text Reveal",
 } as const satisfies Readonly<Record<PlaygroundComponent, string>>;
+
+const accordionModeNames = {
+  multiple: "Multiple",
+  single: "Single",
+} as const;
 
 const numberAnnouncementNames = {
   assertive: "Assertive",
@@ -91,6 +100,47 @@ const previewItems = [
   { id: "verify", label: "Verify accessibility", track: "Release" },
 ] as const;
 
+interface PlaygroundDetail {
+  readonly disabled?: boolean;
+  readonly id: "lifecycle" | "semantics" | "interruption" | "registry";
+  readonly index: string;
+  readonly label: string;
+  readonly metric: string;
+  readonly note: string;
+}
+
+const playgroundDetails = [
+  {
+    id: "lifecycle",
+    index: "01",
+    label: "Intrinsic height",
+    metric: "AUTO",
+    note: "Measures rendered content before animating to its exact height.",
+  },
+  {
+    id: "semantics",
+    index: "02",
+    label: "Linked semantics",
+    metric: "APG",
+    note: "Keeps every trigger and region correctly linked in every state.",
+  },
+  {
+    id: "interruption",
+    index: "03",
+    label: "Rapid reversal",
+    metric: "SAFE",
+    note: "Reverses opening and closing without accepting stale completions.",
+  },
+  {
+    disabled: true,
+    id: "registry",
+    index: "04",
+    label: "Registry metadata",
+    metric: "NEXT",
+    note: "Unavailable in this preview.",
+  },
+] satisfies readonly PlaygroundDetail[];
+
 interface PlaygroundWorkspaceTab {
   readonly disabled?: boolean;
   readonly id: "overview" | "activity" | "permissions" | "metrics";
@@ -116,6 +166,42 @@ const integerFormatOptions = { maximumFractionDigits: 0 } satisfies Intl.NumberF
 
 function getPreviewItemKey(item: (typeof previewItems)[number]) {
   return item.id;
+}
+
+function getDetailLabel(detail: PlaygroundDetail) {
+  return (
+    <>
+      <span>{detail.index}</span>
+      <strong>{detail.label}</strong>
+      <small>{detail.metric}</small>
+    </>
+  );
+}
+
+function getDetailValue(detail: PlaygroundDetail) {
+  return detail.id;
+}
+
+function isDetailDisabled(detail: PlaygroundDetail) {
+  return detail.disabled ?? false;
+}
+
+function renderDetail(detail: PlaygroundDetail) {
+  return (
+    <div className="playground-accordion-panel">
+      <p>{detail.note}</p>
+      <dl>
+        <div>
+          <dt>State</dt>
+          <dd>Retained</dd>
+        </div>
+        <div>
+          <dt>Cleanup</dt>
+          <dd>Scoped</dd>
+        </div>
+      </dl>
+    </div>
+  );
 }
 
 function getWorkspaceTabLabel(tab: PlaygroundWorkspaceTab) {
@@ -256,14 +342,64 @@ function SegmentedControl<Value extends string>({
 }
 
 function Preview({
+  onAccordionChange,
   onTabChange,
   replayKey,
   state,
 }: {
+  readonly onAccordionChange: (expanded: readonly PlaygroundAccordionValue[]) => void;
   readonly onTabChange: (tab: PlaygroundTabValue) => void;
   readonly replayKey: number;
   readonly state: PlaygroundState;
 }) {
+  if (state.component === "animated-accordion") {
+    const accordionReplayKey = [replayKey, state.accordionMode, state.reducedMotion].join(":");
+    const commonProps = {
+      "aria-label": "Motion system details",
+      bodyClassName: "playground-accordion-body",
+      className: "playground-accordion-preview",
+      contentClassName: "playground-accordion-content",
+      duration: state.duration,
+      easing: state.easing,
+      getLabel: getDetailLabel,
+      getValue: getDetailValue,
+      headerClassName: "playground-accordion-header",
+      isDisabled: isDetailDisabled,
+      itemClassName: "playground-accordion-item",
+      items: playgroundDetails,
+      triggerClassName: "playground-accordion-trigger",
+    } as const;
+
+    return state.accordionMode === "multiple" ? (
+      <AnimatedAccordion<PlaygroundDetail, PlaygroundDetail["id"]>
+        key={accordionReplayKey}
+        {...commonProps}
+        mode="multiple"
+        onValueChange={(expanded) => {
+          onAccordionChange(
+            expanded.filter((value): value is PlaygroundAccordionValue => value !== "registry"),
+          );
+        }}
+        value={state.expanded}
+      >
+        {renderDetail}
+      </AnimatedAccordion>
+    ) : (
+      <AnimatedAccordion<PlaygroundDetail, PlaygroundDetail["id"]>
+        key={accordionReplayKey}
+        {...commonProps}
+        collapsible={state.collapsible}
+        mode="single"
+        onValueChange={(expanded) => {
+          onAccordionChange(expanded && expanded !== "registry" ? [expanded] : []);
+        }}
+        value={state.expanded[0]}
+      >
+        {renderDetail}
+      </AnimatedAccordion>
+    );
+  }
+
   if (state.component === "animated-tabs") {
     const tabsReplayKey = [replayKey, state.orientation, state.reducedMotion].join(":");
 
@@ -633,7 +769,31 @@ export function PlaygroundWorkbench({
           ) : null}
         </ControlSection>
 
-        {state.component === "animated-tabs" ? (
+        {state.component === "animated-accordion" ? (
+          <ControlSection title="Accordion">
+            <span className="playground-control-label">Expansion</span>
+            <SegmentedControl
+              getOptionLabel={(mode) => accordionModeNames[mode]}
+              label="Accordion expansion"
+              onChange={(accordionMode) => {
+                updateState({ accordionMode });
+              }}
+              options={playgroundAccordionModes}
+              value={state.accordionMode}
+            />
+            <label className="playground-checkbox">
+              <input
+                checked={state.collapsible}
+                disabled={state.accordionMode === "multiple"}
+                type="checkbox"
+                onChange={(event) => {
+                  updateState({ collapsible: event.currentTarget.checked });
+                }}
+              />
+              <span>Allow all panels to close</span>
+            </label>
+          </ControlSection>
+        ) : state.component === "animated-tabs" ? (
           <ControlSection title="Tabs">
             <label className="playground-select">
               <span>Active tab</span>
@@ -906,6 +1066,9 @@ export function PlaygroundWorkbench({
             <MotionProvider reducedMotion={state.reducedMotion ? "always" : "never"}>
               <div className="playground-preview-content">
                 <Preview
+                  onAccordionChange={(expanded) => {
+                    updateState({ expanded });
+                  }}
                   onTabChange={(tab) => {
                     updateState({ tab });
                   }}
