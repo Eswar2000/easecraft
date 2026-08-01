@@ -4003,6 +4003,7 @@ h2 {
 }
 
 .tabs-control-group {
+  position: relative;
   display: flex;
   margin: 0;
   padding: 16px 0 0;
@@ -4011,6 +4012,8 @@ h2 {
 
 .tabs-control-group legend {
   position: absolute;
+  top: 0;
+  left: 0;
   color: var(--muted);
   font-family: "IBM Plex Mono", monospace;
   font-size: 9px;
@@ -4354,6 +4357,7 @@ h2 {
 }
 
 .toast-limit-control {
+  position: relative;
   display: flex;
   margin: 0;
   padding: 16px 0 0;
@@ -4362,6 +4366,8 @@ h2 {
 
 .toast-limit-control legend {
   position: absolute;
+  top: 0;
+  left: 0;
   color: var(--muted);
   font-family: "IBM Plex Mono", monospace;
   font-size: 9px;
@@ -4669,6 +4675,7 @@ h2 {
 }
 
 .scroll-preset-control {
+  position: relative;
   display: flex;
   margin: 0;
   padding: 16px 0 0;
@@ -4677,6 +4684,8 @@ h2 {
 
 .scroll-preset-control legend {
   position: absolute;
+  top: 0;
+  left: 0;
   color: var(--muted);
   font-family: "IBM Plex Mono", monospace;
   font-size: 9px;
@@ -4831,6 +4840,7 @@ h2 {
 }
 
 .accordion-control-group {
+  position: relative;
   display: flex;
   margin: 0 auto 0 0;
   padding: 16px 0 0;
@@ -4839,6 +4849,8 @@ h2 {
 
 .accordion-control-group legend {
   position: absolute;
+  top: 0;
+  left: 0;
   color: var(--muted);
   font-family: "IBM Plex Mono", monospace;
   font-size: 9px;
