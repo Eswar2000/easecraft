@@ -6,6 +6,7 @@ export { playgroundCodeModes, type PlaygroundCodeMode } from "./playground-state
 
 const componentExportNames = {
   "motion-dialog": "MotionDialog",
+  "number-ticker": "NumberTicker",
   "staggered-list": "StaggeredList",
   "text-reveal": "TextReveal",
 } as const satisfies Readonly<Record<PlaygroundComponent, string>>;
@@ -20,7 +21,9 @@ function localImportPath(file: CopySourceFile): string {
 
 function getCopySourceFile(state: PlaygroundState, role: "component" | "provider"): CopySourceFile {
   const file = getInstallPlan(state.component, "copy-source").files.find(
-    (candidate) => candidate.role === role,
+    (candidate) =>
+      candidate.role === role &&
+      (role !== "component" || candidate.destinationPath.endsWith(`/${state.component}.tsx`)),
   );
 
   if (!file) {
@@ -54,16 +57,22 @@ function generateTokenOverrides(state: PlaygroundState, mode: PlaygroundCodeMode
     return "";
   }
 
-  const stagger =
-    state.component === "motion-dialog"
-      ? ""
-      : `\n  stagger: { normal: ${state.stagger.toString()} },`;
+  const groups = [];
+
+  if ("distance" in state) {
+    groups.push(`distance: { medium: ${state.distance.toString()} },`);
+  }
+
+  groups.push(`duration: { normal: ${state.duration.toString()} },`);
+
+  if ("stagger" in state) {
+    groups.push(`stagger: { normal: ${state.stagger.toString()} },`);
+  }
 
   return `
 
 const motionTokens = {
-  distance: { medium: ${state.distance.toString()} },
-  duration: { normal: ${state.duration.toString()} },${stagger}
+${groups.map((group) => `  ${group}`).join("\n")}
 } satisfies MotionTokenOverrides;`;
 }
 
@@ -72,8 +81,8 @@ function providerProps(state: PlaygroundState, mode: PlaygroundCodeMode): string
   return `reducedMotion="${reducedMotionMode(state)}"${tokens}`;
 }
 
-function distanceProp(state: PlaygroundState, mode: PlaygroundCodeMode): string {
-  return mode === "token-override" ? '"medium"' : `{${state.distance.toString()}}`;
+function distanceProp(distance: number, mode: PlaygroundCodeMode): string {
+  return mode === "token-override" ? '"medium"' : `{${distance.toString()}}`;
 }
 
 function durationProp(state: PlaygroundState, mode: PlaygroundCodeMode): string {
@@ -93,7 +102,7 @@ export function Example() {
     <MotionProvider ${providerProps(state, mode)}>
       <TextReveal
         delay={${state.delay.toString()}}
-        distance=${distanceProp(state, mode)}
+        distance=${distanceProp(state.distance, mode)}
         duration=${durationProp(state, mode)}
         easing="${state.easing}"
         preset="${state.preset}"
@@ -127,7 +136,7 @@ export function Example() {
     <MotionProvider ${providerProps(state, mode)}>
       <StaggeredList
         delay={${state.delay.toString()}}
-        distance=${distanceProp(state, mode)}
+        distance=${distanceProp(state.distance, mode)}
         duration=${durationProp(state, mode)}
         easing="${state.easing}"
         getKey={(item) => item.id}
@@ -155,7 +164,7 @@ export function Example() {
     <MotionProvider ${providerProps(state, mode)}>
       <MotionDialog
         dismissible={${state.dismissible.toString()}}
-        distance=${distanceProp(state, mode)}
+        distance=${distanceProp(state.distance, mode)}
         duration=${durationProp(state, mode)}
         easing="${state.easing}"
         title="Motion review"
@@ -169,10 +178,44 @@ export function Example() {
 `;
 }
 
+function generateNumberTickerCode(
+  state: Extract<PlaygroundState, { component: "number-ticker" }>,
+  mode: PlaygroundCodeMode,
+) {
+  return `${generateImports(state, mode)}${generateTokenOverrides(state, mode)}
+
+const integerFormatOptions = { maximumFractionDigits: 0 } satisfies Intl.NumberFormatOptions;
+
+export function Example() {
+  return (
+    <MotionProvider ${providerProps(state, mode)}>
+      <NumberTicker
+        announce="${state.announce}"
+        as="output"
+        delay={${state.delay.toString()}}
+        duration=${durationProp(state, mode)}
+        easing="${state.easing}"
+        formatOptions={integerFormatOptions}
+        from={${state.from.toString()}}
+        locale={${JSON.stringify(state.locale)}}
+        prefix={${JSON.stringify(state.prefix)}}
+        suffix={${JSON.stringify(state.suffix)}}
+        value={${state.value.toString()}}
+      />
+    </MotionProvider>
+  );
+}
+`;
+}
+
 export function generatePlaygroundCode(
   state: PlaygroundState,
   mode: PlaygroundCodeMode = state.codeMode,
 ): string {
+  if (state.component === "number-ticker") {
+    return generateNumberTickerCode(state, mode);
+  }
+
   if (state.component === "staggered-list") {
     return generateStaggeredListCode(state, mode);
   }

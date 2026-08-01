@@ -90,13 +90,15 @@
 }
 
 .playground-select,
-.playground-range {
+.playground-range,
+.playground-input {
   display: grid;
   gap: 7px;
 }
 
 .playground-select > span,
-.playground-range > span {
+.playground-range > span,
+.playground-input > span {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -111,7 +113,9 @@
   font-size: 8px;
 }
 
-.playground-select select {
+.playground-select select,
+.playground-input input {
+  box-sizing: border-box;
   width: 100%;
   min-height: 38px;
   padding: 0 9px;
@@ -120,6 +124,13 @@
   color: var(--ink);
   background: #fff;
   font-size: 10px;
+}
+
+.playground-input-grid {
+  display: grid;
+  min-width: 0;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 9px;
 }
 
 .playground-range input {
@@ -341,6 +352,38 @@
   font-family: "Bricolage Grotesque", sans-serif;
   font-size: 48px;
   line-height: 0.98;
+}
+
+.playground-number-preview {
+  display: grid;
+  min-width: 0;
+  gap: 10px;
+  padding: 28px;
+  border: 1px solid currentColor;
+}
+
+.playground-number-preview > span,
+.playground-number-preview > small {
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 8px;
+  text-transform: uppercase;
+}
+
+.playground-number-preview > span {
+  color: var(--signal);
+}
+
+.playground-number-preview > small {
+  opacity: 0.68;
+}
+
+.playground-number-value {
+  min-width: 0;
+  font-family: "Bricolage Grotesque", sans-serif;
+  font-size: 40px;
+  font-weight: 700;
+  line-height: 1;
+  overflow-wrap: anywhere;
 }
 
 .playground-list-preview {

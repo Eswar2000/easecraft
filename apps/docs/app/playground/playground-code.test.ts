@@ -59,6 +59,33 @@ describe("playground code generation", () => {
     expect(code).not.toContain("interval=");
   });
 
+  it("generates NumberTicker values, formatting, and announcement props", () => {
+    const code = generatePlaygroundCode(
+      parsePlaygroundState({
+        announce: "assertive",
+        component: "number-ticker",
+        delay: 80,
+        duration: 720,
+        from: -250,
+        locale: "de-DE",
+        prefix: "EUR ",
+        suffix: " total",
+        value: 18_750,
+      }),
+    );
+
+    expect(code).toContain('import { MotionProvider, NumberTicker } from "easecraft";');
+    expect(code).toContain('announce="assertive"');
+    expect(code).toContain("delay={80}");
+    expect(code).toContain("duration={720}");
+    expect(code).toContain("from={-250}");
+    expect(code).toContain('locale={"de-DE"}');
+    expect(code).toContain('prefix={"EUR "}');
+    expect(code).toContain('suffix={" total"}');
+    expect(code).toContain("value={18750}");
+    expect(code).not.toContain("distance=");
+  });
+
   it("derives the package install command from registry metadata", () => {
     expect(getPlaygroundInstallCommand(getDefaultPlaygroundState("text-reveal"))).toBe(
       "pnpm add easecraft@0.0.0",
@@ -110,5 +137,20 @@ describe("playground code generation", () => {
     expect(code).not.toContain("stagger:");
     expect(code).toContain('distance="medium"');
     expect(code).toContain('duration="normal"');
+  });
+
+  it("derives NumberTicker copy-source imports and duration-only token overrides", () => {
+    const state = parsePlaygroundState({ component: "number-ticker", duration: 720 });
+    const copySourceCode = generatePlaygroundCode(state, "copy-source");
+    const tokenCode = generatePlaygroundCode(state, "token-override");
+
+    expect(copySourceCode).toContain(
+      'import { NumberTicker } from "@/components/easecraft/number-ticker";',
+    );
+    expect(getPlaygroundInstallCommand(state, "copy-source")).toContain("animejs@4.5.0");
+    expect(tokenCode).toContain("duration: { normal: 720 }");
+    expect(tokenCode).toContain('duration="normal"');
+    expect(tokenCode).not.toContain("distance:");
+    expect(tokenCode).not.toContain("stagger:");
   });
 });

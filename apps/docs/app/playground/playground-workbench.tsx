@@ -1,6 +1,6 @@
 "use client";
 
-import { MotionDialog, MotionProvider, StaggeredList, TextReveal } from "easecraft";
+import { MotionDialog, MotionProvider, NumberTicker, StaggeredList, TextReveal } from "easecraft";
 import { Check, Copy, Link2, Monitor, Play, RotateCcw, Smartphone, Tablet } from "lucide-react";
 import { useEffect, useId, useState, useSyncExternalStore, type ReactNode } from "react";
 
@@ -21,6 +21,8 @@ import {
   playgroundComponents,
   playgroundContrasts,
   playgroundEasings,
+  playgroundNumberAnnouncements,
+  playgroundNumberLocales,
   playgroundOrders,
   playgroundPresets,
   playgroundRanges,
@@ -32,9 +34,22 @@ import {
 
 const componentNames = {
   "motion-dialog": "Motion Dialog",
+  "number-ticker": "Number Ticker",
   "staggered-list": "Staggered List",
   "text-reveal": "Text Reveal",
 } as const satisfies Readonly<Record<PlaygroundComponent, string>>;
+
+const numberAnnouncementNames = {
+  assertive: "Assertive",
+  off: "Off",
+  polite: "Polite",
+} as const;
+
+const numberLocaleNames = {
+  "de-DE": "Deutsch",
+  "en-IN": "English (India)",
+  "en-US": "English (US)",
+} as const;
 
 const codeModeNames = {
   "copy-source": "Copy source",
@@ -47,6 +62,8 @@ const previewItems = [
   { id: "prototype", label: "Prototype the motion", track: "Behavior" },
   { id: "verify", label: "Verify accessibility", track: "Release" },
 ] as const;
+
+const integerFormatOptions = { maximumFractionDigits: 0 } satisfies Intl.NumberFormatOptions;
 
 function getPreviewItemKey(item: (typeof previewItems)[number]) {
   return item.id;
@@ -86,6 +103,61 @@ function RangeControl({ label, max, min, onChange, step, unit, value }: RangeCon
         }}
       />
     </div>
+  );
+}
+
+interface NumberControlProps {
+  readonly label: string;
+  readonly max: number;
+  readonly min: number;
+  readonly onChange: (value: number) => void;
+  readonly step: number;
+  readonly value: number;
+}
+
+function NumberControl({ label, max, min, onChange, step, value }: NumberControlProps) {
+  return (
+    <label className="playground-input">
+      <span>{label}</span>
+      <input
+        max={max}
+        min={min}
+        step={step}
+        type="number"
+        value={value}
+        onChange={(event) => {
+          const nextValue = event.currentTarget.valueAsNumber;
+
+          if (Number.isFinite(nextValue)) {
+            onChange(nextValue);
+          }
+        }}
+      />
+    </label>
+  );
+}
+
+function TextControl({
+  label,
+  onChange,
+  value,
+}: {
+  readonly label: string;
+  readonly onChange: (value: string) => void;
+  readonly value: string;
+}) {
+  return (
+    <label className="playground-input">
+      <span>{label}</span>
+      <input
+        maxLength={12}
+        type="text"
+        value={value}
+        onChange={(event) => {
+          onChange(event.currentTarget.value);
+        }}
+      />
+    </label>
   );
 }
 
@@ -188,6 +260,39 @@ function Preview({
             Approve motion
           </button>
         </MotionDialog>
+      </div>
+    );
+  }
+
+  if (state.component === "number-ticker") {
+    const tickerReplayKey = [
+      replayKey,
+      state.delay,
+      state.duration,
+      state.easing,
+      state.from,
+      state.reducedMotion,
+    ].join(":");
+
+    return (
+      <div className="playground-number-preview">
+        <span>Revenue / {state.locale}</span>
+        <NumberTicker
+          announce={state.announce}
+          as="output"
+          className="playground-number-value"
+          delay={state.delay}
+          duration={state.duration}
+          easing={state.easing}
+          formatOptions={integerFormatOptions}
+          from={state.from}
+          key={tickerReplayKey}
+          locale={state.locale}
+          prefix={state.prefix}
+          suffix={state.suffix}
+          value={state.value}
+        />
+        <small>FY 2026 projected revenue</small>
       </div>
     );
   }
@@ -404,18 +509,82 @@ export function PlaygroundWorkbench({
               ))}
             </select>
           </label>
-          <RangeControl
-            {...playgroundRanges.distance}
-            label="Distance"
-            onChange={(distance) => {
-              updateState({ distance });
-            }}
-            unit="px"
-            value={state.distance}
-          />
+          {"distance" in state ? (
+            <RangeControl
+              {...playgroundRanges.distance}
+              label="Distance"
+              onChange={(distance) => {
+                updateState({ distance });
+              }}
+              unit="px"
+              value={state.distance}
+            />
+          ) : null}
         </ControlSection>
 
-        {state.component !== "motion-dialog" ? (
+        {state.component === "number-ticker" ? (
+          <ControlSection title="Value">
+            <div className="playground-input-grid">
+              <NumberControl
+                {...playgroundRanges.number}
+                label="Target value"
+                onChange={(value) => {
+                  updateState({ value });
+                }}
+                value={state.value}
+              />
+              <NumberControl
+                {...playgroundRanges.number}
+                label="Start value"
+                onChange={(from) => {
+                  updateState({ from });
+                }}
+                value={state.from}
+              />
+            </div>
+            <div className="playground-input-grid">
+              <TextControl
+                label="Prefix"
+                onChange={(prefix) => {
+                  updateState({ prefix });
+                }}
+                value={state.prefix}
+              />
+              <TextControl
+                label="Suffix"
+                onChange={(suffix) => {
+                  updateState({ suffix });
+                }}
+                value={state.suffix}
+              />
+            </div>
+            <label className="playground-select">
+              <span>Locale</span>
+              <select
+                value={state.locale}
+                onChange={(event) => {
+                  updateState({ locale: event.currentTarget.value });
+                }}
+              >
+                {playgroundNumberLocales.map((locale) => (
+                  <option key={locale} value={locale}>
+                    {numberLocaleNames[locale]}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <span className="playground-control-label">Announcement</span>
+            <SegmentedControl
+              getOptionLabel={(announcement) => numberAnnouncementNames[announcement]}
+              label="Live announcement"
+              onChange={(announce) => {
+                updateState({ announce });
+              }}
+              options={playgroundNumberAnnouncements}
+              value={state.announce}
+            />
+          </ControlSection>
+        ) : state.component !== "motion-dialog" ? (
           <ControlSection title="Sequence">
             <RangeControl
               {...playgroundRanges.stagger}

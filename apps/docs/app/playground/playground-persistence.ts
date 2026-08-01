@@ -64,6 +64,7 @@ export function decodePlaygroundSearchParams(
   }
 
   return parsePlaygroundState({
+    announce: readSearchValue(params, "announce"),
     codeMode: readSearchValue(params, "codeMode"),
     component: readSearchValue(params, "component"),
     contrast: readSearchValue(params, "contrast"),
@@ -72,11 +73,16 @@ export function decodePlaygroundSearchParams(
     distance: readSearchNumber(readSearchValue(params, "distance")),
     duration: readSearchNumber(readSearchValue(params, "duration")),
     easing: readSearchValue(params, "easing"),
+    from: readSearchNumber(readSearchValue(params, "from")),
+    locale: readSearchValue(params, "locale"),
     order: readSearchValue(params, "order"),
     preset: readSearchValue(params, "preset"),
+    prefix: readSearchValue(params, "prefix"),
     reducedMotion: readSearchBoolean(readSearchValue(params, "reducedMotion")),
     split: readSearchValue(params, "split"),
     stagger: readSearchNumber(readSearchValue(params, "stagger")),
+    suffix: readSearchValue(params, "suffix"),
+    value: readSearchNumber(readSearchValue(params, "value")),
     viewport: readSearchValue(params, "viewport"),
   });
 }
@@ -87,13 +93,25 @@ export function encodePlaygroundSearchParams(state: PlaygroundState): URLSearchP
   params.set("component", state.component);
   params.set("codeMode", state.codeMode);
   params.set("duration", state.duration.toString());
-  params.set("distance", state.distance.toString());
+
+  if ("distance" in state) {
+    params.set("distance", state.distance.toString());
+  }
+
   params.set("easing", state.easing);
   params.set("reducedMotion", state.reducedMotion ? "1" : "0");
   params.set("viewport", state.viewport);
   params.set("contrast", state.contrast);
 
-  if (state.component === "motion-dialog") {
+  if (state.component === "number-ticker") {
+    params.set("delay", state.delay.toString());
+    params.set("from", state.from.toString());
+    params.set("value", state.value.toString());
+    params.set("locale", state.locale);
+    params.set("prefix", state.prefix);
+    params.set("suffix", state.suffix);
+    params.set("announce", state.announce);
+  } else if (state.component === "motion-dialog") {
     params.set("dismissible", state.dismissible ? "1" : "0");
   } else {
     params.set("delay", state.delay.toString());

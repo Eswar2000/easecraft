@@ -23,6 +23,15 @@ describe("playground persistence", () => {
         split: "characters",
       }),
       parsePlaygroundState({
+        announce: "assertive",
+        component: "number-ticker",
+        from: -250,
+        locale: "de-DE",
+        prefix: "EUR ",
+        suffix: " total",
+        value: 18_750,
+      }),
+      parsePlaygroundState({
         component: "staggered-list",
         order: "reverse",
         preset: "rise",
@@ -64,6 +73,17 @@ describe("playground persistence", () => {
       ...getDefaultPlaygroundState(),
       distance: 0,
       duration: 1200,
+    });
+    expect(
+      decodePlaygroundSearchParams(
+        new URLSearchParams(
+          "v=1&component=number-ticker&value=9999999&from=bad&locale=missing&prefix=abcdefghijklmnop&distance=24",
+        ),
+      ),
+    ).toEqual({
+      ...getDefaultPlaygroundState("number-ticker"),
+      prefix: "abcdefghijkl",
+      value: 1_000_000,
     });
   });
 

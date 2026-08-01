@@ -33,6 +33,17 @@ describe("playground state", () => {
       component: "motion-dialog",
       dismissible: true,
     });
+    expect(getDefaultPlaygroundState("number-ticker")).toMatchObject({
+      announce: "polite",
+      component: "number-ticker",
+      duration: 600,
+      easing: "move",
+      from: 0,
+      locale: "en-US",
+      prefix: "$",
+      suffix: "",
+      value: 12_480,
+    });
   });
 
   it("validates enums, ignores unknown fields, and clamps numeric controls", () => {
@@ -98,5 +109,26 @@ describe("playground state", () => {
     expect("delay" in state).toBe(false);
     expect("split" in state).toBe(false);
     expect("stagger" in state).toBe(false);
+
+    const numberState = parsePlaygroundState({
+      announce: "assertive",
+      component: "number-ticker",
+      distance: 24,
+      from: -2_000_000,
+      locale: "missing",
+      prefix: "abcdefghijklmnop",
+      stagger: 120,
+      value: 2_000_000,
+    });
+
+    expect(numberState).toEqual({
+      ...getDefaultPlaygroundState("number-ticker"),
+      announce: "assertive",
+      from: playgroundRanges.number.min,
+      prefix: "abcdefghijkl",
+      value: playgroundRanges.number.max,
+    });
+    expect("distance" in numberState).toBe(false);
+    expect("stagger" in numberState).toBe(false);
   });
 });

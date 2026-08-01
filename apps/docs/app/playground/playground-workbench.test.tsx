@@ -24,6 +24,24 @@ vi.mock("easecraft", () => ({
       children,
     ),
   MotionProvider: ({ children }: { children: ReactNode }) => children,
+  NumberTicker: ({
+    announce,
+    className,
+    prefix = "",
+    suffix = "",
+    value,
+  }: {
+    announce?: string;
+    className?: string;
+    prefix?: string;
+    suffix?: string;
+    value: number;
+  }) =>
+    createElement(
+      "output",
+      { className, "data-announcement": announce },
+      `${prefix}${value.toString()}${suffix}`,
+    ),
   StaggeredList: ({
     children,
     items,
@@ -99,6 +117,56 @@ describe("PlaygroundWorkbench", () => {
       expect(codePanel.textContent).toContain("duration={640}");
       expect(codePanel.textContent).toContain('split="characters"');
     });
+  });
+
+  it("renders NumberTicker controls, preview, and generated values", () => {
+    const view = render(createElement(PlaygroundWorkbench));
+
+    fireEvent.change(view.getByLabelText("Preview"), { target: { value: "number-ticker" } });
+
+    expect(view.queryByLabelText("Distance")).toBeNull();
+    expect(view.queryByText("Sequence")).toBeNull();
+    expect(view.getByLabelText("Target value")).toBeTruthy();
+    expect(view.getByLabelText("Start value")).toBeTruthy();
+    expect(view.container.querySelector("output.playground-number-value")?.textContent).toBe(
+      "$12480",
+    );
+
+    fireEvent.change(view.getByLabelText("Target value"), { target: { value: "18750" } });
+    fireEvent.change(view.getByLabelText("Start value"), { target: { value: "-250" } });
+    fireEvent.change(view.getByLabelText("Prefix"), { target: { value: "EUR " } });
+    fireEvent.change(view.getByLabelText("Suffix"), { target: { value: " total" } });
+    fireEvent.change(view.getByLabelText("Locale"), { target: { value: "de-DE" } });
+    fireEvent.click(view.getByRole("button", { name: "Assertive" }));
+
+    const codePanel = view.getByLabelText("Generated React code");
+    expect(codePanel.textContent).toContain("<NumberTicker");
+    expect(codePanel.textContent).toContain("value={18750}");
+    expect(codePanel.textContent).toContain("from={-250}");
+    expect(codePanel.textContent).toContain('prefix={"EUR "}');
+    expect(codePanel.textContent).toContain('suffix={" total"}');
+    expect(codePanel.textContent).toContain('locale={"de-DE"}');
+    expect(codePanel.textContent).toContain('announce="assertive"');
+    expect(view.container.querySelector("output.playground-number-value")?.textContent).toBe(
+      "EUR 18750 total",
+    );
+  });
+
+  it("replays NumberTicker from a fresh output instance", () => {
+    const view = render(createElement(PlaygroundWorkbench));
+
+    fireEvent.change(view.getByLabelText("Preview"), { target: { value: "number-ticker" } });
+    const initialOutput = view.container.querySelector("output.playground-number-value");
+    fireEvent.change(view.getByLabelText("Duration"), { target: { value: "720" } });
+    const configuredOutput = view.container.querySelector("output.playground-number-value");
+
+    expect(configuredOutput).not.toBe(initialOutput);
+
+    fireEvent.click(view.getByRole("button", { name: "Replay" }));
+
+    expect(view.container.querySelector("output.playground-number-value")).not.toBe(
+      configuredOutput,
+    );
   });
 
   it("replays Staggered List when motion controls change", () => {
@@ -236,6 +304,31 @@ describe("PlaygroundWorkbench", () => {
     expect(
       (view.getByLabelText("Dismiss with Escape or backdrop") as HTMLInputElement).checked,
     ).toBe(false);
+  });
+
+  it("restores NumberTicker controls and templates from a shared URL", async () => {
+    window.history.replaceState(
+      null,
+      "",
+      "/playground?v=1&component=number-ticker&codeMode=token-override&duration=720&easing=move&reducedMotion=0&viewport=mobile&contrast=ink&delay=80&from=-250&value=18750&locale=de-DE&prefix=EUR+&suffix=+total&announce=assertive",
+    );
+    const view = render(createElement(PlaygroundWorkbench));
+
+    await waitFor(() => {
+      expect((view.getByLabelText("Preview") as HTMLSelectElement).value).toBe("number-ticker");
+    });
+
+    expect((view.getByLabelText("Target value") as HTMLInputElement).value).toBe("18750");
+    expect((view.getByLabelText("Start value") as HTMLInputElement).value).toBe("-250");
+    expect((view.getByLabelText("Prefix") as HTMLInputElement).value).toBe("EUR ");
+    expect((view.getByLabelText("Suffix") as HTMLInputElement).value).toBe(" total");
+    expect((view.getByLabelText("Locale") as HTMLSelectElement).value).toBe("de-DE");
+    expect(view.getByRole("button", { name: "Assertive" }).getAttribute("aria-pressed")).toBe(
+      "true",
+    );
+    expect(view.getByLabelText("Generated React code").textContent).toContain(
+      "duration: { normal: 720 }",
+    );
   });
 
   it("copies a versioned share link and keeps it synchronized", async () => {
