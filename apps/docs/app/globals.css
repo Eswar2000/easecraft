@@ -245,6 +245,12 @@
   background: var(--ink);
 }
 
+.playground-playback button[data-success="true"] {
+  color: #fff;
+  border-color: #08756c;
+  background: #08756c;
+}
+
 .playground-viewports svg,
 .playground-playback svg,
 .playground-code-heading svg {

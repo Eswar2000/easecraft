@@ -29,6 +29,9 @@ importers:
       easecraft-registry:
         specifier: workspace:*
         version: link:../../packages/registry
+      easecraft-tokens:
+        specifier: workspace:*
+        version: link:../../packages/tokens
       lucide-react:
         specifier: 1.27.0
         version: 1.27.0(react@19.2.8)

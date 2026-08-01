@@ -8,9 +8,9 @@ By participating, you agree to follow the [Code of Conduct](CODE_OF_CONDUCT.md).
 
 ## Current Stage
 
-Easecraft has completed its core motion foundation, including `Stagger`, all nine planned component vertical slices, the typed registry, all eight planned compositions, component/composition copy actions, and the first interactive playground slice for Text Reveal, Staggered List, and Motion Dialog.
+Easecraft has completed its core motion foundation, including `Stagger`, all nine planned component vertical slices, the typed registry, all eight planned compositions, component/composition copy actions, and playground controls, generated package code, local persistence, and versioned share URLs for Text Reveal, Staggered List, and Motion Dialog.
 
-The immediate focus is playground persistence, versioned share URLs, additional code templates, and the remaining six components. Remaining Phase 0 repository work includes public identifiers, CI, preview deployment, and architecture decision records.
+The immediate focus is copy-source and token-override playground templates, followed by the remaining six components. Remaining Phase 0 repository work includes public identifiers, CI, preview deployment, and architecture decision records.
 
 Useful contributions at this stage include:
 

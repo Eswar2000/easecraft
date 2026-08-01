@@ -1,9 +1,4 @@
-import {
-  defaultMotionTokens,
-  type EasingTokens,
-  type TextRevealPreset,
-  type TextRevealSplit,
-} from "easecraft";
+import { defaultMotionTokens, type EasingTokens } from "easecraft-tokens";
 
 export const playgroundComponents = ["text-reveal", "staggered-list", "motion-dialog"] as const;
 export const playgroundContrasts = ["paper", "ink", "signal"] as const;
@@ -14,16 +9,8 @@ export const playgroundEasings = [
   "emphasized",
 ] as const satisfies readonly (keyof EasingTokens)[];
 export const playgroundViewports = ["mobile", "tablet", "desktop"] as const;
-export const playgroundPresets = [
-  "fade",
-  "rise",
-  "fade-rise",
-] as const satisfies readonly TextRevealPreset[];
-export const playgroundSplits = [
-  "lines",
-  "words",
-  "characters",
-] as const satisfies readonly TextRevealSplit[];
+export const playgroundPresets = ["fade", "rise", "fade-rise"] as const;
+export const playgroundSplits = ["lines", "words", "characters"] as const;
 export const playgroundOrders = ["forward", "reverse"] as const;
 
 export type PlaygroundComponent = (typeof playgroundComponents)[number];

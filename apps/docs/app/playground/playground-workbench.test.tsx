@@ -46,10 +46,19 @@ vi.mock("easecraft", () => ({
 }));
 
 import { PlaygroundWorkbench } from "./playground-workbench";
+import {
+  decodePlaygroundSearchParams,
+  decodePlaygroundStorage,
+  playgroundStorageKey,
+  serializePlaygroundStorage,
+} from "./playground-persistence";
+import { getDefaultPlaygroundState, parsePlaygroundState } from "./playground-state";
 
 const writeText = vi.fn<(value: string) => Promise<void>>();
 
 beforeEach(() => {
+  window.localStorage.clear();
+  window.history.replaceState(null, "", "/playground");
   Object.defineProperty(navigator, "clipboard", {
     configurable: true,
     value: { writeText },
@@ -127,5 +136,90 @@ describe("PlaygroundWorkbench", () => {
         "Generated code copied.",
       );
     });
+  });
+
+  it("restores local state and persists subsequent control changes", async () => {
+    window.localStorage.setItem(
+      playgroundStorageKey,
+      serializePlaygroundStorage(
+        parsePlaygroundState({ component: "staggered-list", order: "reverse" }),
+      ),
+    );
+    const view = render(createElement(PlaygroundWorkbench));
+
+    await waitFor(() => {
+      expect((view.getByLabelText("Preview") as HTMLSelectElement).value).toBe("staggered-list");
+    });
+
+    fireEvent.change(view.getByLabelText("Duration"), { target: { value: "640" } });
+
+    expect(
+      decodePlaygroundStorage(window.localStorage.getItem(playgroundStorageKey)),
+    ).toMatchObject({
+      component: "staggered-list",
+      duration: 640,
+      order: "reverse",
+    });
+  });
+
+  it("uses explicit shared state instead of stored state", () => {
+    window.localStorage.setItem(
+      playgroundStorageKey,
+      serializePlaygroundStorage(getDefaultPlaygroundState("staggered-list")),
+    );
+    const shared = parsePlaygroundState({ component: "motion-dialog", dismissible: false });
+    const view = render(<PlaygroundWorkbench initialState={shared} restoreFromStorage={false} />);
+
+    expect((view.getByLabelText("Preview") as HTMLSelectElement).value).toBe("motion-dialog");
+    expect(
+      (view.getByLabelText("Dismiss with Escape or backdrop") as HTMLInputElement).checked,
+    ).toBe(false);
+  });
+
+  it("restores versioned state directly from the browser URL", async () => {
+    window.localStorage.setItem(
+      playgroundStorageKey,
+      serializePlaygroundStorage(getDefaultPlaygroundState("staggered-list")),
+    );
+    window.history.replaceState(
+      null,
+      "",
+      "/playground?v=1&component=motion-dialog&duration=720&distance=24&easing=emphasized&reducedMotion=1&viewport=mobile&contrast=ink&dismissible=0",
+    );
+    const view = render(createElement(PlaygroundWorkbench));
+
+    await waitFor(() => {
+      expect((view.getByLabelText("Preview") as HTMLSelectElement).value).toBe("motion-dialog");
+    });
+    expect((view.getByLabelText("Duration") as HTMLInputElement).value).toBe("720");
+    expect(
+      (view.getByLabelText("Dismiss with Escape or backdrop") as HTMLInputElement).checked,
+    ).toBe(false);
+  });
+
+  it("copies a versioned share link and keeps it synchronized", async () => {
+    const view = render(createElement(PlaygroundWorkbench));
+
+    fireEvent.change(view.getByLabelText("Duration"), { target: { value: "640" } });
+    fireEvent.click(view.getByRole("button", { name: "Share" }));
+
+    await waitFor(() => {
+      expect(view.getByRole("status", { name: "Code copy status" }).textContent).toBe(
+        "Share link copied.",
+      );
+    });
+
+    const shareUrl = new URL(writeText.mock.calls.at(-1)?.[0] ?? "", window.location.origin);
+    expect(shareUrl.pathname).toBe("/playground");
+    expect(shareUrl.searchParams.get("v")).toBe("1");
+    expect(decodePlaygroundSearchParams(shareUrl.searchParams)).toMatchObject({ duration: 640 });
+    expect(window.location.search).toBe(shareUrl.search);
+
+    fireEvent.change(view.getByLabelText("Duration"), { target: { value: "720" } });
+    expect(decodePlaygroundSearchParams(new URLSearchParams(window.location.search))).toMatchObject(
+      {
+        duration: 720,
+      },
+    );
   });
 });

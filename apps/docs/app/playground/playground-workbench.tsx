@@ -1,10 +1,15 @@
 "use client";
 
 import { MotionDialog, MotionProvider, StaggeredList, TextReveal } from "easecraft";
-import { Check, Copy, Monitor, Play, RotateCcw, Smartphone, Tablet } from "lucide-react";
-import { startTransition, useId, useState, type ReactNode } from "react";
+import { Check, Copy, Link2, Monitor, Play, RotateCcw, Smartphone, Tablet } from "lucide-react";
+import { useEffect, useId, useState, useSyncExternalStore, type ReactNode } from "react";
 
 import { generatePlaygroundCode, getPlaygroundInstallCommand } from "./playground-code";
+import {
+  buildPlaygroundShareUrl,
+  createPlaygroundStateStore,
+  decodePlaygroundSearchParams,
+} from "./playground-persistence";
 import {
   getDefaultPlaygroundState,
   parsePlaygroundState,
@@ -207,32 +212,88 @@ function ControlSection({
   );
 }
 
-export function PlaygroundWorkbench() {
-  const [state, setState] = useState<PlaygroundState>(() => getDefaultPlaygroundState());
+interface PlaygroundWorkbenchProps {
+  readonly initialState?: PlaygroundState;
+  readonly restoreFromStorage?: boolean;
+}
+
+function getBrowserStorage(): Storage | undefined {
+  if (typeof window === "undefined") {
+    return undefined;
+  }
+
+  try {
+    return window.localStorage;
+  } catch {
+    return undefined;
+  }
+}
+
+function getBrowserSharedState(): PlaygroundState | undefined {
+  return typeof window === "undefined"
+    ? undefined
+    : decodePlaygroundSearchParams(new URLSearchParams(window.location.search));
+}
+
+export function PlaygroundWorkbench({
+  initialState = getDefaultPlaygroundState(),
+  restoreFromStorage = true,
+}: PlaygroundWorkbenchProps = {}) {
+  const [store] = useState(() => {
+    const storage = getBrowserStorage();
+    const sharedState = getBrowserSharedState();
+
+    return createPlaygroundStateStore({
+      initialState,
+      restoreFromStorage: sharedState === undefined && restoreFromStorage,
+      ...(sharedState ? { sharedState } : {}),
+      ...(storage ? { storage } : {}),
+    });
+  });
+  const state = useSyncExternalStore(store.subscribe, store.getSnapshot, store.getServerSnapshot);
   const [replayKey, setReplayKey] = useState(0);
-  const [copyState, setCopyState] = useState<"idle" | "copied" | "error">("idle");
+  const [copyState, setCopyState] = useState<"idle" | "code-copied" | "link-copied" | "error">(
+    "idle",
+  );
   const code = generatePlaygroundCode(state);
   const installCommand = getPlaygroundInstallCommand(state);
 
+  useEffect(() => {
+    store.persist();
+  }, [store]);
+
+  function commitState(nextState: PlaygroundState) {
+    store.setState(nextState);
+
+    if (
+      typeof window !== "undefined" &&
+      decodePlaygroundSearchParams(new URLSearchParams(window.location.search)) !== undefined
+    ) {
+      window.history.replaceState(
+        null,
+        "",
+        buildPlaygroundShareUrl(nextState, window.location.href),
+      );
+    }
+  }
+
   function updateState(patch: Readonly<Record<string, unknown>>) {
-    setState((current) => parsePlaygroundState({ ...current, ...patch }));
+    commitState(parsePlaygroundState({ ...state, ...patch }));
     setCopyState("idle");
   }
 
   function selectComponent(component: PlaygroundComponent) {
-    startTransition(() => {
-      const defaults = getDefaultPlaygroundState(component);
-      setState(
-        parsePlaygroundState({
-          ...defaults,
-          contrast: state.contrast,
-          reducedMotion: state.reducedMotion,
-          viewport: state.viewport,
-        }),
-      );
-      setReplayKey((key) => key + 1);
-      setCopyState("idle");
-    });
+    const defaults = getDefaultPlaygroundState(component);
+    commitState(
+      parsePlaygroundState({
+        ...defaults,
+        contrast: state.contrast,
+        reducedMotion: state.reducedMotion,
+        viewport: state.viewport,
+      }),
+    );
+    setReplayKey((key) => key + 1);
+    setCopyState("idle");
   }
 
   async function copyCode() {
@@ -244,7 +305,24 @@ export function PlaygroundWorkbench() {
       }
 
       await clipboard.writeText(code);
-      setCopyState("copied");
+      setCopyState("code-copied");
+    } catch {
+      setCopyState("error");
+    }
+  }
+
+  async function copyShareLink() {
+    try {
+      const clipboard = navigator.clipboard as Clipboard | undefined;
+
+      if (!clipboard) {
+        throw new Error("Clipboard API unavailable");
+      }
+
+      const shareUrl = buildPlaygroundShareUrl(state, window.location.href);
+      window.history.replaceState(null, "", shareUrl);
+      await clipboard.writeText(shareUrl);
+      setCopyState("link-copied");
     } catch {
       setCopyState("error");
     }
@@ -439,6 +517,21 @@ export function PlaygroundWorkbench() {
           </div>
           <div className="playground-playback">
             <button
+              data-success={copyState === "link-copied" ? true : undefined}
+              onClick={() => {
+                void copyShareLink();
+              }}
+              title="Copy share link"
+              type="button"
+            >
+              {copyState === "link-copied" ? (
+                <Check aria-hidden="true" />
+              ) : (
+                <Link2 aria-hidden="true" />
+              )}
+              <span>Share</span>
+            </button>
+            <button
               onClick={() => {
                 setReplayKey((key) => key + 1);
               }}
@@ -450,7 +543,7 @@ export function PlaygroundWorkbench() {
             </button>
             <button
               onClick={() => {
-                setState(getDefaultPlaygroundState(state.component));
+                commitState(getDefaultPlaygroundState(state.component));
                 setReplayKey((key) => key + 1);
                 setCopyState("idle");
               }}
@@ -485,14 +578,18 @@ export function PlaygroundWorkbench() {
           </div>
           <button
             aria-label="Copy generated code"
-            data-success={copyState === "copied" ? true : undefined}
+            data-success={copyState === "code-copied" ? true : undefined}
             onClick={() => {
               void copyCode();
             }}
             title="Copy generated code"
             type="button"
           >
-            {copyState === "copied" ? <Check aria-hidden="true" /> : <Copy aria-hidden="true" />}
+            {copyState === "code-copied" ? (
+              <Check aria-hidden="true" />
+            ) : (
+              <Copy aria-hidden="true" />
+            )}
           </button>
         </div>
         <div className="playground-install-command">
@@ -508,11 +605,13 @@ export function PlaygroundWorkbench() {
           className="playground-copy-status"
           role="status"
         >
-          {copyState === "copied"
+          {copyState === "code-copied"
             ? "Generated code copied."
-            : copyState === "error"
-              ? "Copy failed. Select the code and copy it manually."
-              : ""}
+            : copyState === "link-copied"
+              ? "Share link copied."
+              : copyState === "error"
+                ? "Copy failed. Select the code and copy it manually."
+                : ""}
         </p>
       </aside>
     </section>
