@@ -5,6 +5,68 @@ import { createElement, type ReactNode } from "react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 vi.mock("easecraft", () => ({
+  AnimatedTabs: ({
+    "aria-label": ariaLabel,
+    children,
+    className,
+    getLabel,
+    getValue,
+    isDisabled,
+    items,
+    onValueChange,
+    orientation,
+    value,
+  }: {
+    readonly "aria-label"?: string;
+    readonly children: (item: {
+      id: string;
+      label: string;
+      metric: string;
+      note: string;
+    }) => ReactNode;
+    readonly className?: string;
+    readonly getLabel: (item: { id: string; label: string }) => ReactNode;
+    readonly getValue: (item: { id: string }) => string;
+    readonly isDisabled?: (item: { disabled?: boolean }) => boolean;
+    readonly items: readonly {
+      disabled?: boolean;
+      id: string;
+      label: string;
+      metric: string;
+      note: string;
+    }[];
+    readonly onValueChange?: (value: string) => void;
+    readonly orientation?: string;
+    readonly value?: string;
+  }) => {
+    const activeItem = items.find((item) => getValue(item) === value) ?? items[0];
+
+    return createElement(
+      "div",
+      { className, "data-orientation": orientation },
+      createElement(
+        "div",
+        { "aria-label": ariaLabel, role: "tablist" },
+        items.map((item) =>
+          createElement(
+            "button",
+            {
+              "aria-selected": getValue(item) === value,
+              disabled: isDisabled?.(item) ?? false,
+              key: getValue(item),
+              onClick: () => {
+                onValueChange?.(getValue(item));
+              },
+              role: "tab",
+              type: "button",
+            },
+            getLabel(item),
+          ),
+        ),
+      ),
+      activeItem ? createElement("div", { role: "tabpanel" }, children(activeItem)) : null,
+    );
+  },
   MotionDialog: ({
     children,
     closeClassName,
@@ -169,6 +231,42 @@ describe("PlaygroundWorkbench", () => {
     );
   });
 
+  it("controls Animated Tabs and persists preview selection", () => {
+    const view = render(createElement(PlaygroundWorkbench));
+
+    fireEvent.change(view.getByLabelText("Preview"), { target: { value: "animated-tabs" } });
+
+    expect(view.queryByLabelText("Delay")).toBeNull();
+    expect(view.getByRole("tab", { name: "Overview" }).getAttribute("aria-selected")).toBe("true");
+    expect((view.getByRole("tab", { name: "Permissions" }) as HTMLButtonElement).disabled).toBe(
+      true,
+    );
+
+    fireEvent.click(view.getByRole("tab", { name: "Activity" }));
+    fireEvent.click(view.getByRole("button", { name: "Manual" }));
+    fireEvent.click(view.getByRole("button", { name: "Vertical" }));
+    fireEvent.click(view.getByLabelText("Loop keyboard navigation"));
+
+    expect((view.getByLabelText("Active tab") as HTMLSelectElement).value).toBe("activity");
+    expect(view.getByRole("tabpanel").textContent).toContain("Changes this week");
+
+    const codePanel = view.getByLabelText("Generated React code");
+    expect(codePanel.textContent).toContain("<AnimatedTabs");
+    expect(codePanel.textContent).toContain('defaultValue="activity"');
+    expect(codePanel.textContent).toContain('activationMode="manual"');
+    expect(codePanel.textContent).toContain('orientation="vertical"');
+    expect(codePanel.textContent).toContain("loop={false}");
+    expect(
+      decodePlaygroundStorage(window.localStorage.getItem(playgroundStorageKey)),
+    ).toMatchObject({
+      activationMode: "manual",
+      component: "animated-tabs",
+      loop: false,
+      orientation: "vertical",
+      tab: "activity",
+    });
+  });
+
   it("replays Staggered List when motion controls change", () => {
     const view = render(createElement(PlaygroundWorkbench));
 
@@ -328,6 +426,36 @@ describe("PlaygroundWorkbench", () => {
     );
     expect(view.getByLabelText("Generated React code").textContent).toContain(
       "duration: { normal: 720 }",
+    );
+  });
+
+  it("restores Animated Tabs behavior and templates from a shared URL", async () => {
+    window.history.replaceState(
+      null,
+      "",
+      "/playground?v=1&component=animated-tabs&codeMode=copy-source&duration=640&distance=8&easing=move&reducedMotion=0&viewport=mobile&contrast=ink&activationMode=manual&orientation=vertical&loop=0&tab=metrics",
+    );
+    const view = render(createElement(PlaygroundWorkbench));
+
+    await waitFor(() => {
+      expect((view.getByLabelText("Preview") as HTMLSelectElement).value).toBe("animated-tabs");
+    });
+
+    expect((view.getByLabelText("Active tab") as HTMLSelectElement).value).toBe("metrics");
+    expect(view.getByRole("button", { name: "Manual" }).getAttribute("aria-pressed")).toBe("true");
+    expect(view.getByRole("button", { name: "Vertical" }).getAttribute("aria-pressed")).toBe(
+      "true",
+    );
+    expect((view.getByLabelText("Loop keyboard navigation") as HTMLInputElement).checked).toBe(
+      false,
+    );
+    expect(view.getByRole("tab", { name: "Metrics" }).getAttribute("aria-selected")).toBe("true");
+    expect(view.getByRole("tabpanel").textContent).toContain("Accessibility score");
+    expect(view.getByRole("button", { name: "Copy source" }).getAttribute("aria-pressed")).toBe(
+      "true",
+    );
+    expect(view.getByLabelText("Generated React code").textContent).toContain(
+      "@/components/easecraft/animated-tabs",
     );
   });
 

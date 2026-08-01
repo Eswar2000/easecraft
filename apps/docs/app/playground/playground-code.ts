@@ -5,6 +5,7 @@ import type { PlaygroundCodeMode, PlaygroundComponent, PlaygroundState } from ".
 export { playgroundCodeModes, type PlaygroundCodeMode } from "./playground-state";
 
 const componentExportNames = {
+  "animated-tabs": "AnimatedTabs",
   "motion-dialog": "MotionDialog",
   "number-ticker": "NumberTicker",
   "staggered-list": "StaggeredList",
@@ -60,7 +61,8 @@ function generateTokenOverrides(state: PlaygroundState, mode: PlaygroundCodeMode
   const groups = [];
 
   if ("distance" in state) {
-    groups.push(`distance: { medium: ${state.distance.toString()} },`);
+    const distanceToken = state.component === "animated-tabs" ? "small" : "medium";
+    groups.push(`distance: { ${distanceToken}: ${state.distance.toString()} },`);
   }
 
   groups.push(`duration: { normal: ${state.duration.toString()} },`);
@@ -208,10 +210,79 @@ export function Example() {
 `;
 }
 
+function generateAnimatedTabsCode(
+  state: Extract<PlaygroundState, { component: "animated-tabs" }>,
+  mode: PlaygroundCodeMode,
+) {
+  const distance = mode === "token-override" ? '"small"' : `{${state.distance.toString()}}`;
+
+  return `${generateImports(state, mode)}${generateTokenOverrides(state, mode)}
+
+interface WorkspaceTab {
+  readonly disabled?: boolean;
+  readonly id: "overview" | "activity" | "permissions" | "metrics";
+  readonly label: string;
+  readonly metric: string;
+  readonly note: string;
+}
+
+const workspaceTabs = [
+  { id: "overview", label: "Overview", metric: "24", note: "Active motion components" },
+  { id: "activity", label: "Activity", metric: "08", note: "Changes this week" },
+  { disabled: true, id: "permissions", label: "Permissions", metric: "--", note: "Unavailable" },
+  { id: "metrics", label: "Metrics", metric: "98", note: "Accessibility score" },
+] satisfies readonly WorkspaceTab[];
+
+function getTabLabel(tab: WorkspaceTab) {
+  return tab.label;
+}
+
+function getTabValue(tab: WorkspaceTab) {
+  return tab.id;
+}
+
+function isTabDisabled(tab: WorkspaceTab) {
+  return tab.disabled ?? false;
+}
+
+export function Example() {
+  return (
+    <MotionProvider ${providerProps(state, mode)}>
+      <AnimatedTabs
+        aria-label="Workspace views"
+        activationMode="${state.activationMode}"
+        defaultValue="${state.tab}"
+        distance=${distance}
+        duration=${durationProp(state, mode)}
+        easing="${state.easing}"
+        getLabel={getTabLabel}
+        getValue={getTabValue}
+        isDisabled={isTabDisabled}
+        items={workspaceTabs}
+        loop={${state.loop.toString()}}
+        orientation="${state.orientation}"
+      >
+        {(tab) => (
+          <div>
+            <strong>{tab.metric}</strong>
+            <span>{tab.note}</span>
+          </div>
+        )}
+      </AnimatedTabs>
+    </MotionProvider>
+  );
+}
+`;
+}
+
 export function generatePlaygroundCode(
   state: PlaygroundState,
   mode: PlaygroundCodeMode = state.codeMode,
 ): string {
+  if (state.component === "animated-tabs") {
+    return generateAnimatedTabsCode(state, mode);
+  }
+
   if (state.component === "number-ticker") {
     return generateNumberTickerCode(state, mode);
   }

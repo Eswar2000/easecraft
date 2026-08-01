@@ -1,6 +1,13 @@
 "use client";
 
-import { MotionDialog, MotionProvider, NumberTicker, StaggeredList, TextReveal } from "easecraft";
+import {
+  AnimatedTabs,
+  MotionDialog,
+  MotionProvider,
+  NumberTicker,
+  StaggeredList,
+  TextReveal,
+} from "easecraft";
 import { Check, Copy, Link2, Monitor, Play, RotateCcw, Smartphone, Tablet } from "lucide-react";
 import { useEffect, useId, useState, useSyncExternalStore, type ReactNode } from "react";
 
@@ -27,12 +34,17 @@ import {
   playgroundPresets,
   playgroundRanges,
   playgroundSplits,
+  playgroundTabActivationModes,
+  playgroundTabOrientations,
+  playgroundTabValues,
   playgroundViewports,
   type PlaygroundComponent,
   type PlaygroundState,
+  type PlaygroundTabValue,
 } from "./playground-state";
 
 const componentNames = {
+  "animated-tabs": "Animated Tabs",
   "motion-dialog": "Motion Dialog",
   "number-ticker": "Number Ticker",
   "staggered-list": "Staggered List",
@@ -51,6 +63,22 @@ const numberLocaleNames = {
   "en-US": "English (US)",
 } as const;
 
+const tabActivationNames = {
+  automatic: "Automatic",
+  manual: "Manual",
+} as const;
+
+const tabOrientationNames = {
+  horizontal: "Horizontal",
+  vertical: "Vertical",
+} as const;
+
+const tabValueNames = {
+  activity: "Activity",
+  metrics: "Metrics",
+  overview: "Overview",
+} as const;
+
 const codeModeNames = {
   "copy-source": "Copy source",
   package: "Package React",
@@ -63,10 +91,43 @@ const previewItems = [
   { id: "verify", label: "Verify accessibility", track: "Release" },
 ] as const;
 
+interface PlaygroundWorkspaceTab {
+  readonly disabled?: boolean;
+  readonly id: "overview" | "activity" | "permissions" | "metrics";
+  readonly label: string;
+  readonly metric: string;
+  readonly note: string;
+}
+
+const workspaceTabs = [
+  { id: "overview", label: "Overview", metric: "24", note: "Active motion components" },
+  { id: "activity", label: "Activity", metric: "08", note: "Changes this week" },
+  {
+    disabled: true,
+    id: "permissions",
+    label: "Permissions",
+    metric: "--",
+    note: "Unavailable in preview",
+  },
+  { id: "metrics", label: "Metrics", metric: "98", note: "Accessibility score" },
+] satisfies readonly PlaygroundWorkspaceTab[];
+
 const integerFormatOptions = { maximumFractionDigits: 0 } satisfies Intl.NumberFormatOptions;
 
 function getPreviewItemKey(item: (typeof previewItems)[number]) {
   return item.id;
+}
+
+function getWorkspaceTabLabel(tab: PlaygroundWorkspaceTab) {
+  return tab.label;
+}
+
+function getWorkspaceTabValue(tab: PlaygroundWorkspaceTab) {
+  return tab.id;
+}
+
+function isWorkspaceTabDisabled(tab: PlaygroundWorkspaceTab) {
+  return tab.disabled ?? false;
 }
 
 interface RangeControlProps {
@@ -195,12 +256,62 @@ function SegmentedControl<Value extends string>({
 }
 
 function Preview({
+  onTabChange,
   replayKey,
   state,
 }: {
+  readonly onTabChange: (tab: PlaygroundTabValue) => void;
   readonly replayKey: number;
   readonly state: PlaygroundState;
 }) {
+  if (state.component === "animated-tabs") {
+    const tabsReplayKey = [replayKey, state.orientation, state.reducedMotion].join(":");
+
+    return (
+      <AnimatedTabs
+        aria-label="Workspace views"
+        activationMode={state.activationMode}
+        className="playground-tabs-preview"
+        distance={state.distance}
+        duration={state.duration}
+        easing={state.easing}
+        getLabel={getWorkspaceTabLabel}
+        getValue={getWorkspaceTabValue}
+        isDisabled={isWorkspaceTabDisabled}
+        items={workspaceTabs}
+        key={tabsReplayKey}
+        loop={state.loop}
+        onValueChange={(tab) => {
+          if (tab !== "permissions") {
+            onTabChange(tab);
+          }
+        }}
+        orientation={state.orientation}
+        value={state.tab}
+      >
+        {(tab) => (
+          <div className="playground-tabs-panel">
+            <div>
+              <span>Selected / {tab.label}</span>
+              <strong>{tab.metric}</strong>
+              <p>{tab.note}</p>
+            </div>
+            <dl>
+              <div>
+                <dt>Keyboard</dt>
+                <dd>{state.activationMode}</dd>
+              </div>
+              <div>
+                <dt>Motion</dt>
+                <dd>{state.reducedMotion ? "Reduced" : "Enabled"}</dd>
+              </div>
+            </dl>
+          </div>
+        )}
+      </AnimatedTabs>
+    );
+  }
+
   if (state.component === "staggered-list") {
     const listReplayKey = [
       replayKey,
@@ -483,7 +594,7 @@ export function PlaygroundWorkbench({
             unit="ms"
             value={state.duration}
           />
-          {state.component !== "motion-dialog" ? (
+          {"delay" in state ? (
             <RangeControl
               {...playgroundRanges.delay}
               label="Delay"
@@ -522,7 +633,55 @@ export function PlaygroundWorkbench({
           ) : null}
         </ControlSection>
 
-        {state.component === "number-ticker" ? (
+        {state.component === "animated-tabs" ? (
+          <ControlSection title="Tabs">
+            <label className="playground-select">
+              <span>Active tab</span>
+              <select
+                value={state.tab}
+                onChange={(event) => {
+                  updateState({ tab: event.currentTarget.value });
+                }}
+              >
+                {playgroundTabValues.map((tab) => (
+                  <option key={tab} value={tab}>
+                    {tabValueNames[tab]}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <span className="playground-control-label">Activation</span>
+            <SegmentedControl
+              getOptionLabel={(mode) => tabActivationNames[mode]}
+              label="Tab activation"
+              onChange={(activationMode) => {
+                updateState({ activationMode });
+              }}
+              options={playgroundTabActivationModes}
+              value={state.activationMode}
+            />
+            <span className="playground-control-label">Orientation</span>
+            <SegmentedControl
+              getOptionLabel={(orientation) => tabOrientationNames[orientation]}
+              label="Tab orientation"
+              onChange={(orientation) => {
+                updateState({ orientation });
+              }}
+              options={playgroundTabOrientations}
+              value={state.orientation}
+            />
+            <label className="playground-checkbox">
+              <input
+                checked={state.loop}
+                type="checkbox"
+                onChange={(event) => {
+                  updateState({ loop: event.currentTarget.checked });
+                }}
+              />
+              <span>Loop keyboard navigation</span>
+            </label>
+          </ControlSection>
+        ) : state.component === "number-ticker" ? (
           <ControlSection title="Value">
             <div className="playground-input-grid">
               <NumberControl
@@ -746,7 +905,13 @@ export function PlaygroundWorkbench({
             </span>
             <MotionProvider reducedMotion={state.reducedMotion ? "always" : "never"}>
               <div className="playground-preview-content">
-                <Preview replayKey={replayKey} state={state} />
+                <Preview
+                  onTabChange={(tab) => {
+                    updateState({ tab });
+                  }}
+                  replayKey={replayKey}
+                  state={state}
+                />
               </div>
             </MotionProvider>
           </div>

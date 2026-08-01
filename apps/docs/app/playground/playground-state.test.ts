@@ -44,6 +44,15 @@ describe("playground state", () => {
       suffix: "",
       value: 12_480,
     });
+    expect(getDefaultPlaygroundState("animated-tabs")).toMatchObject({
+      activationMode: "automatic",
+      component: "animated-tabs",
+      distance: 4,
+      easing: "move",
+      loop: true,
+      orientation: "horizontal",
+      tab: "overview",
+    });
   });
 
   it("validates enums, ignores unknown fields, and clamps numeric controls", () => {
@@ -130,5 +139,26 @@ describe("playground state", () => {
     });
     expect("distance" in numberState).toBe(false);
     expect("stagger" in numberState).toBe(false);
+
+    const tabsState = parsePlaygroundState({
+      activationMode: "manual",
+      component: "animated-tabs",
+      delay: 200,
+      distance: 500,
+      loop: false,
+      orientation: "vertical",
+      stagger: 120,
+      tab: "permissions",
+    });
+
+    expect(tabsState).toEqual({
+      ...getDefaultPlaygroundState("animated-tabs"),
+      activationMode: "manual",
+      distance: playgroundRanges.distance.max,
+      loop: false,
+      orientation: "vertical",
+    });
+    expect("delay" in tabsState).toBe(false);
+    expect("stagger" in tabsState).toBe(false);
   });
 });

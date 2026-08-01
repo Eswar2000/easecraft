@@ -3,6 +3,7 @@ import { defaultMotionTokens, type EasingTokens } from "easecraft-tokens";
 export const playgroundComponents = [
   "text-reveal",
   "number-ticker",
+  "animated-tabs",
   "staggered-list",
   "motion-dialog",
 ] as const;
@@ -20,6 +21,9 @@ export const playgroundSplits = ["lines", "words", "characters"] as const;
 export const playgroundOrders = ["forward", "reverse"] as const;
 export const playgroundNumberAnnouncements = ["off", "polite", "assertive"] as const;
 export const playgroundNumberLocales = ["en-US", "de-DE", "en-IN"] as const;
+export const playgroundTabActivationModes = ["automatic", "manual"] as const;
+export const playgroundTabOrientations = ["horizontal", "vertical"] as const;
+export const playgroundTabValues = ["overview", "activity", "metrics"] as const;
 
 export type PlaygroundComponent = (typeof playgroundComponents)[number];
 export type PlaygroundCodeMode = (typeof playgroundCodeModes)[number];
@@ -31,6 +35,9 @@ export type PlaygroundSplit = (typeof playgroundSplits)[number];
 export type PlaygroundOrder = (typeof playgroundOrders)[number];
 export type PlaygroundNumberAnnouncement = (typeof playgroundNumberAnnouncements)[number];
 export type PlaygroundNumberLocale = (typeof playgroundNumberLocales)[number];
+export type PlaygroundTabActivationMode = (typeof playgroundTabActivationModes)[number];
+export type PlaygroundTabOrientation = (typeof playgroundTabOrientations)[number];
+export type PlaygroundTabValue = (typeof playgroundTabValues)[number];
 
 export interface PlaygroundCommonState {
   readonly codeMode: PlaygroundCodeMode;
@@ -78,9 +85,18 @@ export interface NumberTickerPlaygroundState extends PlaygroundCommonState {
   readonly value: number;
 }
 
+export interface AnimatedTabsPlaygroundState extends PlaygroundSpatialState {
+  readonly activationMode: PlaygroundTabActivationMode;
+  readonly component: "animated-tabs";
+  readonly loop: boolean;
+  readonly orientation: PlaygroundTabOrientation;
+  readonly tab: PlaygroundTabValue;
+}
+
 export type PlaygroundState =
   | TextRevealPlaygroundState
   | NumberTickerPlaygroundState
+  | AnimatedTabsPlaygroundState
   | StaggeredListPlaygroundState
   | MotionDialogPlaygroundState;
 
@@ -108,6 +124,16 @@ const spatialDefaults = {
 } as const satisfies PlaygroundSpatialState;
 
 const componentDefaults = {
+  "animated-tabs": {
+    ...spatialDefaults,
+    activationMode: "automatic",
+    component: "animated-tabs",
+    distance: defaultMotionTokens.distance.small,
+    easing: "move",
+    loop: true,
+    orientation: "horizontal",
+    tab: "overview",
+  },
   "motion-dialog": {
     ...spatialDefaults,
     component: "motion-dialog",
@@ -195,6 +221,28 @@ export function parsePlaygroundState(value: unknown): PlaygroundState {
     version: 1 as const,
     viewport: readEnum(input["viewport"], playgroundViewports, defaults.viewport),
   };
+
+  if (component === "animated-tabs") {
+    const tabDefaults = componentDefaults["animated-tabs"];
+
+    return {
+      ...common,
+      activationMode: readEnum(
+        input["activationMode"],
+        playgroundTabActivationModes,
+        tabDefaults.activationMode,
+      ),
+      component,
+      distance: readNumber(input["distance"], tabDefaults.distance, playgroundRanges.distance),
+      loop: readBoolean(input["loop"], tabDefaults.loop),
+      orientation: readEnum(
+        input["orientation"],
+        playgroundTabOrientations,
+        tabDefaults.orientation,
+      ),
+      tab: readEnum(input["tab"], playgroundTabValues, tabDefaults.tab),
+    };
+  }
 
   if (component === "number-ticker") {
     const numberDefaults = componentDefaults["number-ticker"];

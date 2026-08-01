@@ -10,7 +10,11 @@ import {
   resolveInitialPlaygroundState,
   serializePlaygroundStorage,
 } from "./playground-persistence";
-import { getDefaultPlaygroundState, parsePlaygroundState } from "./playground-state";
+import {
+  getDefaultPlaygroundState,
+  parsePlaygroundState,
+  playgroundRanges,
+} from "./playground-state";
 
 describe("playground persistence", () => {
   it("round-trips each component through stable versioned URL fields", () => {
@@ -30,6 +34,13 @@ describe("playground persistence", () => {
         prefix: "EUR ",
         suffix: " total",
         value: 18_750,
+      }),
+      parsePlaygroundState({
+        activationMode: "manual",
+        component: "animated-tabs",
+        loop: false,
+        orientation: "vertical",
+        tab: "metrics",
       }),
       parsePlaygroundState({
         component: "staggered-list",
@@ -84,6 +95,18 @@ describe("playground persistence", () => {
       ...getDefaultPlaygroundState("number-ticker"),
       prefix: "abcdefghijkl",
       value: 1_000_000,
+    });
+    expect(
+      decodePlaygroundSearchParams(
+        new URLSearchParams(
+          "v=1&component=animated-tabs&activationMode=manual&orientation=diagonal&loop=0&tab=permissions&distance=999",
+        ),
+      ),
+    ).toEqual({
+      ...getDefaultPlaygroundState("animated-tabs"),
+      activationMode: "manual",
+      distance: playgroundRanges.distance.max,
+      loop: false,
     });
   });
 

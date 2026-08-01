@@ -64,6 +64,7 @@ export function decodePlaygroundSearchParams(
   }
 
   return parsePlaygroundState({
+    activationMode: readSearchValue(params, "activationMode"),
     announce: readSearchValue(params, "announce"),
     codeMode: readSearchValue(params, "codeMode"),
     component: readSearchValue(params, "component"),
@@ -75,13 +76,16 @@ export function decodePlaygroundSearchParams(
     easing: readSearchValue(params, "easing"),
     from: readSearchNumber(readSearchValue(params, "from")),
     locale: readSearchValue(params, "locale"),
+    loop: readSearchBoolean(readSearchValue(params, "loop")),
     order: readSearchValue(params, "order"),
+    orientation: readSearchValue(params, "orientation"),
     preset: readSearchValue(params, "preset"),
     prefix: readSearchValue(params, "prefix"),
     reducedMotion: readSearchBoolean(readSearchValue(params, "reducedMotion")),
     split: readSearchValue(params, "split"),
     stagger: readSearchNumber(readSearchValue(params, "stagger")),
     suffix: readSearchValue(params, "suffix"),
+    tab: readSearchValue(params, "tab"),
     value: readSearchNumber(readSearchValue(params, "value")),
     viewport: readSearchValue(params, "viewport"),
   });
@@ -103,7 +107,12 @@ export function encodePlaygroundSearchParams(state: PlaygroundState): URLSearchP
   params.set("viewport", state.viewport);
   params.set("contrast", state.contrast);
 
-  if (state.component === "number-ticker") {
+  if (state.component === "animated-tabs") {
+    params.set("activationMode", state.activationMode);
+    params.set("orientation", state.orientation);
+    params.set("loop", state.loop ? "1" : "0");
+    params.set("tab", state.tab);
+  } else if (state.component === "number-ticker") {
     params.set("delay", state.delay.toString());
     params.set("from", state.from.toString());
     params.set("value", state.value.toString());

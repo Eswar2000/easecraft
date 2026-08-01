@@ -153,4 +153,49 @@ describe("playground code generation", () => {
     expect(tokenCode).not.toContain("distance:");
     expect(tokenCode).not.toContain("stagger:");
   });
+
+  it("generates Animated Tabs data and interaction settings", () => {
+    const code = generatePlaygroundCode(
+      parsePlaygroundState({
+        activationMode: "manual",
+        component: "animated-tabs",
+        distance: 8,
+        duration: 640,
+        loop: false,
+        orientation: "vertical",
+        tab: "metrics",
+      }),
+    );
+
+    expect(code).toContain('import { MotionProvider, AnimatedTabs } from "easecraft";');
+    expect(code).toContain("const workspaceTabs = [");
+    expect(code).toContain('activationMode="manual"');
+    expect(code).toContain('defaultValue="metrics"');
+    expect(code).toContain("distance={8}");
+    expect(code).toContain("duration={640}");
+    expect(code).toContain("loop={false}");
+    expect(code).toContain('orientation="vertical"');
+    expect(code).not.toContain("delay=");
+    expect(code).not.toContain("stagger=");
+  });
+
+  it("derives Animated Tabs copy-source imports and native token overrides", () => {
+    const state = parsePlaygroundState({
+      component: "animated-tabs",
+      distance: 8,
+      duration: 640,
+    });
+    const copySourceCode = generatePlaygroundCode(state, "copy-source");
+    const tokenCode = generatePlaygroundCode(state, "token-override");
+
+    expect(copySourceCode).toContain(
+      'import { AnimatedTabs } from "@/components/easecraft/animated-tabs";',
+    );
+    expect(getPlaygroundInstallCommand(state, "copy-source")).toContain("animejs@4.5.0");
+    expect(tokenCode).toContain("distance: { small: 8 }");
+    expect(tokenCode).toContain("duration: { normal: 640 }");
+    expect(tokenCode).toContain('distance="small"');
+    expect(tokenCode).toContain('duration="normal"');
+    expect(tokenCode).not.toContain("stagger:");
+  });
 });
