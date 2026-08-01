@@ -9,6 +9,7 @@ import {
 describe("playground state", () => {
   it("creates stable component-specific defaults", () => {
     expect(getDefaultPlaygroundState()).toEqual({
+      codeMode: "package",
       component: "text-reveal",
       contrast: "paper",
       delay: 0,
@@ -37,6 +38,7 @@ describe("playground state", () => {
   it("validates enums, ignores unknown fields, and clamps numeric controls", () => {
     expect(
       parsePlaygroundState({
+        codeMode: "token-override",
         component: "text-reveal",
         contrast: "missing",
         delay: -20,
@@ -52,6 +54,7 @@ describe("playground state", () => {
         viewport: "mobile",
       }),
     ).toEqual({
+      codeMode: "token-override",
       component: "text-reveal",
       contrast: "paper",
       delay: playgroundRanges.delay.min,

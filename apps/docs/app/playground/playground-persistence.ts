@@ -64,6 +64,7 @@ export function decodePlaygroundSearchParams(
   }
 
   return parsePlaygroundState({
+    codeMode: readSearchValue(params, "codeMode"),
     component: readSearchValue(params, "component"),
     contrast: readSearchValue(params, "contrast"),
     delay: readSearchNumber(readSearchValue(params, "delay")),
@@ -84,6 +85,7 @@ export function encodePlaygroundSearchParams(state: PlaygroundState): URLSearchP
   const params = new URLSearchParams();
   params.set("v", playgroundUrlVersion);
   params.set("component", state.component);
+  params.set("codeMode", state.codeMode);
   params.set("duration", state.duration.toString());
   params.set("distance", state.distance.toString());
   params.set("easing", state.easing);

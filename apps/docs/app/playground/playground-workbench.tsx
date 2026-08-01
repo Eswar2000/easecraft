@@ -4,7 +4,12 @@ import { MotionDialog, MotionProvider, StaggeredList, TextReveal } from "easecra
 import { Check, Copy, Link2, Monitor, Play, RotateCcw, Smartphone, Tablet } from "lucide-react";
 import { useEffect, useId, useState, useSyncExternalStore, type ReactNode } from "react";
 
-import { generatePlaygroundCode, getPlaygroundInstallCommand } from "./playground-code";
+import {
+  generatePlaygroundCode,
+  getPlaygroundInstallCommand,
+  playgroundCodeModes,
+  type PlaygroundCodeMode,
+} from "./playground-code";
 import {
   buildPlaygroundShareUrl,
   createPlaygroundStateStore,
@@ -30,6 +35,12 @@ const componentNames = {
   "staggered-list": "Staggered List",
   "text-reveal": "Text Reveal",
 } as const satisfies Readonly<Record<PlaygroundComponent, string>>;
+
+const codeModeNames = {
+  "copy-source": "Copy source",
+  package: "Package React",
+  "token-override": "Token overrides",
+} as const satisfies Readonly<Record<PlaygroundCodeMode, string>>;
 
 const previewItems = [
   { id: "brief", label: "Write the brief", track: "Intent" },
@@ -79,6 +90,7 @@ function RangeControl({ label, max, min, onChange, step, unit, value }: RangeCon
 }
 
 interface SegmentedControlProps<Value extends string> {
+  readonly getOptionLabel?: (value: Value) => string;
   readonly label: string;
   readonly onChange: (value: Value) => void;
   readonly options: readonly Value[];
@@ -86,6 +98,7 @@ interface SegmentedControlProps<Value extends string> {
 }
 
 function SegmentedControl<Value extends string>({
+  getOptionLabel = (option) => option,
   label,
   onChange,
   options,
@@ -102,7 +115,7 @@ function SegmentedControl<Value extends string>({
           }}
           type="button"
         >
-          {option}
+          {getOptionLabel(option)}
         </button>
       ))}
     </div>
@@ -287,6 +300,7 @@ export function PlaygroundWorkbench({
     commitState(
       parsePlaygroundState({
         ...defaults,
+        codeMode: state.codeMode,
         contrast: state.contrast,
         reducedMotion: state.reducedMotion,
         viewport: state.viewport,
@@ -574,7 +588,7 @@ export function PlaygroundWorkbench({
         <div className="playground-code-heading">
           <div>
             <span>Generated output</span>
-            <strong>Package React</strong>
+            <strong>{codeModeNames[state.codeMode]}</strong>
           </div>
           <button
             aria-label="Copy generated code"
@@ -592,8 +606,19 @@ export function PlaygroundWorkbench({
             )}
           </button>
         </div>
+        <div className="playground-code-modes">
+          <SegmentedControl
+            getOptionLabel={(mode) => codeModeNames[mode]}
+            label="Code template"
+            onChange={(mode) => {
+              updateState({ codeMode: mode });
+            }}
+            options={playgroundCodeModes}
+            value={state.codeMode}
+          />
+        </div>
         <div className="playground-install-command">
-          <span>Install</span>
+          <span>{state.codeMode === "copy-source" ? "Dependencies" : "Install"}</span>
           <code>{installCommand}</code>
         </div>
         <pre>

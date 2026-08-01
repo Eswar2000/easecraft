@@ -1,6 +1,7 @@
 import { defaultMotionTokens, type EasingTokens } from "easecraft-tokens";
 
 export const playgroundComponents = ["text-reveal", "staggered-list", "motion-dialog"] as const;
+export const playgroundCodeModes = ["package", "copy-source", "token-override"] as const;
 export const playgroundContrasts = ["paper", "ink", "signal"] as const;
 export const playgroundEasings = [
   "enter",
@@ -14,6 +15,7 @@ export const playgroundSplits = ["lines", "words", "characters"] as const;
 export const playgroundOrders = ["forward", "reverse"] as const;
 
 export type PlaygroundComponent = (typeof playgroundComponents)[number];
+export type PlaygroundCodeMode = (typeof playgroundCodeModes)[number];
 export type PlaygroundContrast = (typeof playgroundContrasts)[number];
 export type PlaygroundEasing = (typeof playgroundEasings)[number];
 export type PlaygroundViewport = (typeof playgroundViewports)[number];
@@ -22,6 +24,7 @@ export type PlaygroundSplit = (typeof playgroundSplits)[number];
 export type PlaygroundOrder = (typeof playgroundOrders)[number];
 
 export interface PlaygroundCommonState {
+  readonly codeMode: PlaygroundCodeMode;
   readonly contrast: PlaygroundContrast;
   readonly distance: number;
   readonly duration: number;
@@ -63,6 +66,7 @@ export const playgroundRanges = {
 } as const;
 
 const commonDefaults = {
+  codeMode: "package",
   contrast: "paper",
   distance: defaultMotionTokens.distance.medium,
   duration: defaultMotionTokens.duration.normal,
@@ -135,6 +139,7 @@ export function parsePlaygroundState(value: unknown): PlaygroundState {
   const component = readEnum(input["component"], playgroundComponents, "text-reveal");
   const defaults = componentDefaults[component];
   const common = {
+    codeMode: readEnum(input["codeMode"], playgroundCodeModes, defaults.codeMode),
     contrast: readEnum(input["contrast"], playgroundContrasts, defaults.contrast),
     distance: readNumber(input["distance"], defaults.distance, playgroundRanges.distance),
     duration: readNumber(input["duration"], defaults.duration, playgroundRanges.duration),

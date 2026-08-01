@@ -138,6 +138,41 @@ describe("PlaygroundWorkbench", () => {
     });
   });
 
+  it("switches code templates without changing the selected motion state", () => {
+    const view = render(createElement(PlaygroundWorkbench));
+
+    fireEvent.change(view.getByLabelText("Duration"), { target: { value: "640" } });
+    fireEvent.click(view.getByRole("button", { name: "Copy source" }));
+
+    const codePanel = view.getByLabelText("Generated React code");
+    expect(codePanel.textContent).toContain("Copy source");
+    expect(codePanel.textContent).toContain("Dependencies");
+    expect(codePanel.textContent).toContain("@/components/easecraft/text-reveal");
+    expect(codePanel.textContent).toContain("duration={640}");
+
+    fireEvent.click(view.getByRole("button", { name: "Token overrides" }));
+
+    expect(codePanel.textContent).toContain("duration: { normal: 640 }");
+    expect(codePanel.textContent).toContain('duration="normal"');
+    expect((view.getByLabelText("Duration") as HTMLInputElement).value).toBe("640");
+    expect(
+      decodePlaygroundStorage(window.localStorage.getItem(playgroundStorageKey)),
+    ).toMatchObject({ codeMode: "token-override", duration: 640 });
+  });
+
+  it("copies the currently selected template", async () => {
+    const view = render(createElement(PlaygroundWorkbench));
+
+    fireEvent.click(view.getByRole("button", { name: "Copy source" }));
+    fireEvent.click(view.getByRole("button", { name: "Copy generated code" }));
+
+    await waitFor(() => {
+      expect(writeText).toHaveBeenCalledWith(
+        expect.stringContaining("@/components/easecraft/text-reveal"),
+      );
+    });
+  });
+
   it("restores local state and persists subsequent control changes", async () => {
     window.localStorage.setItem(
       playgroundStorageKey,
@@ -184,7 +219,7 @@ describe("PlaygroundWorkbench", () => {
     window.history.replaceState(
       null,
       "",
-      "/playground?v=1&component=motion-dialog&duration=720&distance=24&easing=emphasized&reducedMotion=1&viewport=mobile&contrast=ink&dismissible=0",
+      "/playground?v=1&component=motion-dialog&codeMode=token-override&duration=720&distance=24&easing=emphasized&reducedMotion=1&viewport=mobile&contrast=ink&dismissible=0",
     );
     const view = render(createElement(PlaygroundWorkbench));
 
@@ -192,6 +227,12 @@ describe("PlaygroundWorkbench", () => {
       expect((view.getByLabelText("Preview") as HTMLSelectElement).value).toBe("motion-dialog");
     });
     expect((view.getByLabelText("Duration") as HTMLInputElement).value).toBe("720");
+    expect(view.getByRole("button", { name: "Token overrides" }).getAttribute("aria-pressed")).toBe(
+      "true",
+    );
+    expect(view.getByLabelText("Generated React code").textContent).toContain(
+      "duration: { normal: 720 }",
+    );
     expect(
       (view.getByLabelText("Dismiss with Escape or backdrop") as HTMLInputElement).checked,
     ).toBe(false);
@@ -201,6 +242,7 @@ describe("PlaygroundWorkbench", () => {
     const view = render(createElement(PlaygroundWorkbench));
 
     fireEvent.change(view.getByLabelText("Duration"), { target: { value: "640" } });
+    fireEvent.click(view.getByRole("button", { name: "Copy source" }));
     fireEvent.click(view.getByRole("button", { name: "Share" }));
 
     await waitFor(() => {
@@ -212,7 +254,10 @@ describe("PlaygroundWorkbench", () => {
     const shareUrl = new URL(writeText.mock.calls.at(-1)?.[0] ?? "", window.location.origin);
     expect(shareUrl.pathname).toBe("/playground");
     expect(shareUrl.searchParams.get("v")).toBe("1");
-    expect(decodePlaygroundSearchParams(shareUrl.searchParams)).toMatchObject({ duration: 640 });
+    expect(decodePlaygroundSearchParams(shareUrl.searchParams)).toMatchObject({
+      codeMode: "copy-source",
+      duration: 640,
+    });
     expect(window.location.search).toBe(shareUrl.search);
 
     fireEvent.change(view.getByLabelText("Duration"), { target: { value: "720" } });

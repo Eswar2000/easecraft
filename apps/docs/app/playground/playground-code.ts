@@ -1,25 +1,104 @@
-import { getInstallCommand, getInstallPlan } from "easecraft-registry";
+import { getInstallCommand, getInstallPlan, type CopySourceFile } from "easecraft-registry";
 
-import type { PlaygroundState } from "./playground-state";
+import type { PlaygroundCodeMode, PlaygroundComponent, PlaygroundState } from "./playground-state";
+
+export { playgroundCodeModes, type PlaygroundCodeMode } from "./playground-state";
+
+const componentExportNames = {
+  "motion-dialog": "MotionDialog",
+  "staggered-list": "StaggeredList",
+  "text-reveal": "TextReveal",
+} as const satisfies Readonly<Record<PlaygroundComponent, string>>;
 
 function reducedMotionMode(state: PlaygroundState): "always" | "never" {
   return state.reducedMotion ? "always" : "never";
 }
 
-function generateTextRevealCode(state: Extract<PlaygroundState, { component: "text-reveal" }>) {
-  return `import { MotionProvider, TextReveal } from "easecraft";
+function localImportPath(file: CopySourceFile): string {
+  return `@/${file.destinationPath.replace(/\.[^.]+$/u, "")}`;
+}
+
+function getCopySourceFile(state: PlaygroundState, role: "component" | "provider"): CopySourceFile {
+  const file = getInstallPlan(state.component, "copy-source").files.find(
+    (candidate) => candidate.role === role,
+  );
+
+  if (!file) {
+    throw new Error(`Missing ${role} source for ${state.component}`);
+  }
+
+  return file;
+}
+
+function generateImports(state: PlaygroundState, mode: PlaygroundCodeMode): string {
+  const componentName = componentExportNames[state.component];
+
+  if (mode === "copy-source") {
+    const componentPath = localImportPath(getCopySourceFile(state, "component"));
+    const providerPath = localImportPath(getCopySourceFile(state, "provider"));
+
+    return `import { ${componentName} } from "${componentPath}";
+import { MotionProvider } from "${providerPath}";`;
+  }
+
+  const tokenType = mode === "token-override" ? ", type MotionTokenOverrides" : "";
+  const packageExports =
+    state.component === "motion-dialog"
+      ? `${componentName}, MotionProvider`
+      : `MotionProvider, ${componentName}`;
+  return `import { ${packageExports}${tokenType} } from "easecraft";`;
+}
+
+function generateTokenOverrides(state: PlaygroundState, mode: PlaygroundCodeMode): string {
+  if (mode !== "token-override") {
+    return "";
+  }
+
+  const stagger =
+    state.component === "motion-dialog"
+      ? ""
+      : `\n  stagger: { normal: ${state.stagger.toString()} },`;
+
+  return `
+
+const motionTokens = {
+  distance: { medium: ${state.distance.toString()} },
+  duration: { normal: ${state.duration.toString()} },${stagger}
+} satisfies MotionTokenOverrides;`;
+}
+
+function providerProps(state: PlaygroundState, mode: PlaygroundCodeMode): string {
+  const tokens = mode === "token-override" ? " tokens={motionTokens}" : "";
+  return `reducedMotion="${reducedMotionMode(state)}"${tokens}`;
+}
+
+function distanceProp(state: PlaygroundState, mode: PlaygroundCodeMode): string {
+  return mode === "token-override" ? '"medium"' : `{${state.distance.toString()}}`;
+}
+
+function durationProp(state: PlaygroundState, mode: PlaygroundCodeMode): string {
+  return mode === "token-override" ? '"normal"' : `{${state.duration.toString()}}`;
+}
+
+function generateTextRevealCode(
+  state: Extract<PlaygroundState, { component: "text-reveal" }>,
+  mode: PlaygroundCodeMode,
+) {
+  const stagger = mode === "token-override" ? '"normal"' : `{${state.stagger.toString()}}`;
+
+  return `${generateImports(state, mode)}${generateTokenOverrides(state, mode)}
 
 export function Example() {
   return (
-    <MotionProvider reducedMotion="${reducedMotionMode(state)}">
+    <MotionProvider ${providerProps(state, mode)}>
       <TextReveal
         delay={${state.delay.toString()}}
-        distance={${state.distance.toString()}}
-        duration={${state.duration.toString()}}
+        distance=${distanceProp(state, mode)}
+        duration=${durationProp(state, mode)}
         easing="${state.easing}"
         preset="${state.preset}"
         split="${state.split}"
-        stagger={${state.stagger.toString()}}
+        stagger=${stagger}
       >
         Motion should explain what changed.
       </TextReveal>
@@ -31,8 +110,11 @@ export function Example() {
 
 function generateStaggeredListCode(
   state: Extract<PlaygroundState, { component: "staggered-list" }>,
+  mode: PlaygroundCodeMode,
 ) {
-  return `import { MotionProvider, StaggeredList } from "easecraft";
+  const interval = mode === "token-override" ? '"normal"' : `{${state.stagger.toString()}}`;
+
+  return `${generateImports(state, mode)}${generateTokenOverrides(state, mode)}
 
 const items = [
   { id: "brief", label: "Write the brief" },
@@ -42,14 +124,14 @@ const items = [
 
 export function Example() {
   return (
-    <MotionProvider reducedMotion="${reducedMotionMode(state)}">
+    <MotionProvider ${providerProps(state, mode)}>
       <StaggeredList
         delay={${state.delay.toString()}}
-        distance={${state.distance.toString()}}
-        duration={${state.duration.toString()}}
+        distance=${distanceProp(state, mode)}
+        duration=${durationProp(state, mode)}
         easing="${state.easing}"
         getKey={(item) => item.id}
-        interval={${state.stagger.toString()}}
+        interval=${interval}
         items={items}
         order="${state.order}"
         preset="${state.preset}"
@@ -62,16 +144,19 @@ export function Example() {
 `;
 }
 
-function generateMotionDialogCode(state: Extract<PlaygroundState, { component: "motion-dialog" }>) {
-  return `import { MotionDialog, MotionProvider } from "easecraft";
+function generateMotionDialogCode(
+  state: Extract<PlaygroundState, { component: "motion-dialog" }>,
+  mode: PlaygroundCodeMode,
+) {
+  return `${generateImports(state, mode)}${generateTokenOverrides(state, mode)}
 
 export function Example() {
   return (
-    <MotionProvider reducedMotion="${reducedMotionMode(state)}">
+    <MotionProvider ${providerProps(state, mode)}>
       <MotionDialog
         dismissible={${state.dismissible.toString()}}
-        distance={${state.distance.toString()}}
-        duration={${state.duration.toString()}}
+        distance=${distanceProp(state, mode)}
+        duration=${durationProp(state, mode)}
         easing="${state.easing}"
         title="Motion review"
         trigger={<button type="button">Open review</button>}
@@ -84,18 +169,28 @@ export function Example() {
 `;
 }
 
-export function generatePlaygroundCode(state: PlaygroundState): string {
+export function generatePlaygroundCode(
+  state: PlaygroundState,
+  mode: PlaygroundCodeMode = state.codeMode,
+): string {
   if (state.component === "staggered-list") {
-    return generateStaggeredListCode(state);
+    return generateStaggeredListCode(state, mode);
   }
 
   if (state.component === "motion-dialog") {
-    return generateMotionDialogCode(state);
+    return generateMotionDialogCode(state, mode);
   }
 
-  return generateTextRevealCode(state);
+  return generateTextRevealCode(state, mode);
 }
 
-export function getPlaygroundInstallCommand(state: PlaygroundState): string {
-  return getInstallCommand(getInstallPlan(state.component, "package"));
+export function getPlaygroundInstallCommand(
+  state: PlaygroundState,
+  mode: PlaygroundCodeMode = state.codeMode,
+): string {
+  return getInstallCommand(
+    mode === "copy-source"
+      ? getInstallPlan(state.component, "copy-source")
+      : getInstallPlan(state.component, "package"),
+  );
 }

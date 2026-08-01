@@ -64,4 +64,51 @@ describe("playground code generation", () => {
       "pnpm add easecraft@0.0.0",
     );
   });
+
+  it("derives copy-source imports and dependencies from registry metadata", () => {
+    const state = getDefaultPlaygroundState("staggered-list");
+    const code = generatePlaygroundCode(state, "copy-source");
+
+    expect(code).toContain(
+      'import { StaggeredList } from "@/components/easecraft/staggered-list";',
+    );
+    expect(code).toContain(
+      'import { MotionProvider } from "@/components/easecraft/motion-provider";',
+    );
+    expect(code).not.toContain('from "easecraft"');
+    expect(getPlaygroundInstallCommand(state, "copy-source")).toContain("animejs@4.5.0");
+    expect(getPlaygroundInstallCommand(state, "copy-source")).not.toContain("easecraft@0.0.0");
+  });
+
+  it("generates semantic token overrides from the selected motion values", () => {
+    const code = generatePlaygroundCode(
+      parsePlaygroundState({
+        component: "text-reveal",
+        distance: 24,
+        duration: 640,
+        stagger: 90,
+      }),
+      "token-override",
+    );
+
+    expect(code).toContain("type MotionTokenOverrides");
+    expect(code).toContain("distance: { medium: 24 }");
+    expect(code).toContain("duration: { normal: 640 }");
+    expect(code).toContain("stagger: { normal: 90 }");
+    expect(code).toContain("tokens={motionTokens}");
+    expect(code).toContain('distance="medium"');
+    expect(code).toContain('duration="normal"');
+    expect(code).toContain('stagger="normal"');
+  });
+
+  it("omits stagger overrides for Motion Dialog token templates", () => {
+    const code = generatePlaygroundCode(
+      getDefaultPlaygroundState("motion-dialog"),
+      "token-override",
+    );
+
+    expect(code).not.toContain("stagger:");
+    expect(code).toContain('distance="medium"');
+    expect(code).toContain('duration="normal"');
+  });
 });

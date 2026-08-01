@@ -16,6 +16,7 @@ describe("playground persistence", () => {
   it("round-trips each component through stable versioned URL fields", () => {
     const states = [
       parsePlaygroundState({
+        codeMode: "token-override",
         component: "text-reveal",
         delay: 80,
         duration: 640,
@@ -47,7 +48,7 @@ describe("playground persistence", () => {
     }
 
     expect(encodePlaygroundSearchParams(textState).toString()).toBe(
-      "v=1&component=text-reveal&duration=640&distance=12&easing=enter&reducedMotion=0&viewport=desktop&contrast=paper&delay=80&stagger=60&preset=fade-rise&split=characters",
+      "v=1&component=text-reveal&codeMode=token-override&duration=640&distance=12&easing=enter&reducedMotion=0&viewport=desktop&contrast=paper&delay=80&stagger=60&preset=fade-rise&split=characters",
     );
   });
 
