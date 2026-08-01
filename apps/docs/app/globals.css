@@ -413,11 +413,44 @@
 .playground-dialog-content {
   --easecraft-dialog-background: #fdfdf9;
   --easecraft-dialog-padding: 24px;
+
+  position: relative;
 }
 
 .playground-dialog-content [data-easecraft-dialog-title] {
+  padding-right: 48px;
   font-family: "Bricolage Grotesque", sans-serif;
   font-size: 25px;
+}
+
+.playground-dialog-content [data-easecraft-dialog-body] p {
+  margin: 14px 0 0;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.playground-dialog-content .playground-dialog-action {
+  width: 100%;
+  margin-top: 18px;
+  padding: 0 14px;
+}
+
+.playground-dialog-content .playground-dialog-close {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  width: 36px;
+  min-height: 36px;
+  padding: 0;
+  color: var(--ink);
+  background: #fff;
+  font-size: 0;
+}
+
+.playground-dialog-close::before {
+  font-size: 20px;
+  line-height: 1;
+  content: "\00d7";
 }
 
 .playground-code-panel {

@@ -7,13 +7,22 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 vi.mock("easecraft", () => ({
   MotionDialog: ({
     children,
+    closeClassName,
     title,
     trigger,
   }: {
     children: ReactNode;
+    closeClassName?: string;
     title: ReactNode;
     trigger: ReactNode;
-  }) => createElement("div", null, trigger, createElement("strong", null, title), children),
+  }) =>
+    createElement(
+      "div",
+      { "data-close-class": closeClassName },
+      trigger,
+      createElement("strong", null, title),
+      children,
+    ),
   MotionProvider: ({ children }: { children: ReactNode }) => children,
   StaggeredList: ({
     children,
@@ -81,6 +90,30 @@ describe("PlaygroundWorkbench", () => {
       expect(codePanel.textContent).toContain("duration={640}");
       expect(codePanel.textContent).toContain('split="characters"');
     });
+  });
+
+  it("replays Staggered List when motion controls change", () => {
+    const view = render(createElement(PlaygroundWorkbench));
+
+    fireEvent.change(view.getByLabelText("Preview"), { target: { value: "staggered-list" } });
+    const initialList = view.getByRole("list");
+
+    fireEvent.change(view.getByLabelText("Duration"), { target: { value: "640" } });
+
+    expect(view.getByRole("list")).not.toBe(initialList);
+  });
+
+  it("assigns separate Motion Dialog action and close styles", () => {
+    const view = render(createElement(PlaygroundWorkbench));
+
+    fireEvent.change(view.getByLabelText("Preview"), { target: { value: "motion-dialog" } });
+
+    expect(
+      view.container.querySelector('[data-close-class="playground-dialog-close"]'),
+    ).toBeTruthy();
+    expect(view.getByRole("button", { name: "Approve motion" }).className).toContain(
+      "playground-dialog-action",
+    );
   });
 
   it("copies the generated code and reports success", async () => {

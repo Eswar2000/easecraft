@@ -112,6 +112,18 @@ function Preview({
   readonly state: PlaygroundState;
 }) {
   if (state.component === "staggered-list") {
+    const listReplayKey = [
+      replayKey,
+      state.delay,
+      state.distance,
+      state.duration,
+      state.easing,
+      state.order,
+      state.preset,
+      state.reducedMotion,
+      state.stagger,
+    ].join(":");
+
     return (
       <StaggeredList
         as="ol"
@@ -123,7 +135,7 @@ function Preview({
         getKey={getPreviewItemKey}
         interval={state.stagger}
         items={previewItems}
-        key={replayKey}
+        key={listReplayKey}
         order={state.order}
         preset={state.preset}
       >
@@ -143,6 +155,7 @@ function Preview({
         <span>Overlay behavior</span>
         <strong>Review without losing context.</strong>
         <MotionDialog
+          closeClassName="playground-dialog-close"
           contentClassName="playground-dialog-content"
           dismissible={state.dismissible}
           distance={state.distance}
@@ -153,7 +166,9 @@ function Preview({
           trigger={<button type="button">Open review</button>}
         >
           <p>Confirm timing, focus behavior, and reduced-motion fallback before publishing.</p>
-          <button type="button">Approve motion</button>
+          <button className="playground-dialog-action" type="button">
+            Approve motion
+          </button>
         </MotionDialog>
       </div>
     );
