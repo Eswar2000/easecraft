@@ -1,9 +1,25 @@
 {
   "name": "easecraft-registry",
   "version": "0.0.0",
-  "private": true,
   "description": "Typed metadata and copyable component source for Easecraft.",
+  "keywords": [
+    "animation",
+    "component-registry",
+    "copy-source",
+    "motion",
+    "react",
+    "typescript"
+  ],
   "license": "MIT",
+  "homepage": "https://easecraft-docs.vercel.app/compositions",
+  "bugs": {
+    "url": "https://github.com/Eswar2000/easecraft/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Eswar2000/easecraft.git",
+    "directory": "packages/registry"
+  },
   "type": "module",
   "sideEffects": false,
   "files": [
@@ -65,6 +81,9 @@
       "default": "./dist/source-content.js"
     }
   },
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "build": "vite build",
     "dev": "vite build --watch",
@@ -93,5 +112,10 @@
     "vite": "8.1.5",
     "vite-plugin-dts": "5.0.3",
     "vitest": "4.1.10"
+  },
+  "peerDependencies": {
+    "easecraft": ">=0.0.0 <1.0.0",
+    "react": ">=18.2.0 <20.0.0",
+    "react-dom": ">=18.2.0 <20.0.0"
   }
 }

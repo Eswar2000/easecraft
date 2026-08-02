@@ -69,3 +69,6 @@ jobs:
 
       - name: Build packages, apps, and consumer example
         run: pnpm build
+
+      - name: Lint published package manifests
+        run: pnpm publint
