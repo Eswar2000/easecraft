@@ -1,8 +1,9 @@
+import { version as tokensVersion } from "../../tokens/package.json";
 import type { ComponentDependency, ComponentRegistryEntry, ComponentSourceFile } from "./schema.js";
 
 const motionDependencies = [
   { name: "animejs", type: "npm", version: "4.5.0" },
-  { name: "easecraft-tokens", type: "workspace", version: "0.0.0" },
+  { name: "easecraft-tokens", type: "workspace", version: tokensVersion },
   { name: "react", type: "peer", version: ">=18.2.0 <20.0.0" },
   { name: "react-dom", type: "peer", version: ">=18.2.0 <20.0.0" },
 ] as const satisfies readonly ComponentDependency[];

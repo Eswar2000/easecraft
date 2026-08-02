@@ -1,5 +1,7 @@
 import { describe, expect, it } from "vitest";
 
+import { version as reactVersion } from "../../react/package.json";
+import { version as tokensVersion } from "../../tokens/package.json";
 import {
   componentSlugs,
   compositionCategories,
@@ -311,8 +313,10 @@ describe("getCompositionInstallPlan", () => {
       "components/easecraft/compositions/command-palette-core.tsx",
       "components/easecraft/compositions/command-palette.tsx",
     ]);
-    expect(plan.dependencies.npm).toEqual([{ name: "easecraft", type: "npm", version: "0.0.0" }]);
-    expect(getInstallCommand(plan)).toBe("pnpm add easecraft@0.0.0");
+    expect(plan.dependencies.npm).toEqual([
+      { name: "easecraft", type: "npm", version: reactVersion },
+    ]);
+    expect(getInstallCommand(plan)).toBe(`pnpm add easecraft@${reactVersion}`);
   });
 
   it("creates a self-contained copy-source Command Palette plan", () => {
@@ -329,7 +333,7 @@ describe("getCompositionInstallPlan", () => {
       { name: "animejs", type: "npm", version: "4.5.0" },
     ]);
     expect(getInstallCommand(plan)).toBe(
-      "pnpm add @radix-ui/react-dialog@1.1.23 animejs@4.5.0 easecraft-tokens@0.0.0",
+      `pnpm add @radix-ui/react-dialog@1.1.23 animejs@4.5.0 easecraft-tokens@${tokensVersion}`,
     );
   });
 
@@ -339,7 +343,7 @@ describe("getCompositionInstallPlan", () => {
 
     expect(packagePlan.componentDependencies).toEqual(["animated-accordion"]);
     expect(packagePlan.dependencies.npm).toEqual([
-      { name: "easecraft", type: "npm", version: "0.0.0" },
+      { name: "easecraft", type: "npm", version: reactVersion },
     ]);
     expect(copySourcePlan.files.map((file) => file.destinationPath)).toEqual([
       "components/easecraft/motion-provider.tsx",
@@ -359,7 +363,7 @@ describe("getCompositionInstallPlan", () => {
 
     expect(packagePlan.componentDependencies).toEqual(["toast-stack"]);
     expect(packagePlan.dependencies.npm).toEqual([
-      { name: "easecraft", type: "npm", version: "0.0.0" },
+      { name: "easecraft", type: "npm", version: reactVersion },
     ]);
     expect(copySourcePlan.files.map((file) => file.destinationPath)).toEqual([
       "components/easecraft/motion-provider.tsx",
@@ -379,7 +383,7 @@ describe("getCompositionInstallPlan", () => {
 
     expect(packagePlan.componentDependencies).toEqual(["filter-grid"]);
     expect(packagePlan.dependencies.npm).toEqual([
-      { name: "easecraft", type: "npm", version: "0.0.0" },
+      { name: "easecraft", type: "npm", version: reactVersion },
     ]);
     expect(copySourcePlan.files.map((file) => file.destinationPath)).toEqual([
       "components/easecraft/motion-provider.tsx",
@@ -401,7 +405,7 @@ describe("getCompositionInstallPlan", () => {
 
     expect(packagePlan.componentDependencies).toEqual(["animated-tabs"]);
     expect(packagePlan.dependencies.npm).toEqual([
-      { name: "easecraft", type: "npm", version: "0.0.0" },
+      { name: "easecraft", type: "npm", version: reactVersion },
     ]);
     expect(copySourcePlan.files.map((file) => file.destinationPath)).toEqual([
       "components/easecraft/motion-provider.tsx",
@@ -420,7 +424,7 @@ describe("getCompositionInstallPlan", () => {
 
     expect(packagePlan.componentDependencies).toEqual(["motion-dialog"]);
     expect(packagePlan.dependencies.npm).toEqual([
-      { name: "easecraft", type: "npm", version: "0.0.0" },
+      { name: "easecraft", type: "npm", version: reactVersion },
     ]);
     expect(copySourcePlan.files.map((file) => file.destinationPath)).toEqual([
       "components/easecraft/motion-provider.tsx",
@@ -440,7 +444,7 @@ describe("getCompositionInstallPlan", () => {
 
     expect(packagePlan.componentDependencies).toEqual(["number-ticker"]);
     expect(packagePlan.dependencies.npm).toEqual([
-      { name: "easecraft", type: "npm", version: "0.0.0" },
+      { name: "easecraft", type: "npm", version: reactVersion },
     ]);
     expect(copySourcePlan.files.map((file) => file.destinationPath)).toEqual([
       "components/easecraft/motion-provider.tsx",
@@ -463,7 +467,7 @@ describe("getCompositionInstallPlan", () => {
 
     expect(packagePlan.componentDependencies).toEqual(["scroll-reveal"]);
     expect(packagePlan.dependencies.npm).toEqual([
-      { name: "easecraft", type: "npm", version: "0.0.0" },
+      { name: "easecraft", type: "npm", version: reactVersion },
     ]);
     expect(copySourcePlan.files.map((file) => file.destinationPath)).toEqual([
       "components/easecraft/motion-provider.tsx",
