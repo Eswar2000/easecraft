@@ -1,12 +1,14 @@
 # Easecraft
 
+[![CI](https://github.com/Eswar2000/easecraft/actions/workflows/ci.yml/badge.svg)](https://github.com/Eswar2000/easecraft/actions/workflows/ci.yml)
+
 > Accessible motion primitives and animated React components, powered by Anime.js.
 
 Easecraft is an open-source motion design system planned for React. It will combine typed motion primitives, accessible animated components, a copyable component registry, and an interactive playground for inspecting and tuning motion.
 
 ## Project Status
 
-Easecraft has completed its **initial playground milestone**. The motion foundation, all nine planned component vertical slices, all eight planned registry compositions, and package/copy-source delivery actions are implemented. The playground provides validated controls, responsive previews, reduced-motion simulation, replay/reset actions, package, copy-source, and token-override code templates, local persistence, and versioned share URLs for all nine components; no npm package has been published yet.
+Easecraft has completed its **initial playground milestone**. The motion foundation, all nine planned component vertical slices, all eight planned registry compositions, package/copy-source delivery actions, and continuous integration are implemented. The playground provides validated controls, responsive previews, reduced-motion simulation, replay/reset actions, package, copy-source, and token-override code templates, local persistence, and versioned share URLs for all nine components; no npm package has been published yet.
 
 The complete product scope, architecture, delivery plan, and initial backlog are documented in the [project proposal](PROPOSAL.md).
 
@@ -40,7 +42,9 @@ pnpm test
 pnpm build
 ```
 
-`pnpm dev` starts token, React, and registry package build watchers, the docs explorer, and the Vite consumer fixture. `pnpm lint` runs shared type-aware ESLint rules, including React Hooks and JSX accessibility checks where applicable. `pnpm typecheck` runs TypeScript 6 with shared strict settings, and `pnpm format:check` validates code and configuration files with Prettier. `pnpm build` builds both applications and all three implementation packages. `pnpm test` runs token, React, registry, and docs registry-consumer tests; remaining application tests are placeholders.
+`pnpm dev` starts token, React, and registry package build watchers, the docs explorer, and the Vite consumer fixture. `pnpm lint` runs shared type-aware ESLint rules, including React Hooks and JSX accessibility checks where applicable. `pnpm typecheck` runs TypeScript 6 with shared strict settings, and `pnpm format:check` validates code and configuration files with Prettier. `pnpm build` builds both applications and all three implementation packages. `pnpm test` runs token, React, registry, and docs tests; the Vite consumer currently has a placeholder test task.
+
+GitHub Actions runs a frozen pnpm install followed by formatting, lint, typecheck, tests, and the full package, docs, and consumer build on pull requests and pushes to `main`. The workflow caches both the pnpm store and Turborepo artifacts.
 
 ## What Easecraft Will Provide
 
@@ -61,7 +65,7 @@ The proposed first release includes five foundations, five hooks, and nine high-
 
 `TextReveal`, `NumberTicker`, `StaggeredList`, `AnimatedTabs`, `AnimatedAccordion`, `MotionDialog`, `ToastStack`, `FilterGrid`, and `ScrollReveal` are completed vertical slices, proving the package API, Anime.js lifecycle integration, reduced-motion behavior, accessible output, documentation, tests, and consumer build.
 
-The `Stagger` foundation is also implemented with bounded forward and reverse child sequencing, scoped cleanup, and an immediate reduced-motion fallback. The playground now covers all nine planned components with the same validated controls, templates, persistence, and sharing workflow. Immediate repository work returns to the remaining Phase 0 infrastructure.
+The `Stagger` foundation is also implemented with bounded forward and reverse child sequencing, scoped cleanup, and an immediate reduced-motion fallback. The playground now covers all nine planned components with the same validated controls, templates, persistence, and sharing workflow. CI reproduces the full local quality gate and consumer build. Immediate repository work returns to preview deployment, public identifier verification, and architecture decision records.
 
 ## Principles
 

@@ -10,7 +10,7 @@ By participating, you agree to follow the [Code of Conduct](CODE_OF_CONDUCT.md).
 
 Easecraft has completed its core motion foundation, including `Stagger`, all nine planned component vertical slices, the typed registry, all eight planned compositions, component/composition copy actions, and playground controls, package, copy-source, and token-override code templates, local persistence, and versioned share URLs for all nine components.
 
-The initial playground milestone is complete. The immediate focus returns to remaining Phase 0 repository work: public identifiers, CI, preview deployment, and architecture decision records.
+The initial playground milestone and continuous integration are complete. The immediate focus is the remaining Phase 0 repository work: public identifiers, preview deployment, and architecture decision records.
 
 Useful contributions at this stage include:
 
@@ -52,7 +52,7 @@ pnpm test
 pnpm build
 ```
 
-`pnpm dev` starts token, React, and registry package build watchers plus both applications. The format, lint, and typecheck commands run real Prettier, ESLint, and strict TypeScript checks. The build command produces both applications and all three implementation packages. The test command runs token, React, registry, and docs registry-consumer tests; remaining application tests are placeholders.
+`pnpm dev` starts token, React, and registry package build watchers plus both applications. The format, lint, and typecheck commands run real Prettier, ESLint, and strict TypeScript checks. The build command produces both applications and all three implementation packages. The test command runs token, React, registry, and docs tests; the Vite consumer currently has a placeholder test task. Pull requests and pushes to `main` run these checks in GitHub Actions after a frozen lockfile install.
 
 ## Making Changes
 
