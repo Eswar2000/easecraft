@@ -92,7 +92,11 @@ export function decodePlaygroundSearchParams(
     split: readSearchValue(params, "split"),
     stagger: readSearchNumber(readSearchValue(params, "stagger")),
     suffix: readSearchValue(params, "suffix"),
+    swipeDirection: readSearchValue(params, "swipeDirection"),
     tab: readSearchValue(params, "tab"),
+    toastLimit: readSearchNumber(readSearchValue(params, "toastLimit")),
+    toastTimeout: readSearchNumber(readSearchValue(params, "toastTimeout")),
+    toasts: readSearchList(readSearchValue(params, "toasts")),
     value: readSearchNumber(readSearchValue(params, "value")),
     viewport: readSearchValue(params, "viewport"),
   });
@@ -114,7 +118,12 @@ export function encodePlaygroundSearchParams(state: PlaygroundState): URLSearchP
   params.set("viewport", state.viewport);
   params.set("contrast", state.contrast);
 
-  if (state.component === "animated-accordion") {
+  if (state.component === "toast-stack") {
+    params.set("toastLimit", state.toastLimit.toString());
+    params.set("toastTimeout", state.toastTimeout.toString());
+    params.set("swipeDirection", state.swipeDirection);
+    params.set("toasts", state.toasts.join(","));
+  } else if (state.component === "animated-accordion") {
     params.set("accordionMode", state.accordionMode);
     params.set("collapsible", state.collapsible ? "1" : "0");
     params.set("expanded", state.expanded.join(","));

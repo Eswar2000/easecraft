@@ -11,6 +11,7 @@ const componentExportNames = {
   "number-ticker": "NumberTicker",
   "staggered-list": "StaggeredList",
   "text-reveal": "TextReveal",
+  "toast-stack": "ToastStack",
 } as const satisfies Readonly<Record<PlaygroundComponent, string>>;
 
 function reducedMotionMode(state: PlaygroundState): "always" | "never" {
@@ -339,10 +340,95 @@ ${expansionProps}
 `;
 }
 
+const toastSourceById = {
+  preview: `  {
+    description: "The latest component preview is available.",
+    id: "preview",
+    title: "Preview published",
+  },`,
+  review: `  {
+    action: { altText: "Review accessibility checks", label: "Review" },
+    description: "Keyboard verification needs attention.",
+    id: "review",
+    priority: "assertive",
+    title: "Review required",
+  },`,
+  sync: `  {
+    description: "Registry source and metadata now match.",
+    id: "sync",
+    title: "Registry synchronized",
+  },`,
+  tokens: `  {
+    description: "Semantic motion values were applied.",
+    id: "tokens",
+    title: "Tokens updated",
+  },`,
+} as const;
+
+function generateToastStackImports(
+  state: Extract<PlaygroundState, { component: "toast-stack" }>,
+  mode: PlaygroundCodeMode,
+): string {
+  if (mode === "copy-source") {
+    const componentPath = localImportPath(getCopySourceFile(state, "component"));
+    const providerPath = localImportPath(getCopySourceFile(state, "provider"));
+
+    return `import { useState } from "react";
+
+import { ToastStack, type ToastStackItem } from "${componentPath}";
+import { MotionProvider } from "${providerPath}";`;
+  }
+
+  const tokenType = mode === "token-override" ? "type MotionTokenOverrides, " : "";
+
+  return `import { useState } from "react";
+
+import { MotionProvider, ToastStack, ${tokenType}type ToastStackItem } from "easecraft";`;
+}
+
+function generateToastStackCode(
+  state: Extract<PlaygroundState, { component: "toast-stack" }>,
+  mode: PlaygroundCodeMode,
+) {
+  const toastSource = state.toasts.map((id) => toastSourceById[id]).join("\n");
+
+  return `${generateToastStackImports(state, mode)}${generateTokenOverrides(state, mode)}
+
+const initialNotifications = [
+${toastSource}
+] satisfies readonly ToastStackItem[];
+
+export function Example() {
+  const [items, setItems] = useState<ToastStackItem[]>(() => [...initialNotifications]);
+
+  return (
+    <MotionProvider ${providerProps(state, mode)}>
+      <ToastStack
+        distance=${distanceProp(state.distance, mode)}
+        duration={${state.toastTimeout.toString()}}
+        easing="${state.easing}"
+        entryDuration=${durationProp(state, mode)}
+        items={items}
+        limit={${state.toastLimit.toString()}}
+        onDismiss={(id) => {
+          setItems((current) => current.filter((item) => item.id !== id));
+        }}
+        swipeDirection="${state.swipeDirection}"
+      />
+    </MotionProvider>
+  );
+}
+`;
+}
+
 export function generatePlaygroundCode(
   state: PlaygroundState,
   mode: PlaygroundCodeMode = state.codeMode,
 ): string {
+  if (state.component === "toast-stack") {
+    return generateToastStackCode(state, mode);
+  }
+
   if (state.component === "animated-accordion") {
     return generateAnimatedAccordionCode(state, mode);
   }

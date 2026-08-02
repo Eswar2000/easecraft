@@ -8,9 +8,18 @@ import {
   NumberTicker,
   StaggeredList,
   TextReveal,
+  ToastStack,
+  type ToastStackItem,
 } from "easecraft";
 import { Check, Copy, Link2, Monitor, Play, RotateCcw, Smartphone, Tablet } from "lucide-react";
-import { useEffect, useId, useState, useSyncExternalStore, type ReactNode } from "react";
+import {
+  useEffect,
+  useId,
+  useState,
+  useSyncExternalStore,
+  type CSSProperties,
+  type ReactNode,
+} from "react";
 
 import {
   generatePlaygroundCode,
@@ -39,11 +48,13 @@ import {
   playgroundTabActivationModes,
   playgroundTabOrientations,
   playgroundTabValues,
+  playgroundToastSwipeDirections,
   playgroundViewports,
   type PlaygroundComponent,
   type PlaygroundAccordionValue,
   type PlaygroundState,
   type PlaygroundTabValue,
+  type PlaygroundToastId,
 } from "./playground-state";
 
 const componentNames = {
@@ -53,6 +64,7 @@ const componentNames = {
   "number-ticker": "Number Ticker",
   "staggered-list": "Staggered List",
   "text-reveal": "Text Reveal",
+  "toast-stack": "Toast Stack",
 } as const satisfies Readonly<Record<PlaygroundComponent, string>>;
 
 const accordionModeNames = {
@@ -88,6 +100,13 @@ const tabValueNames = {
   overview: "Overview",
 } as const;
 
+const toastSwipeDirectionNames = {
+  down: "Down",
+  left: "Left",
+  right: "Right",
+  up: "Up",
+} as const;
+
 const codeModeNames = {
   "copy-source": "Copy source",
   package: "Package React",
@@ -99,6 +118,39 @@ const previewItems = [
   { id: "prototype", label: "Prototype the motion", track: "Behavior" },
   { id: "verify", label: "Verify accessibility", track: "Release" },
 ] as const;
+
+const playgroundToastCatalog = {
+  preview: {
+    description: "The latest component preview is available.",
+    id: "preview",
+    title: "Preview published",
+  },
+  review: {
+    action: { altText: "Review accessibility checks", label: "Review" },
+    description: "Keyboard verification needs attention.",
+    id: "review",
+    priority: "assertive",
+    title: "Review required",
+  },
+  sync: {
+    description: "Registry source and metadata now match.",
+    id: "sync",
+    title: "Registry synchronized",
+  },
+  tokens: {
+    description: "Semantic motion values were applied.",
+    id: "tokens",
+    title: "Tokens updated",
+  },
+} as const satisfies Readonly<Record<PlaygroundToastId, ToastStackItem<PlaygroundToastId>>>;
+
+const playgroundToastViewportStyle = {
+  maxWidth: "calc(100% - 32px)",
+  position: "absolute",
+  right: 16,
+  top: 52,
+  width: 330,
+} as const satisfies CSSProperties;
 
 interface PlaygroundDetail {
   readonly disabled?: boolean;
@@ -344,14 +396,108 @@ function SegmentedControl<Value extends string>({
 function Preview({
   onAccordionChange,
   onTabChange,
+  onToastChange,
   replayKey,
   state,
 }: {
   readonly onAccordionChange: (expanded: readonly PlaygroundAccordionValue[]) => void;
   readonly onTabChange: (tab: PlaygroundTabValue) => void;
+  readonly onToastChange: (toasts: readonly PlaygroundToastId[]) => void;
   readonly replayKey: number;
   readonly state: PlaygroundState;
 }) {
+  if (state.component === "toast-stack") {
+    const currentToasts = state.toasts;
+    const toastItems = currentToasts.map((id) => playgroundToastCatalog[id]);
+    const queuedCount = Math.max(0, toastItems.length - state.toastLimit);
+
+    function addToasts(ids: readonly PlaygroundToastId[]) {
+      const next = [...currentToasts];
+
+      ids.forEach((id) => {
+        if (!next.includes(id)) {
+          next.push(id);
+        }
+      });
+      onToastChange(next);
+    }
+
+    return (
+      <div className="playground-toast-preview">
+        <div className="playground-toast-launch">
+          <span
+            aria-label="Notification queue status"
+            aria-live="polite"
+            className="playground-toast-status"
+            role="status"
+          >
+            {toastItems.length} active / {queuedCount} queued
+          </span>
+          <strong>Notification controls</strong>
+          <p>Hover or focus the stack to pause its auto-dismiss timer.</p>
+          <div className="playground-toast-actions">
+            <button
+              onClick={() => {
+                const polite = (["preview", "sync", "tokens"] as const).find(
+                  (id) => !currentToasts.includes(id),
+                );
+
+                if (polite) {
+                  addToasts([polite]);
+                }
+              }}
+              type="button"
+            >
+              Add polite
+            </button>
+            <button
+              onClick={() => {
+                addToasts(["review"]);
+              }}
+              type="button"
+            >
+              Add assertive
+            </button>
+            <button
+              onClick={() => {
+                addToasts(["preview", "review", "sync", "tokens"]);
+              }}
+              type="button"
+            >
+              Add burst
+            </button>
+            <button
+              onClick={() => {
+                onToastChange([]);
+              }}
+              type="button"
+            >
+              Clear
+            </button>
+          </div>
+        </div>
+        <ToastStack
+          actionClassName="playground-toast-action"
+          closeClassName="playground-toast-close"
+          contentClassName="playground-toast-content"
+          distance={state.distance}
+          duration={state.toastTimeout}
+          easing={state.easing}
+          entryDuration={state.duration}
+          items={toastItems}
+          key={replayKey}
+          limit={state.toastLimit}
+          onDismiss={(id) => {
+            onToastChange(currentToasts.filter((toastId) => toastId !== id));
+          }}
+          swipeDirection={state.swipeDirection}
+          viewportClassName="playground-toast-viewport"
+          viewportStyle={playgroundToastViewportStyle}
+        />
+      </div>
+    );
+  }
+
   if (state.component === "animated-accordion") {
     const accordionReplayKey = [replayKey, state.accordionMode, state.reducedMotion].join(":");
     const commonProps = {
@@ -769,7 +915,43 @@ export function PlaygroundWorkbench({
           ) : null}
         </ControlSection>
 
-        {state.component === "animated-accordion" ? (
+        {state.component === "toast-stack" ? (
+          <ControlSection title="Notifications">
+            <RangeControl
+              {...playgroundRanges.toastLimit}
+              label="Visible limit"
+              onChange={(toastLimit) => {
+                updateState({ toastLimit });
+              }}
+              unit=""
+              value={state.toastLimit}
+            />
+            <RangeControl
+              {...playgroundRanges.toastTimeout}
+              label="Auto-dismiss"
+              onChange={(toastTimeout) => {
+                updateState({ toastTimeout });
+              }}
+              unit="ms"
+              value={state.toastTimeout}
+            />
+            <label className="playground-select">
+              <span>Swipe direction</span>
+              <select
+                value={state.swipeDirection}
+                onChange={(event) => {
+                  updateState({ swipeDirection: event.currentTarget.value });
+                }}
+              >
+                {playgroundToastSwipeDirections.map((direction) => (
+                  <option key={direction} value={direction}>
+                    {toastSwipeDirectionNames[direction]}
+                  </option>
+                ))}
+              </select>
+            </label>
+          </ControlSection>
+        ) : state.component === "animated-accordion" ? (
           <ControlSection title="Accordion">
             <span className="playground-control-label">Expansion</span>
             <SegmentedControl
@@ -1059,7 +1241,11 @@ export function PlaygroundWorkbench({
         </div>
 
         <div className="playground-canvas" data-contrast={state.contrast}>
-          <div className="playground-viewport" data-viewport={state.viewport}>
+          <div
+            className="playground-viewport"
+            data-component={state.component}
+            data-viewport={state.viewport}
+          >
             <span className="playground-stage-label">
               {componentNames[state.component]} / {state.viewport}
             </span>
@@ -1071,6 +1257,9 @@ export function PlaygroundWorkbench({
                   }}
                   onTabChange={(tab) => {
                     updateState({ tab });
+                  }}
+                  onToastChange={(toasts) => {
+                    updateState({ toasts });
                   }}
                   replayKey={replayKey}
                   state={state}

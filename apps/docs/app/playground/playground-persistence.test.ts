@@ -49,6 +49,13 @@ describe("playground persistence", () => {
         tab: "metrics",
       }),
       parsePlaygroundState({
+        component: "toast-stack",
+        swipeDirection: "left",
+        toastLimit: 3,
+        toastTimeout: 12_000,
+        toasts: ["review", "tokens"],
+      }),
+      parsePlaygroundState({
         component: "staggered-list",
         order: "reverse",
         preset: "rise",
@@ -124,6 +131,18 @@ describe("playground persistence", () => {
       ...getDefaultPlaygroundState("animated-accordion"),
       collapsible: false,
       expanded: ["semantics"],
+    });
+    expect(
+      decodePlaygroundSearchParams(
+        new URLSearchParams(
+          "v=1&component=toast-stack&toastLimit=99&toastTimeout=500&swipeDirection=diagonal&toasts=review,missing,preview,review",
+        ),
+      ),
+    ).toEqual({
+      ...getDefaultPlaygroundState("toast-stack"),
+      toastLimit: playgroundRanges.toastLimit.max,
+      toastTimeout: playgroundRanges.toastTimeout.min,
+      toasts: ["review", "preview"],
     });
   });
 

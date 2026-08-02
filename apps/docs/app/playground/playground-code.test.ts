@@ -246,4 +246,48 @@ describe("playground code generation", () => {
     expect(tokenCode).not.toContain("distance:");
     expect(tokenCode).not.toContain("stagger:");
   });
+
+  it("generates a controlled Toast Stack queue and delivery settings", () => {
+    const code = generatePlaygroundCode(
+      parsePlaygroundState({
+        component: "toast-stack",
+        distance: 24,
+        duration: 640,
+        swipeDirection: "left",
+        toastLimit: 3,
+        toastTimeout: 12_000,
+        toasts: ["review", "tokens"],
+      }),
+    );
+
+    expect(code).toContain('import { useState } from "react";');
+    expect(code).toContain("ToastStackItem");
+    expect(code).toContain('id: "review"');
+    expect(code).toContain('priority: "assertive"');
+    expect(code).toContain('id: "tokens"');
+    expect(code).not.toContain('id: "preview"');
+    expect(code).toContain("distance={24}");
+    expect(code).toContain("duration={12000}");
+    expect(code).toContain("entryDuration={640}");
+    expect(code).toContain("limit={3}");
+    expect(code).toContain('swipeDirection="left"');
+    expect(code).toContain("current.filter((item) => item.id !== id)");
+  });
+
+  it("derives Toast Stack copy-source imports and semantic token overrides", () => {
+    const state = getDefaultPlaygroundState("toast-stack");
+    const copySourceCode = generatePlaygroundCode(state, "copy-source");
+    const tokenCode = generatePlaygroundCode(state, "token-override");
+
+    expect(copySourceCode).toContain(
+      'import { ToastStack, type ToastStackItem } from "@/components/easecraft/toast-stack";',
+    );
+    expect(getPlaygroundInstallCommand(state, "copy-source")).toContain("@radix-ui/react-toast@");
+    expect(tokenCode).toContain("type MotionTokenOverrides");
+    expect(tokenCode).toContain("distance: { medium: 12 }");
+    expect(tokenCode).toContain("duration: { normal: 300 }");
+    expect(tokenCode).toContain('distance="medium"');
+    expect(tokenCode).toContain('entryDuration="normal"');
+    expect(tokenCode).not.toContain("stagger:");
+  });
 });

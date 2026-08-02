@@ -60,6 +60,14 @@ describe("playground state", () => {
       easing: "enter",
       expanded: ["lifecycle"],
     });
+    expect(getDefaultPlaygroundState("toast-stack")).toMatchObject({
+      component: "toast-stack",
+      distance: 12,
+      swipeDirection: "right",
+      toastLimit: 2,
+      toastTimeout: 10_000,
+      toasts: ["preview", "review", "sync"],
+    });
   });
 
   it("validates enums, ignores unknown fields, and clamps numeric controls", () => {
@@ -193,5 +201,23 @@ describe("playground state", () => {
         expanded: ["semantics", "interruption"],
       }),
     ).toMatchObject({ expanded: ["semantics"] });
+
+    const toastState = parsePlaygroundState({
+      component: "toast-stack",
+      delay: 200,
+      swipeDirection: "diagonal",
+      toastLimit: 99,
+      toastTimeout: 500,
+      toasts: ["review", "missing", "preview", "review"],
+    });
+
+    expect(toastState).toEqual({
+      ...getDefaultPlaygroundState("toast-stack"),
+      toastLimit: playgroundRanges.toastLimit.max,
+      toastTimeout: playgroundRanges.toastTimeout.min,
+      toasts: ["review", "preview"],
+    });
+    expect("delay" in toastState).toBe(false);
+    expect("stagger" in toastState).toBe(false);
   });
 });

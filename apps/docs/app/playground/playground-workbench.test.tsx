@@ -182,6 +182,62 @@ vi.mock("easecraft", () => ({
       items.map((item) => createElement("li", { key: item.id }, children(item))),
     ),
   TextReveal: ({ children }: { children: ReactNode }) => createElement("h2", null, children),
+  ToastStack: ({
+    actionClassName,
+    closeClassName,
+    items,
+    limit,
+    onDismiss,
+  }: {
+    readonly actionClassName?: string;
+    readonly closeClassName?: string;
+    readonly items: readonly {
+      action?: { label: ReactNode };
+      description?: ReactNode;
+      id: string;
+      priority?: string;
+      title: ReactNode;
+    }[];
+    readonly limit?: number;
+    readonly onDismiss: (id: string, reason: string) => void;
+  }) =>
+    createElement(
+      "div",
+      { "aria-label": "Notifications (F8)", role: "region" },
+      items.slice(0, limit).map((item) =>
+        createElement(
+          "div",
+          { "data-priority": item.priority ?? "polite", key: item.id },
+          createElement("strong", null, item.title),
+          createElement("span", null, item.description),
+          item.action
+            ? createElement(
+                "button",
+                {
+                  className: actionClassName,
+                  onClick: () => {
+                    onDismiss(item.id, "action");
+                  },
+                  type: "button",
+                },
+                item.action.label,
+              )
+            : null,
+          createElement(
+            "button",
+            {
+              "aria-label": "Dismiss notification",
+              className: closeClassName,
+              onClick: () => {
+                onDismiss(item.id, "close");
+              },
+              type: "button",
+            },
+            "Dismiss notification",
+          ),
+        ),
+      ),
+    ),
   defaultMotionTokens: {
     distance: { large: 24, medium: 12, small: 4 },
     duration: { fast: 180, instant: 100, normal: 300, slow: 600 },
@@ -375,6 +431,58 @@ describe("PlaygroundWorkbench", () => {
       component: "animated-accordion",
       expanded: ["lifecycle", "semantics"],
     });
+  });
+
+  it("controls the Toast Stack queue, limit, and delivery settings", () => {
+    const view = render(createElement(PlaygroundWorkbench));
+
+    fireEvent.change(view.getByLabelText("Preview"), { target: { value: "toast-stack" } });
+
+    expect(view.queryByLabelText("Delay")).toBeNull();
+    expect(view.getByRole("status", { name: "Notification queue status" }).textContent).toBe(
+      "3 active / 1 queued",
+    );
+    expect(view.getByText("Preview published")).toBeTruthy();
+    expect(view.getByText("Review required")).toBeTruthy();
+    expect(view.queryByText("Registry synchronized")).toBeNull();
+
+    fireEvent.change(view.getByLabelText("Visible limit"), { target: { value: "3" } });
+    expect(view.getByText("Registry synchronized")).toBeTruthy();
+    const firstDismissButton = view.getAllByRole("button", { name: "Dismiss notification" })[0];
+
+    if (!firstDismissButton) {
+      throw new Error("Expected a visible toast dismiss button");
+    }
+
+    fireEvent.click(firstDismissButton);
+    expect(view.queryByText("Preview published")).toBeNull();
+    fireEvent.click(view.getByRole("button", { name: "Add polite" }));
+    fireEvent.change(view.getByLabelText("Auto-dismiss"), { target: { value: "12000" } });
+    fireEvent.change(view.getByLabelText("Swipe direction"), { target: { value: "left" } });
+
+    const codePanel = view.getByLabelText("Generated React code");
+    expect(codePanel.textContent).toContain("<ToastStack");
+    expect(codePanel.textContent).toContain("duration={12000}");
+    expect(codePanel.textContent).toContain("limit={3}");
+    expect(codePanel.textContent).toContain('swipeDirection="left"');
+    expect(
+      decodePlaygroundStorage(window.localStorage.getItem(playgroundStorageKey)),
+    ).toMatchObject({
+      component: "toast-stack",
+      swipeDirection: "left",
+      toastLimit: 3,
+      toastTimeout: 12_000,
+      toasts: ["review", "sync", "preview"],
+    });
+
+    fireEvent.click(view.getByRole("button", { name: "Clear" }));
+    expect(view.getByRole("status", { name: "Notification queue status" }).textContent).toBe(
+      "0 active / 0 queued",
+    );
+    fireEvent.click(view.getByRole("button", { name: "Add burst" }));
+    expect(view.getByRole("status", { name: "Notification queue status" }).textContent).toBe(
+      "4 active / 1 queued",
+    );
   });
 
   it("replays Staggered List when motion controls change", () => {
@@ -598,6 +706,38 @@ describe("PlaygroundWorkbench", () => {
     expect(view.getByLabelText("Generated React code").textContent).toContain(
       "@/components/easecraft/animated-accordion",
     );
+  });
+
+  it("restores a Toast Stack queue and templates from a shared URL", async () => {
+    window.history.replaceState(
+      null,
+      "",
+      "/playground?v=1&component=toast-stack&codeMode=copy-source&duration=640&distance=24&easing=emphasized&reducedMotion=0&viewport=mobile&contrast=ink&toastLimit=1&toastTimeout=12000&swipeDirection=left&toasts=review,tokens",
+    );
+    const view = render(createElement(PlaygroundWorkbench));
+
+    await waitFor(() => {
+      expect((view.getByLabelText("Preview") as HTMLSelectElement).value).toBe("toast-stack");
+    });
+
+    expect((view.getByLabelText("Visible limit") as HTMLInputElement).value).toBe("1");
+    expect((view.getByLabelText("Auto-dismiss") as HTMLInputElement).value).toBe("12000");
+    expect((view.getByLabelText("Swipe direction") as HTMLSelectElement).value).toBe("left");
+    expect(view.getByRole("status", { name: "Notification queue status" }).textContent).toBe(
+      "2 active / 1 queued",
+    );
+    expect(view.getByText("Review required")).toBeTruthy();
+    expect(view.queryByText("Tokens updated")).toBeNull();
+    expect(view.getByRole("button", { name: "Copy source" }).getAttribute("aria-pressed")).toBe(
+      "true",
+    );
+    expect(view.getByLabelText("Generated React code").textContent).toContain(
+      "@/components/easecraft/toast-stack",
+    );
+
+    fireEvent.click(view.getByRole("button", { name: "Review" }));
+    expect(view.queryByText("Review required")).toBeNull();
+    expect(view.getByText("Tokens updated")).toBeTruthy();
   });
 
   it("copies a versioned share link and keeps it synchronized", async () => {

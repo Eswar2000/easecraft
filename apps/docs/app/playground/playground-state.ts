@@ -5,6 +5,7 @@ export const playgroundComponents = [
   "number-ticker",
   "animated-tabs",
   "animated-accordion",
+  "toast-stack",
   "staggered-list",
   "motion-dialog",
 ] as const;
@@ -27,6 +28,8 @@ export const playgroundTabOrientations = ["horizontal", "vertical"] as const;
 export const playgroundTabValues = ["overview", "activity", "metrics"] as const;
 export const playgroundAccordionModes = ["single", "multiple"] as const;
 export const playgroundAccordionValues = ["lifecycle", "semantics", "interruption"] as const;
+export const playgroundToastIds = ["preview", "review", "sync", "tokens"] as const;
+export const playgroundToastSwipeDirections = ["right", "left", "down", "up"] as const;
 
 export type PlaygroundComponent = (typeof playgroundComponents)[number];
 export type PlaygroundCodeMode = (typeof playgroundCodeModes)[number];
@@ -43,6 +46,8 @@ export type PlaygroundTabOrientation = (typeof playgroundTabOrientations)[number
 export type PlaygroundTabValue = (typeof playgroundTabValues)[number];
 export type PlaygroundAccordionMode = (typeof playgroundAccordionModes)[number];
 export type PlaygroundAccordionValue = (typeof playgroundAccordionValues)[number];
+export type PlaygroundToastId = (typeof playgroundToastIds)[number];
+export type PlaygroundToastSwipeDirection = (typeof playgroundToastSwipeDirections)[number];
 
 export interface PlaygroundCommonState {
   readonly codeMode: PlaygroundCodeMode;
@@ -105,11 +110,20 @@ export interface AnimatedAccordionPlaygroundState extends PlaygroundCommonState 
   readonly expanded: readonly PlaygroundAccordionValue[];
 }
 
+export interface ToastStackPlaygroundState extends PlaygroundSpatialState {
+  readonly component: "toast-stack";
+  readonly swipeDirection: PlaygroundToastSwipeDirection;
+  readonly toastLimit: number;
+  readonly toastTimeout: number;
+  readonly toasts: readonly PlaygroundToastId[];
+}
+
 export type PlaygroundState =
   | TextRevealPlaygroundState
   | NumberTickerPlaygroundState
   | AnimatedTabsPlaygroundState
   | AnimatedAccordionPlaygroundState
+  | ToastStackPlaygroundState
   | StaggeredListPlaygroundState
   | MotionDialogPlaygroundState;
 
@@ -119,6 +133,8 @@ export const playgroundRanges = {
   duration: { max: 1200, min: 100, step: 20 },
   number: { max: 1_000_000, min: -1_000_000, step: 1 },
   stagger: { max: 200, min: 0, step: 5 },
+  toastLimit: { max: 3, min: 1, step: 1 },
+  toastTimeout: { max: 15_000, min: 2_000, step: 1_000 },
 } as const;
 
 const commonDefaults = {
@@ -179,6 +195,14 @@ const componentDefaults = {
     order: "forward",
     preset: "fade-rise",
     stagger: defaultMotionTokens.stagger.normal,
+  },
+  "toast-stack": {
+    ...spatialDefaults,
+    component: "toast-stack",
+    swipeDirection: "right",
+    toastLimit: 2,
+    toastTimeout: 10_000,
+    toasts: ["preview", "review", "sync"],
   },
   "text-reveal": {
     ...spatialDefaults,
@@ -283,6 +307,32 @@ export function parsePlaygroundState(value: unknown): PlaygroundState {
       collapsible: readBoolean(input["collapsible"], accordionDefaults.collapsible),
       component,
       expanded: accordionMode === "single" ? expanded.slice(0, 1) : expanded,
+    };
+  }
+
+  if (component === "toast-stack") {
+    const toastDefaults = componentDefaults["toast-stack"];
+
+    return {
+      ...common,
+      component,
+      distance: readNumber(input["distance"], toastDefaults.distance, playgroundRanges.distance),
+      swipeDirection: readEnum(
+        input["swipeDirection"],
+        playgroundToastSwipeDirections,
+        toastDefaults.swipeDirection,
+      ),
+      toastLimit: readNumber(
+        input["toastLimit"],
+        toastDefaults.toastLimit,
+        playgroundRanges.toastLimit,
+      ),
+      toastTimeout: readNumber(
+        input["toastTimeout"],
+        toastDefaults.toastTimeout,
+        playgroundRanges.toastTimeout,
+      ),
+      toasts: readEnumArray(input["toasts"], playgroundToastIds, toastDefaults.toasts),
     };
   }
 
