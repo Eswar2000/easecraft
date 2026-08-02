@@ -49,6 +49,13 @@ describe("playground persistence", () => {
         tab: "metrics",
       }),
       parsePlaygroundState({
+        component: "filter-grid",
+        filter: "archived",
+        order: "reverse",
+        preset: "rise",
+        stagger: 90,
+      }),
+      parsePlaygroundState({
         component: "toast-stack",
         swipeDirection: "left",
         toastLimit: 3,
@@ -143,6 +150,19 @@ describe("playground persistence", () => {
       toastLimit: playgroundRanges.toastLimit.max,
       toastTimeout: playgroundRanges.toastTimeout.min,
       toasts: ["review", "preview"],
+    });
+    expect(
+      decodePlaygroundSearchParams(
+        new URLSearchParams(
+          "v=1&component=filter-grid&filter=missing&stagger=999&preset=rise&order=reverse&distance=-4&delay=200",
+        ),
+      ),
+    ).toEqual({
+      ...getDefaultPlaygroundState("filter-grid"),
+      distance: 0,
+      order: "reverse",
+      preset: "rise",
+      stagger: playgroundRanges.stagger.max,
     });
   });
 

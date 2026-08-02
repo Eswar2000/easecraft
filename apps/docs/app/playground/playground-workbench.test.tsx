@@ -132,6 +132,72 @@ vi.mock("easecraft", () => ({
       activeItem ? createElement("div", { role: "tabpanel" }, children(activeItem)) : null,
     );
   },
+  FilterGrid: ({
+    children,
+    controlsLabel,
+    empty,
+    filters,
+    items,
+    onValueChange,
+    resultLabel,
+    value,
+  }: {
+    readonly children: (
+      item: { category: string; id: number; name: string; note: string },
+      state: string,
+    ) => ReactNode;
+    readonly controlsLabel?: string;
+    readonly empty?: ReactNode;
+    readonly filters: readonly {
+      label: ReactNode;
+      matches: (item: { category: string }) => boolean;
+      value: string;
+    }[];
+    readonly items: readonly { category: string; id: number; name: string; note: string }[];
+    readonly onValueChange?: (value: string) => void;
+    readonly resultLabel?: (count: number, filter: { value: string } | undefined) => ReactNode;
+    readonly value?: string;
+  }) => {
+    const activeFilter = filters.find((filter) => filter.value === value) ?? filters[0];
+    const filteredItems = activeFilter ? items.filter(activeFilter.matches) : [];
+
+    return createElement(
+      "section",
+      null,
+      createElement(
+        "div",
+        { "aria-label": controlsLabel, role: "group" },
+        filters.map((filter) =>
+          createElement(
+            "button",
+            {
+              "aria-pressed": filter.value === activeFilter?.value,
+              key: filter.value,
+              onClick: () => {
+                onValueChange?.(filter.value);
+              },
+              type: "button",
+            },
+            filter.label,
+          ),
+        ),
+      ),
+      createElement(
+        "span",
+        { "aria-label": "Filter results", role: "status" },
+        resultLabel?.(filteredItems.length, activeFilter),
+      ),
+      filteredItems.length > 0
+        ? createElement(
+            "ul",
+            null,
+            filteredItems.map((item) =>
+              createElement("li", { key: item.id }, children(item, "present")),
+            ),
+          )
+        : createElement("div", null, empty),
+    );
+  },
   MotionDialog: ({
     children,
     closeClassName,
@@ -485,6 +551,51 @@ describe("PlaygroundWorkbench", () => {
     );
   });
 
+  it("filters the gallery and persists staggered layout settings", () => {
+    const view = render(createElement(PlaygroundWorkbench));
+
+    fireEvent.change(view.getByLabelText("Preview"), { target: { value: "filter-grid" } });
+
+    expect(view.queryByLabelText("Delay")).toBeNull();
+    expect(view.getByRole("status", { name: "Filter results" }).textContent).toBe(
+      "6 components / all",
+    );
+    expect(view.getAllByRole("listitem")).toHaveLength(6);
+
+    fireEvent.click(view.getByRole("button", { name: "Feedback" }));
+    expect(view.getByRole("status", { name: "Filter results" }).textContent).toBe(
+      "2 components / feedback",
+    );
+    expect(view.getByRole("button", { name: "Inspect Number Ticker" })).toBeTruthy();
+    expect(view.getByRole("button", { name: "Inspect Toast Stack" })).toBeTruthy();
+
+    fireEvent.change(view.getByLabelText("Interval"), { target: { value: "90" } });
+    fireEvent.click(view.getByRole("button", { name: "rise" }));
+    fireEvent.click(view.getByRole("button", { name: "reverse" }));
+    fireEvent.click(view.getByRole("button", { name: "Archived" }));
+
+    expect(view.getByRole("status", { name: "Filter results" }).textContent).toBe(
+      "0 components / archived",
+    );
+    expect(view.getByText("No archived components.")).toBeTruthy();
+
+    const codePanel = view.getByLabelText("Generated React code");
+    expect(codePanel.textContent).toContain("<FilterGrid");
+    expect(codePanel.textContent).toContain('defaultValue="archived"');
+    expect(codePanel.textContent).toContain("interval={90}");
+    expect(codePanel.textContent).toContain('order="reverse"');
+    expect(codePanel.textContent).toContain('preset="rise"');
+    expect(
+      decodePlaygroundStorage(window.localStorage.getItem(playgroundStorageKey)),
+    ).toMatchObject({
+      component: "filter-grid",
+      filter: "archived",
+      order: "reverse",
+      preset: "rise",
+      stagger: 90,
+    });
+  });
+
   it("replays Staggered List when motion controls change", () => {
     const view = render(createElement(PlaygroundWorkbench));
 
@@ -738,6 +849,35 @@ describe("PlaygroundWorkbench", () => {
     fireEvent.click(view.getByRole("button", { name: "Review" }));
     expect(view.queryByText("Review required")).toBeNull();
     expect(view.getByText("Tokens updated")).toBeTruthy();
+  });
+
+  it("restores Filter Grid selection and templates from a shared URL", async () => {
+    window.history.replaceState(
+      null,
+      "",
+      "/playground?v=1&component=filter-grid&codeMode=copy-source&duration=640&distance=24&easing=emphasized&reducedMotion=0&viewport=mobile&contrast=ink&filter=feedback&stagger=90&preset=rise&order=reverse",
+    );
+    const view = render(createElement(PlaygroundWorkbench));
+
+    await waitFor(() => {
+      expect((view.getByLabelText("Preview") as HTMLSelectElement).value).toBe("filter-grid");
+    });
+
+    expect(view.getByRole("button", { name: "Feedback" }).getAttribute("aria-pressed")).toBe(
+      "true",
+    );
+    expect(view.getByRole("status", { name: "Filter results" }).textContent).toBe(
+      "2 components / feedback",
+    );
+    expect((view.getByLabelText("Interval") as HTMLInputElement).value).toBe("90");
+    expect(view.getByRole("button", { name: "rise" }).getAttribute("aria-pressed")).toBe("true");
+    expect(view.getByRole("button", { name: "reverse" }).getAttribute("aria-pressed")).toBe("true");
+    expect(view.getByRole("button", { name: "Copy source" }).getAttribute("aria-pressed")).toBe(
+      "true",
+    );
+    expect(view.getByLabelText("Generated React code").textContent).toContain(
+      "@/components/easecraft/filter-grid",
+    );
   });
 
   it("copies a versioned share link and keeps it synchronized", async () => {

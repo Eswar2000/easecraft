@@ -8,9 +8,9 @@ By participating, you agree to follow the [Code of Conduct](CODE_OF_CONDUCT.md).
 
 ## Current Stage
 
-Easecraft has completed its core motion foundation, including `Stagger`, all nine planned component vertical slices, the typed registry, all eight planned compositions, component/composition copy actions, and playground controls, package, copy-source, and token-override code templates, local persistence, and versioned share URLs for Text Reveal, Number Ticker, Animated Tabs, Animated Accordion, Motion Dialog, Toast Stack, and Staggered List.
+Easecraft has completed its core motion foundation, including `Stagger`, all nine planned component vertical slices, the typed registry, all eight planned compositions, component/composition copy actions, and playground controls, package, copy-source, and token-override code templates, local persistence, and versioned share URLs for Text Reveal, Number Ticker, Animated Tabs, Animated Accordion, Motion Dialog, Toast Stack, Filter Grid, and Staggered List.
 
-The immediate focus is expanding the playground workflow to the remaining two components. Remaining Phase 0 repository work includes public identifiers, CI, preview deployment, and architecture decision records.
+The immediate focus is expanding the playground workflow to Scroll Reveal, the final remaining component. Remaining Phase 0 repository work includes public identifiers, CI, preview deployment, and architecture decision records.
 
 Useful contributions at this stage include:
 

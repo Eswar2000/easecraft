@@ -68,6 +68,13 @@ describe("playground state", () => {
       toastTimeout: 10_000,
       toasts: ["preview", "review", "sync"],
     });
+    expect(getDefaultPlaygroundState("filter-grid")).toMatchObject({
+      component: "filter-grid",
+      filter: "all",
+      order: "forward",
+      preset: "fade-rise",
+      stagger: 60,
+    });
   });
 
   it("validates enums, ignores unknown fields, and clamps numeric controls", () => {
@@ -219,5 +226,26 @@ describe("playground state", () => {
     });
     expect("delay" in toastState).toBe(false);
     expect("stagger" in toastState).toBe(false);
+
+    const gridState = parsePlaygroundState({
+      component: "filter-grid",
+      delay: 200,
+      distance: 500,
+      filter: "missing",
+      order: "reverse",
+      preset: "rise",
+      stagger: 999,
+      toastLimit: 3,
+    });
+
+    expect(gridState).toEqual({
+      ...getDefaultPlaygroundState("filter-grid"),
+      distance: playgroundRanges.distance.max,
+      order: "reverse",
+      preset: "rise",
+      stagger: playgroundRanges.stagger.max,
+    });
+    expect("delay" in gridState).toBe(false);
+    expect("toastLimit" in gridState).toBe(false);
   });
 });

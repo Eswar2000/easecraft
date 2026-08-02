@@ -81,6 +81,7 @@ export function decodePlaygroundSearchParams(
     duration: readSearchNumber(readSearchValue(params, "duration")),
     easing: readSearchValue(params, "easing"),
     expanded: readSearchList(readSearchValue(params, "expanded")),
+    filter: readSearchValue(params, "filter"),
     from: readSearchNumber(readSearchValue(params, "from")),
     locale: readSearchValue(params, "locale"),
     loop: readSearchBoolean(readSearchValue(params, "loop")),
@@ -118,7 +119,12 @@ export function encodePlaygroundSearchParams(state: PlaygroundState): URLSearchP
   params.set("viewport", state.viewport);
   params.set("contrast", state.contrast);
 
-  if (state.component === "toast-stack") {
+  if (state.component === "filter-grid") {
+    params.set("filter", state.filter);
+    params.set("stagger", state.stagger.toString());
+    params.set("preset", state.preset);
+    params.set("order", state.order);
+  } else if (state.component === "toast-stack") {
     params.set("toastLimit", state.toastLimit.toString());
     params.set("toastTimeout", state.toastTimeout.toString());
     params.set("swipeDirection", state.swipeDirection);

@@ -6,6 +6,7 @@ export const playgroundComponents = [
   "animated-tabs",
   "animated-accordion",
   "toast-stack",
+  "filter-grid",
   "staggered-list",
   "motion-dialog",
 ] as const;
@@ -30,6 +31,13 @@ export const playgroundAccordionModes = ["single", "multiple"] as const;
 export const playgroundAccordionValues = ["lifecycle", "semantics", "interruption"] as const;
 export const playgroundToastIds = ["preview", "review", "sync", "tokens"] as const;
 export const playgroundToastSwipeDirections = ["right", "left", "down", "up"] as const;
+export const playgroundGridFilters = [
+  "all",
+  "foundation",
+  "component",
+  "feedback",
+  "archived",
+] as const;
 
 export type PlaygroundComponent = (typeof playgroundComponents)[number];
 export type PlaygroundCodeMode = (typeof playgroundCodeModes)[number];
@@ -48,6 +56,7 @@ export type PlaygroundAccordionMode = (typeof playgroundAccordionModes)[number];
 export type PlaygroundAccordionValue = (typeof playgroundAccordionValues)[number];
 export type PlaygroundToastId = (typeof playgroundToastIds)[number];
 export type PlaygroundToastSwipeDirection = (typeof playgroundToastSwipeDirections)[number];
+export type PlaygroundGridFilter = (typeof playgroundGridFilters)[number];
 
 export interface PlaygroundCommonState {
   readonly codeMode: PlaygroundCodeMode;
@@ -118,12 +127,21 @@ export interface ToastStackPlaygroundState extends PlaygroundSpatialState {
   readonly toasts: readonly PlaygroundToastId[];
 }
 
+export interface FilterGridPlaygroundState extends PlaygroundSpatialState {
+  readonly component: "filter-grid";
+  readonly filter: PlaygroundGridFilter;
+  readonly order: PlaygroundOrder;
+  readonly preset: PlaygroundPreset;
+  readonly stagger: number;
+}
+
 export type PlaygroundState =
   | TextRevealPlaygroundState
   | NumberTickerPlaygroundState
   | AnimatedTabsPlaygroundState
   | AnimatedAccordionPlaygroundState
   | ToastStackPlaygroundState
+  | FilterGridPlaygroundState
   | StaggeredListPlaygroundState
   | MotionDialogPlaygroundState;
 
@@ -169,6 +187,14 @@ const componentDefaults = {
     loop: true,
     orientation: "horizontal",
     tab: "overview",
+  },
+  "filter-grid": {
+    ...spatialDefaults,
+    component: "filter-grid",
+    filter: "all",
+    order: "forward",
+    preset: "fade-rise",
+    stagger: defaultMotionTokens.stagger.normal,
   },
   "motion-dialog": {
     ...spatialDefaults,
@@ -333,6 +359,20 @@ export function parsePlaygroundState(value: unknown): PlaygroundState {
         playgroundRanges.toastTimeout,
       ),
       toasts: readEnumArray(input["toasts"], playgroundToastIds, toastDefaults.toasts),
+    };
+  }
+
+  if (component === "filter-grid") {
+    const gridDefaults = componentDefaults["filter-grid"];
+
+    return {
+      ...common,
+      component,
+      distance: readNumber(input["distance"], gridDefaults.distance, playgroundRanges.distance),
+      filter: readEnum(input["filter"], playgroundGridFilters, gridDefaults.filter),
+      order: readEnum(input["order"], playgroundOrders, gridDefaults.order),
+      preset: readEnum(input["preset"], playgroundPresets, gridDefaults.preset),
+      stagger: readNumber(input["stagger"], gridDefaults.stagger, playgroundRanges.stagger),
     };
   }
 

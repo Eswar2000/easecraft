@@ -779,6 +779,106 @@
   --easecraft-toast-padding: 13px;
 }
 
+.playground-filter-preview {
+  width: 100%;
+  min-width: 0;
+}
+
+.playground-filter-controls {
+  display: flex;
+  min-width: 0;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+
+.playground-filter-control {
+  min-height: 34px;
+  padding: 0 10px;
+  border: 1px solid currentColor;
+  border-radius: 0;
+  color: inherit;
+  background: transparent;
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 8px;
+}
+
+.playground-filter-control[aria-pressed="true"] {
+  color: #fff;
+  background: var(--ink);
+}
+
+.playground-filter-results {
+  display: block;
+  margin-bottom: 10px;
+  color: var(--signal);
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 8px;
+  text-transform: uppercase;
+}
+
+.playground-filter-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.playground-filter-card {
+  display: grid;
+  min-width: 0;
+  min-height: 112px;
+  grid-template-columns: 24px minmax(0, 1fr);
+  gap: 10px;
+  align-content: start;
+  padding: 13px;
+  border: 1px solid currentColor;
+}
+
+.playground-filter-card > span {
+  color: var(--signal);
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 8px;
+}
+
+.playground-filter-card strong {
+  font-family: "Bricolage Grotesque", sans-serif;
+  font-size: 14px;
+}
+
+.playground-filter-card p {
+  margin: 4px 0 0;
+  color: var(--muted);
+  font-size: 10px;
+}
+
+.playground-filter-card > button {
+  min-height: 30px;
+  grid-column: 1 / -1;
+  margin-top: 3px;
+  border: 1px solid currentColor;
+  border-radius: 0;
+  color: inherit;
+  background: transparent;
+  font-size: 8px;
+}
+
+.playground-filter-empty {
+  display: grid;
+  min-height: 220px;
+  border: 1px dashed currentColor;
+  place-items: center;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.playground-viewport[data-viewport="mobile"] .playground-filter-grid {
+  grid-template-columns: 1fr;
+}
+
+.playground-viewport[data-viewport="mobile"] .playground-filter-control {
+  padding: 0 7px;
+  font-size: 7px;
+}
+
 .playground-list-preview {
   display: grid;
   gap: 8px;

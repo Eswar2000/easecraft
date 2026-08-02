@@ -7,6 +7,7 @@ export { playgroundCodeModes, type PlaygroundCodeMode } from "./playground-state
 const componentExportNames = {
   "animated-accordion": "AnimatedAccordion",
   "animated-tabs": "AnimatedTabs",
+  "filter-grid": "FilterGrid",
   "motion-dialog": "MotionDialog",
   "number-ticker": "NumberTicker",
   "staggered-list": "StaggeredList",
@@ -421,10 +422,94 @@ export function Example() {
 `;
 }
 
+function generateFilterGridImports(
+  state: Extract<PlaygroundState, { component: "filter-grid" }>,
+  mode: PlaygroundCodeMode,
+): string {
+  if (mode === "copy-source") {
+    const componentPath = localImportPath(getCopySourceFile(state, "component"));
+    const providerPath = localImportPath(getCopySourceFile(state, "provider"));
+
+    return `import { FilterGrid, type FilterGridFilter } from "${componentPath}";
+import { MotionProvider } from "${providerPath}";`;
+  }
+
+  const tokenType = mode === "token-override" ? "type MotionTokenOverrides, " : "";
+  return `import { FilterGrid, MotionProvider, ${tokenType}type FilterGridFilter } from "easecraft";`;
+}
+
+function generateFilterGridCode(
+  state: Extract<PlaygroundState, { component: "filter-grid" }>,
+  mode: PlaygroundCodeMode,
+) {
+  const interval = mode === "token-override" ? '"normal"' : `{${state.stagger.toString()}}`;
+
+  return `${generateFilterGridImports(state, mode)}${generateTokenOverrides(state, mode)}
+
+interface GalleryItem {
+  readonly category: "component" | "foundation" | "feedback";
+  readonly id: number;
+  readonly name: string;
+  readonly note: string;
+}
+
+type GalleryFilter = "all" | GalleryItem["category"] | "archived";
+
+const galleryItems = [
+  { category: "foundation", id: 1, name: "Motion", note: "Single-element presets" },
+  { category: "foundation", id: 2, name: "Presence", note: "Retained lifecycle" },
+  { category: "component", id: 3, name: "Animated Tabs", note: "Keyboard navigation" },
+  { category: "component", id: 4, name: "Motion Dialog", note: "Modal focus" },
+  { category: "feedback", id: 5, name: "Number Ticker", note: "Numeric feedback" },
+  { category: "feedback", id: 6, name: "Toast Stack", note: "Live notifications" },
+] satisfies readonly GalleryItem[];
+
+const galleryFilters = [
+  { label: "All", matches: () => true, value: "all" },
+  { label: "Foundations", matches: (item) => item.category === "foundation", value: "foundation" },
+  { label: "Components", matches: (item) => item.category === "component", value: "component" },
+  { label: "Feedback", matches: (item) => item.category === "feedback", value: "feedback" },
+  { label: "Archived", matches: () => false, value: "archived" },
+] satisfies readonly FilterGridFilter<GalleryItem, GalleryFilter>[];
+
+export function Example() {
+  return (
+    <MotionProvider ${providerProps(state, mode)}>
+      <FilterGrid
+        controlsLabel="Filter component gallery"
+        defaultValue="${state.filter}"
+        distance=${distanceProp(state.distance, mode)}
+        duration=${durationProp(state, mode)}
+        easing="${state.easing}"
+        empty="No archived components."
+        filters={galleryFilters}
+        getKey={(item) => item.id}
+        interval=${interval}
+        items={galleryItems}
+        order="${state.order}"
+        preset="${state.preset}"
+      >
+        {(item, itemState) => (
+          <article data-state={itemState}>
+            <strong>{item.name}</strong>
+            <span>{item.note}</span>
+          </article>
+        )}
+      </FilterGrid>
+    </MotionProvider>
+  );
+}
+`;
+}
+
 export function generatePlaygroundCode(
   state: PlaygroundState,
   mode: PlaygroundCodeMode = state.codeMode,
 ): string {
+  if (state.component === "filter-grid") {
+    return generateFilterGridCode(state, mode);
+  }
+
   if (state.component === "toast-stack") {
     return generateToastStackCode(state, mode);
   }

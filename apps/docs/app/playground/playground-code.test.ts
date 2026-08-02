@@ -290,4 +290,47 @@ describe("playground code generation", () => {
     expect(tokenCode).toContain('entryDuration="normal"');
     expect(tokenCode).not.toContain("stagger:");
   });
+
+  it("generates Filter Grid data, empty state, and staggered settings", () => {
+    const code = generatePlaygroundCode(
+      parsePlaygroundState({
+        component: "filter-grid",
+        distance: 24,
+        duration: 640,
+        filter: "archived",
+        order: "reverse",
+        preset: "rise",
+        stagger: 90,
+      }),
+    );
+
+    expect(code).toContain("type FilterGridFilter");
+    expect(code).toContain("const galleryItems = [");
+    expect(code).toContain("const galleryFilters = [");
+    expect(code).toContain('defaultValue="archived"');
+    expect(code).toContain('empty="No archived components."');
+    expect(code).toContain("distance={24}");
+    expect(code).toContain("duration={640}");
+    expect(code).toContain("interval={90}");
+    expect(code).toContain('order="reverse"');
+    expect(code).toContain('preset="rise"');
+    expect(code).not.toContain("delay=");
+  });
+
+  it("derives Filter Grid copy-source imports and semantic token overrides", () => {
+    const state = getDefaultPlaygroundState("filter-grid");
+    const copySourceCode = generatePlaygroundCode(state, "copy-source");
+    const tokenCode = generatePlaygroundCode(state, "token-override");
+
+    expect(copySourceCode).toContain(
+      'import { FilterGrid, type FilterGridFilter } from "@/components/easecraft/filter-grid";',
+    );
+    expect(getPlaygroundInstallCommand(state, "copy-source")).toContain("animejs@4.5.0");
+    expect(tokenCode).toContain("distance: { medium: 12 }");
+    expect(tokenCode).toContain("duration: { normal: 300 }");
+    expect(tokenCode).toContain("stagger: { normal: 60 }");
+    expect(tokenCode).toContain('distance="medium"');
+    expect(tokenCode).toContain('duration="normal"');
+    expect(tokenCode).toContain('interval="normal"');
+  });
 });

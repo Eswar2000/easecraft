@@ -3,12 +3,15 @@
 import {
   AnimatedAccordion,
   AnimatedTabs,
+  FilterGrid,
   MotionDialog,
   MotionProvider,
   NumberTicker,
   StaggeredList,
   TextReveal,
   ToastStack,
+  type FilterGridFilter,
+  type FilterGridItemState,
   type ToastStackItem,
 } from "easecraft";
 import { Check, Copy, Link2, Monitor, Play, RotateCcw, Smartphone, Tablet } from "lucide-react";
@@ -53,6 +56,7 @@ import {
   type PlaygroundComponent,
   type PlaygroundAccordionValue,
   type PlaygroundState,
+  type PlaygroundGridFilter,
   type PlaygroundTabValue,
   type PlaygroundToastId,
 } from "./playground-state";
@@ -60,6 +64,7 @@ import {
 const componentNames = {
   "animated-accordion": "Animated Accordion",
   "animated-tabs": "Animated Tabs",
+  "filter-grid": "Filter Grid",
   "motion-dialog": "Motion Dialog",
   "number-ticker": "Number Ticker",
   "staggered-list": "Staggered List",
@@ -118,6 +123,42 @@ const previewItems = [
   { id: "prototype", label: "Prototype the motion", track: "Behavior" },
   { id: "verify", label: "Verify accessibility", track: "Release" },
 ] as const;
+
+interface PlaygroundGalleryItem {
+  readonly category: "component" | "foundation" | "feedback";
+  readonly id: number;
+  readonly name: string;
+  readonly note: string;
+}
+
+const playgroundGalleryItems = [
+  { category: "foundation", id: 1, name: "Motion", note: "Single-element presets" },
+  { category: "foundation", id: 2, name: "Presence", note: "Retained lifecycle" },
+  { category: "component", id: 3, name: "Animated Tabs", note: "Keyboard navigation" },
+  { category: "component", id: 4, name: "Motion Dialog", note: "Modal focus" },
+  { category: "feedback", id: 5, name: "Number Ticker", note: "Numeric feedback" },
+  { category: "feedback", id: 6, name: "Toast Stack", note: "Live notifications" },
+] satisfies readonly PlaygroundGalleryItem[];
+
+const playgroundGalleryFilters = [
+  { label: "All", matches: () => true, value: "all" },
+  {
+    label: "Foundations",
+    matches: (item) => item.category === "foundation",
+    value: "foundation",
+  },
+  {
+    label: "Components",
+    matches: (item) => item.category === "component",
+    value: "component",
+  },
+  {
+    label: "Feedback",
+    matches: (item) => item.category === "feedback",
+    value: "feedback",
+  },
+  { label: "Archived", matches: () => false, value: "archived" },
+] satisfies readonly FilterGridFilter<PlaygroundGalleryItem, PlaygroundGridFilter>[];
 
 const playgroundToastCatalog = {
   preview: {
@@ -218,6 +259,29 @@ const integerFormatOptions = { maximumFractionDigits: 0 } satisfies Intl.NumberF
 
 function getPreviewItemKey(item: (typeof previewItems)[number]) {
   return item.id;
+}
+
+function getGalleryItemKey(item: PlaygroundGalleryItem) {
+  return item.id;
+}
+
+function GalleryCard({
+  item,
+  state,
+}: {
+  readonly item: PlaygroundGalleryItem;
+  readonly state: FilterGridItemState;
+}) {
+  return (
+    <article className="playground-filter-card" data-state={state}>
+      <span>{item.id.toString().padStart(2, "0")}</span>
+      <div>
+        <strong>{item.name}</strong>
+        <p>{item.note}</p>
+      </div>
+      <button type="button">Inspect {item.name}</button>
+    </article>
+  );
 }
 
 function getDetailLabel(detail: PlaygroundDetail) {
@@ -395,17 +459,63 @@ function SegmentedControl<Value extends string>({
 
 function Preview({
   onAccordionChange,
+  onGridFilterChange,
   onTabChange,
   onToastChange,
   replayKey,
   state,
 }: {
   readonly onAccordionChange: (expanded: readonly PlaygroundAccordionValue[]) => void;
+  readonly onGridFilterChange: (filter: PlaygroundGridFilter) => void;
   readonly onTabChange: (tab: PlaygroundTabValue) => void;
   readonly onToastChange: (toasts: readonly PlaygroundToastId[]) => void;
   readonly replayKey: number;
   readonly state: PlaygroundState;
 }) {
+  if (state.component === "filter-grid") {
+    const gridReplayKey = [
+      replayKey,
+      state.distance,
+      state.duration,
+      state.easing,
+      state.order,
+      state.preset,
+      state.reducedMotion,
+      state.stagger,
+    ].join(":");
+
+    return (
+      <FilterGrid
+        as="section"
+        className="playground-filter-preview"
+        controlClassName="playground-filter-control"
+        controlsClassName="playground-filter-controls"
+        controlsLabel="Filter component gallery"
+        distance={state.distance}
+        duration={state.duration}
+        easing={state.easing}
+        empty={<span>No archived components.</span>}
+        emptyClassName="playground-filter-empty"
+        filters={playgroundGalleryFilters}
+        getKey={getGalleryItemKey}
+        gridClassName="playground-filter-grid"
+        interval={state.stagger}
+        items={playgroundGalleryItems}
+        key={gridReplayKey}
+        onValueChange={onGridFilterChange}
+        order={state.order}
+        preset={state.preset}
+        resultClassName="playground-filter-results"
+        resultLabel={(count, filter) =>
+          `${count.toString()} ${count === 1 ? "component" : "components"} / ${filter?.value ?? "none"}`
+        }
+        value={state.filter}
+      >
+        {(item, itemState) => <GalleryCard item={item} state={itemState} />}
+      </FilterGrid>
+    );
+  }
+
   if (state.component === "toast-stack") {
     const currentToasts = state.toasts;
     const toastItems = currentToasts.map((id) => playgroundToastCatalog[id]);
@@ -1089,7 +1199,11 @@ export function PlaygroundWorkbench({
           <ControlSection title="Sequence">
             <RangeControl
               {...playgroundRanges.stagger}
-              label={state.component === "staggered-list" ? "Interval" : "Stagger"}
+              label={
+                state.component === "staggered-list" || state.component === "filter-grid"
+                  ? "Interval"
+                  : "Stagger"
+              }
               onChange={(stagger) => {
                 updateState({ stagger });
               }}
@@ -1254,6 +1368,9 @@ export function PlaygroundWorkbench({
                 <Preview
                   onAccordionChange={(expanded) => {
                     updateState({ expanded });
+                  }}
+                  onGridFilterChange={(filter) => {
+                    updateState({ filter });
                   }}
                   onTabChange={(tab) => {
                     updateState({ tab });
