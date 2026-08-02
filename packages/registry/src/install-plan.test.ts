@@ -1,5 +1,7 @@
 import { describe, expect, it } from "vitest";
 
+import { version as reactVersion } from "../../react/package.json";
+import { version as tokensVersion } from "../../tokens/package.json";
 import {
   componentSlugs,
   copySourceManifests,
@@ -113,7 +115,7 @@ describe("getInstallPlan", () => {
 
     expect(plan).toEqual({
       dependencies: {
-        npm: [{ name: "easecraft", type: "npm", version: "0.0.0" }],
+        npm: [{ name: "easecraft", type: "npm", version: reactVersion }],
         peer: [
           { name: "react", type: "peer", version: ">=18.2.0 <20.0.0" },
           { name: "react-dom", type: "peer", version: ">=18.2.0 <20.0.0" },
@@ -125,7 +127,7 @@ describe("getInstallPlan", () => {
       registryDependencies: [],
       slug: "animated-accordion",
     });
-    expect(getInstallCommand(plan)).toBe("pnpm add easecraft@0.0.0");
+    expect(getInstallCommand(plan)).toBe(`pnpm add easecraft@${reactVersion}`);
   });
 
   it("resolves shared files and external dependencies for copy-source mode", () => {
@@ -142,12 +144,20 @@ describe("getInstallPlan", () => {
         { name: "react", type: "peer", version: ">=18.2.0 <20.0.0" },
         { name: "react-dom", type: "peer", version: ">=18.2.0 <20.0.0" },
       ],
-      workspace: [{ name: "easecraft-tokens", type: "workspace", version: "0.0.0" }],
+      workspace: [{ name: "easecraft-tokens", type: "workspace", version: tokensVersion }],
     });
-    expect(getInstallCommand(plan, "pnpm")).toBe("pnpm add animejs@4.5.0 easecraft-tokens@0.0.0");
-    expect(getInstallCommand(plan, "npm")).toBe("npm install animejs@4.5.0 easecraft-tokens@0.0.0");
-    expect(getInstallCommand(plan, "yarn")).toBe("yarn add animejs@4.5.0 easecraft-tokens@0.0.0");
-    expect(getInstallCommand(plan, "bun")).toBe("bun add animejs@4.5.0 easecraft-tokens@0.0.0");
+    expect(getInstallCommand(plan, "pnpm")).toBe(
+      `pnpm add animejs@4.5.0 easecraft-tokens@${tokensVersion}`,
+    );
+    expect(getInstallCommand(plan, "npm")).toBe(
+      `npm install animejs@4.5.0 easecraft-tokens@${tokensVersion}`,
+    );
+    expect(getInstallCommand(plan, "yarn")).toBe(
+      `yarn add animejs@4.5.0 easecraft-tokens@${tokensVersion}`,
+    );
+    expect(getInstallCommand(plan, "bun")).toBe(
+      `bun add animejs@4.5.0 easecraft-tokens@${tokensVersion}`,
+    );
   });
 
   it("resolves registry dependencies before the requested component", () => {

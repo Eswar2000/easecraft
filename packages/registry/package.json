@@ -1,6 +1,6 @@
 {
   "name": "easecraft-registry",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Typed metadata and copyable component source for Easecraft.",
   "keywords": [
     "animation",

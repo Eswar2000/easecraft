@@ -1,3 +1,4 @@
+import { version as reactVersion } from "../../react/package.json";
 import { componentEntries, type ComponentSlug } from "./components.js";
 import { compositionManifests } from "./composition-manifests.js";
 import { compositionEntries, type CompositionSlug } from "./compositions.js";
@@ -20,7 +21,7 @@ import type {
 const easecraftPackage: ComponentDependency = {
   name: "easecraft",
   type: "npm",
-  version: "0.0.0",
+  version: reactVersion,
 };
 
 const componentBySlug = new Map(componentEntries.map((component) => [component.slug, component]));

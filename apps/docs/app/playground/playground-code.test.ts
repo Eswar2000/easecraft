@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 
+import { version as reactVersion } from "../../../../packages/react/package.json";
 import { generatePlaygroundCode, getPlaygroundInstallCommand } from "./playground-code";
 import { getDefaultPlaygroundState, parsePlaygroundState } from "./playground-state";
 
@@ -88,7 +89,7 @@ describe("playground code generation", () => {
 
   it("derives the package install command from registry metadata", () => {
     expect(getPlaygroundInstallCommand(getDefaultPlaygroundState("text-reveal"))).toBe(
-      "pnpm add easecraft@0.0.0",
+      `pnpm add easecraft@${reactVersion}`,
     );
   });
 
@@ -104,7 +105,9 @@ describe("playground code generation", () => {
     );
     expect(code).not.toContain('from "easecraft"');
     expect(getPlaygroundInstallCommand(state, "copy-source")).toContain("animejs@4.5.0");
-    expect(getPlaygroundInstallCommand(state, "copy-source")).not.toContain("easecraft@0.0.0");
+    expect(getPlaygroundInstallCommand(state, "copy-source")).not.toContain(
+      `easecraft@${reactVersion}`,
+    );
   });
 
   it("generates semantic token overrides from the selected motion values", () => {
