@@ -10,7 +10,7 @@ By participating, you agree to follow the [Code of Conduct](CODE_OF_CONDUCT.md).
 
 Easecraft has completed its core motion foundation, including `Stagger`, all nine planned component vertical slices, the typed registry, all eight planned compositions, component/composition copy actions, and playground controls, package, copy-source, and token-override code templates, local persistence, and versioned share URLs for all nine components.
 
-The initial playground milestone and continuous integration are complete. The immediate focus is the remaining Phase 0 repository work: public identifiers, preview deployment, and architecture decision records.
+The initial playground milestone, continuous integration, and Vercel deployment are complete. The immediate focus is the remaining Phase 0 repository work: public identifiers and architecture decision records.
 
 Useful contributions at this stage include:
 

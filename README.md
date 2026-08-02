@@ -6,9 +6,11 @@
 
 Easecraft is an open-source motion design system planned for React. It will combine typed motion primitives, accessible animated components, a copyable component registry, and an interactive playground for inspecting and tuning motion.
 
+[Explore the live documentation](https://easecraft-docs.vercel.app).
+
 ## Project Status
 
-Easecraft has completed its **initial playground milestone**. The motion foundation, all nine planned component vertical slices, all eight planned registry compositions, package/copy-source delivery actions, and continuous integration are implemented. The playground provides validated controls, responsive previews, reduced-motion simulation, replay/reset actions, package, copy-source, and token-override code templates, local persistence, and versioned share URLs for all nine components; no npm package has been published yet.
+Easecraft has completed its **initial playground milestone**. The motion foundation, all nine planned component vertical slices, all eight planned registry compositions, package/copy-source delivery actions, continuous integration, and Vercel deployments are implemented. The playground provides validated controls, responsive previews, reduced-motion simulation, replay/reset actions, package, copy-source, and token-override code templates, local persistence, and versioned share URLs for all nine components; no npm package has been published yet.
 
 The complete product scope, architecture, delivery plan, and initial backlog are documented in the [project proposal](PROPOSAL.md).
 
@@ -65,7 +67,7 @@ The proposed first release includes five foundations, five hooks, and nine high-
 
 `TextReveal`, `NumberTicker`, `StaggeredList`, `AnimatedTabs`, `AnimatedAccordion`, `MotionDialog`, `ToastStack`, `FilterGrid`, and `ScrollReveal` are completed vertical slices, proving the package API, Anime.js lifecycle integration, reduced-motion behavior, accessible output, documentation, tests, and consumer build.
 
-The `Stagger` foundation is also implemented with bounded forward and reverse child sequencing, scoped cleanup, and an immediate reduced-motion fallback. The playground now covers all nine planned components with the same validated controls, templates, persistence, and sharing workflow. CI reproduces the full local quality gate and consumer build. Immediate repository work returns to preview deployment, public identifier verification, and architecture decision records.
+The `Stagger` foundation is also implemented with bounded forward and reverse child sequencing, scoped cleanup, and an immediate reduced-motion fallback. The playground now covers all nine planned components with the same validated controls, templates, persistence, and sharing workflow. CI reproduces the full local quality gate and consumer build, while Vercel provides production and pull-request preview deployments. Immediate repository work returns to public identifier verification and architecture decision records.
 
 ## Principles
 
