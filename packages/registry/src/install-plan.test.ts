@@ -144,9 +144,7 @@ describe("getInstallPlan", () => {
         { name: "react", type: "peer", version: ">=18.2.0 <20.0.0" },
         { name: "react-dom", type: "peer", version: ">=18.2.0 <20.0.0" },
       ],
-      workspace: [
-        { name: "easecraft-tokens", type: "workspace", version: tokensVersion },
-      ],
+      workspace: [{ name: "easecraft-tokens", type: "workspace", version: tokensVersion }],
     });
     expect(getInstallCommand(plan, "pnpm")).toBe(
       `pnpm add animejs@4.5.0 easecraft-tokens@${tokensVersion}`,
