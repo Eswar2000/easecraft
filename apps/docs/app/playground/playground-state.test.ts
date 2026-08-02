@@ -75,6 +75,14 @@ describe("playground state", () => {
       preset: "fade-rise",
       stagger: 60,
     });
+    expect(getDefaultPlaygroundState("scroll-reveal")).toMatchObject({
+      component: "scroll-reveal",
+      delay: 0,
+      once: true,
+      preset: "fade-rise",
+      revealMargin: "balanced",
+      threshold: 0.25,
+    });
   });
 
   it("validates enums, ignores unknown fields, and clamps numeric controls", () => {
@@ -247,5 +255,26 @@ describe("playground state", () => {
     });
     expect("delay" in gridState).toBe(false);
     expect("toastLimit" in gridState).toBe(false);
+
+    const revealState = parsePlaygroundState({
+      component: "scroll-reveal",
+      delay: -20,
+      once: false,
+      order: "reverse",
+      preset: "rise",
+      revealMargin: "missing",
+      stagger: 120,
+      threshold: 1.5,
+    });
+
+    expect(revealState).toEqual({
+      ...getDefaultPlaygroundState("scroll-reveal"),
+      delay: playgroundRanges.delay.min,
+      once: false,
+      preset: "rise",
+      threshold: playgroundRanges.threshold.max,
+    });
+    expect("order" in revealState).toBe(false);
+    expect("stagger" in revealState).toBe(false);
   });
 });

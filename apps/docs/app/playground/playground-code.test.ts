@@ -333,4 +333,50 @@ describe("playground code generation", () => {
     expect(tokenCode).toContain('duration="normal"');
     expect(tokenCode).toContain('interval="normal"');
   });
+
+  it("generates a bounded Scroll Reveal viewport and observer settings", () => {
+    const code = generatePlaygroundCode(
+      parsePlaygroundState({
+        component: "scroll-reveal",
+        delay: 80,
+        distance: 24,
+        duration: 640,
+        once: false,
+        preset: "rise",
+        revealMargin: "late",
+        threshold: 0.4,
+      }),
+    );
+
+    expect(code).toContain('"use client";');
+    expect(code).toContain("jsx-a11y/no-noninteractive-tabindex");
+    expect(code).toContain('import { useState } from "react";');
+    expect(code).toContain("const [viewport, setViewport]");
+    expect(code).toContain('aria-label="Scroll Reveal bounded viewport"');
+    expect(code).toContain("observerRoot={viewport}");
+    expect(code).toContain("delay={80}");
+    expect(code).toContain("distance={24}");
+    expect(code).toContain("duration={640}");
+    expect(code).toContain("once={false}");
+    expect(code).toContain('preset="rise"');
+    expect(code).toContain('rootMargin="0px 0px -30% 0px"');
+    expect(code).toContain("threshold={0.4}");
+    expect(code).toContain("return viewport ? (");
+  });
+
+  it("derives Scroll Reveal copy-source imports and semantic token overrides", () => {
+    const state = getDefaultPlaygroundState("scroll-reveal");
+    const copySourceCode = generatePlaygroundCode(state, "copy-source");
+    const tokenCode = generatePlaygroundCode(state, "token-override");
+
+    expect(copySourceCode).toContain(
+      'import { ScrollReveal } from "@/components/easecraft/scroll-reveal";',
+    );
+    expect(getPlaygroundInstallCommand(state, "copy-source")).toContain("animejs@4.5.0");
+    expect(tokenCode).toContain("distance: { medium: 12 }");
+    expect(tokenCode).toContain("duration: { normal: 300 }");
+    expect(tokenCode).toContain('distance="medium"');
+    expect(tokenCode).toContain('duration="normal"');
+    expect(tokenCode).not.toContain("stagger:");
+  });
 });

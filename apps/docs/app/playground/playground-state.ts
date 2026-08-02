@@ -7,6 +7,7 @@ export const playgroundComponents = [
   "animated-accordion",
   "toast-stack",
   "filter-grid",
+  "scroll-reveal",
   "staggered-list",
   "motion-dialog",
 ] as const;
@@ -38,6 +39,12 @@ export const playgroundGridFilters = [
   "feedback",
   "archived",
 ] as const;
+export const playgroundRevealMargins = ["early", "balanced", "late"] as const;
+export const playgroundRevealRootMargins = {
+  balanced: "0px 0px -10% 0px",
+  early: "0px 0px 10% 0px",
+  late: "0px 0px -30% 0px",
+} as const satisfies Readonly<Record<PlaygroundRevealMargin, string>>;
 
 export type PlaygroundComponent = (typeof playgroundComponents)[number];
 export type PlaygroundCodeMode = (typeof playgroundCodeModes)[number];
@@ -57,6 +64,7 @@ export type PlaygroundAccordionValue = (typeof playgroundAccordionValues)[number
 export type PlaygroundToastId = (typeof playgroundToastIds)[number];
 export type PlaygroundToastSwipeDirection = (typeof playgroundToastSwipeDirections)[number];
 export type PlaygroundGridFilter = (typeof playgroundGridFilters)[number];
+export type PlaygroundRevealMargin = (typeof playgroundRevealMargins)[number];
 
 export interface PlaygroundCommonState {
   readonly codeMode: PlaygroundCodeMode;
@@ -135,6 +143,15 @@ export interface FilterGridPlaygroundState extends PlaygroundSpatialState {
   readonly stagger: number;
 }
 
+export interface ScrollRevealPlaygroundState extends PlaygroundSpatialState {
+  readonly component: "scroll-reveal";
+  readonly delay: number;
+  readonly once: boolean;
+  readonly preset: PlaygroundPreset;
+  readonly revealMargin: PlaygroundRevealMargin;
+  readonly threshold: number;
+}
+
 export type PlaygroundState =
   | TextRevealPlaygroundState
   | NumberTickerPlaygroundState
@@ -142,6 +159,7 @@ export type PlaygroundState =
   | AnimatedAccordionPlaygroundState
   | ToastStackPlaygroundState
   | FilterGridPlaygroundState
+  | ScrollRevealPlaygroundState
   | StaggeredListPlaygroundState
   | MotionDialogPlaygroundState;
 
@@ -151,6 +169,7 @@ export const playgroundRanges = {
   duration: { max: 1200, min: 100, step: 20 },
   number: { max: 1_000_000, min: -1_000_000, step: 1 },
   stagger: { max: 200, min: 0, step: 5 },
+  threshold: { max: 1, min: 0, step: 0.05 },
   toastLimit: { max: 3, min: 1, step: 1 },
   toastTimeout: { max: 15_000, min: 2_000, step: 1_000 },
 } as const;
@@ -214,6 +233,15 @@ const componentDefaults = {
     suffix: "",
     value: 12_480,
   },
+  "scroll-reveal": {
+    ...spatialDefaults,
+    component: "scroll-reveal",
+    delay: 0,
+    once: true,
+    preset: "fade-rise",
+    revealMargin: "balanced",
+    threshold: 0.25,
+  },
   "staggered-list": {
     ...spatialDefaults,
     component: "staggered-list",
@@ -266,6 +294,18 @@ function readNumber(
 
 function readBoolean(value: unknown, fallback: boolean): boolean {
   return typeof value === "boolean" ? value : fallback;
+}
+
+function readFraction(
+  value: unknown,
+  fallback: number,
+  range: { readonly max: number; readonly min: number },
+): number {
+  if (typeof value !== "number" || !Number.isFinite(value)) {
+    return fallback;
+  }
+
+  return Math.round(Math.min(range.max, Math.max(range.min, value)) * 100) / 100;
 }
 
 function readString(value: unknown, fallback: string): string {
@@ -373,6 +413,29 @@ export function parsePlaygroundState(value: unknown): PlaygroundState {
       order: readEnum(input["order"], playgroundOrders, gridDefaults.order),
       preset: readEnum(input["preset"], playgroundPresets, gridDefaults.preset),
       stagger: readNumber(input["stagger"], gridDefaults.stagger, playgroundRanges.stagger),
+    };
+  }
+
+  if (component === "scroll-reveal") {
+    const revealDefaults = componentDefaults["scroll-reveal"];
+
+    return {
+      ...common,
+      component,
+      delay: readNumber(input["delay"], revealDefaults.delay, playgroundRanges.delay),
+      distance: readNumber(input["distance"], revealDefaults.distance, playgroundRanges.distance),
+      once: readBoolean(input["once"], revealDefaults.once),
+      preset: readEnum(input["preset"], playgroundPresets, revealDefaults.preset),
+      revealMargin: readEnum(
+        input["revealMargin"],
+        playgroundRevealMargins,
+        revealDefaults.revealMargin,
+      ),
+      threshold: readFraction(
+        input["threshold"],
+        revealDefaults.threshold,
+        playgroundRanges.threshold,
+      ),
     };
   }
 

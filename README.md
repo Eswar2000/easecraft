@@ -6,7 +6,7 @@ Easecraft is an open-source motion design system planned for React. It will comb
 
 ## Project Status
 
-Easecraft is currently in the **playground stage**. The motion foundation, all nine planned component vertical slices, all eight planned registry compositions, and package/copy-source delivery actions are implemented. The playground provides validated controls, responsive previews, reduced-motion simulation, replay/reset actions, package, copy-source, and token-override code templates, local persistence, and versioned share URLs for Text Reveal, Number Ticker, Animated Tabs, Animated Accordion, Motion Dialog, Toast Stack, Filter Grid, and Staggered List; no npm package has been published yet.
+Easecraft has completed its **initial playground milestone**. The motion foundation, all nine planned component vertical slices, all eight planned registry compositions, and package/copy-source delivery actions are implemented. The playground provides validated controls, responsive previews, reduced-motion simulation, replay/reset actions, package, copy-source, and token-override code templates, local persistence, and versioned share URLs for all nine components; no npm package has been published yet.
 
 The complete product scope, architecture, delivery plan, and initial backlog are documented in the [project proposal](PROPOSAL.md).
 
@@ -61,7 +61,7 @@ The proposed first release includes five foundations, five hooks, and nine high-
 
 `TextReveal`, `NumberTicker`, `StaggeredList`, `AnimatedTabs`, `AnimatedAccordion`, `MotionDialog`, `ToastStack`, `FilterGrid`, and `ScrollReveal` are completed vertical slices, proving the package API, Anime.js lifecycle integration, reduced-motion behavior, accessible output, documentation, tests, and consumer build.
 
-The `Stagger` foundation is also implemented with bounded forward and reverse child sequencing, scoped cleanup, and an immediate reduced-motion fallback. The next playground iteration expands the same validated controls, templates, persistence, and sharing workflow to Scroll Reveal, the final remaining component.
+The `Stagger` foundation is also implemented with bounded forward and reverse child sequencing, scoped cleanup, and an immediate reduced-motion fallback. The playground now covers all nine planned components with the same validated controls, templates, persistence, and sharing workflow. Immediate repository work returns to the remaining Phase 0 infrastructure.
 
 ## Principles
 

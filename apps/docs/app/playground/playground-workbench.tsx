@@ -1,5 +1,7 @@
 "use client";
 
+/* eslint-disable jsx-a11y/no-noninteractive-tabindex -- The bounded Scroll Reveal viewport must accept keyboard focus. */
+
 import {
   AnimatedAccordion,
   AnimatedTabs,
@@ -7,6 +9,7 @@ import {
   MotionDialog,
   MotionProvider,
   NumberTicker,
+  ScrollReveal,
   StaggeredList,
   TextReveal,
   ToastStack,
@@ -47,6 +50,8 @@ import {
   playgroundOrders,
   playgroundPresets,
   playgroundRanges,
+  playgroundRevealMargins,
+  playgroundRevealRootMargins,
   playgroundSplits,
   playgroundTabActivationModes,
   playgroundTabOrientations,
@@ -57,6 +62,7 @@ import {
   type PlaygroundAccordionValue,
   type PlaygroundState,
   type PlaygroundGridFilter,
+  type ScrollRevealPlaygroundState,
   type PlaygroundTabValue,
   type PlaygroundToastId,
 } from "./playground-state";
@@ -67,6 +73,7 @@ const componentNames = {
   "filter-grid": "Filter Grid",
   "motion-dialog": "Motion Dialog",
   "number-ticker": "Number Ticker",
+  "scroll-reveal": "Scroll Reveal",
   "staggered-list": "Staggered List",
   "text-reveal": "Text Reveal",
   "toast-stack": "Toast Stack",
@@ -112,6 +119,12 @@ const toastSwipeDirectionNames = {
   up: "Up",
 } as const;
 
+const revealMarginNames = {
+  balanced: "Balanced",
+  early: "Early",
+  late: "Late",
+} as const;
+
 const codeModeNames = {
   "copy-source": "Copy source",
   package: "Package React",
@@ -122,6 +135,27 @@ const previewItems = [
   { id: "brief", label: "Write the brief", track: "Intent" },
   { id: "prototype", label: "Prototype the motion", track: "Behavior" },
   { id: "verify", label: "Verify accessibility", track: "Release" },
+] as const;
+
+const playgroundRevealItems = [
+  {
+    id: "observe",
+    index: "01",
+    note: "A bounded IntersectionObserver watches this scroll pane, not the page.",
+    title: "Observe locally",
+  },
+  {
+    id: "animate",
+    index: "02",
+    note: "Opacity and transforms preserve layout dimensions during every reveal.",
+    title: "Reveal without shift",
+  },
+  {
+    id: "fallback",
+    index: "03",
+    note: "Server-rendered content stays readable when observation is unavailable.",
+    title: "Remain available",
+  },
 ] as const;
 
 interface PlaygroundGalleryItem {
@@ -457,6 +491,83 @@ function SegmentedControl<Value extends string>({
   );
 }
 
+function ScrollRevealPreview({ state }: { readonly state: ScrollRevealPlaygroundState }) {
+  const [revealed, setRevealed] = useState<string[]>([]);
+  const [viewport, setViewport] = useState<HTMLDivElement | null>(null);
+
+  return (
+    <div className="playground-scroll-preview">
+      <span
+        aria-label="Scroll Reveal observation status"
+        aria-live="polite"
+        className="playground-scroll-status"
+        role="status"
+      >
+        {revealed.length.toString()} / {playgroundRevealItems.length.toString()} observed
+      </span>
+      <div
+        aria-label="Scroll Reveal bounded viewport"
+        className="playground-scroll-viewport"
+        ref={setViewport}
+        role="region"
+        tabIndex={0}
+      >
+        <div className="playground-scroll-intro">
+          <span>Scroll specimen</span>
+          <strong>Move through the viewport</strong>
+          <p>Each card stays readable in server markup and enhances after hydration.</p>
+        </div>
+        {playgroundRevealItems.map((item) => {
+          const content = (
+            <>
+              <span>{item.index}</span>
+              <h3>{item.title}</h3>
+              <p>{item.note}</p>
+            </>
+          );
+
+          return (
+            <div className="playground-scroll-slot" key={item.id}>
+              {viewport ? (
+                <ScrollReveal
+                  as="article"
+                  className="playground-scroll-card"
+                  delay={state.delay}
+                  distance={state.distance}
+                  duration={state.duration}
+                  easing={state.easing}
+                  observerRoot={viewport}
+                  onReveal={() => {
+                    setRevealed((current) =>
+                      current.includes(item.id) ? current : [...current, item.id],
+                    );
+                  }}
+                  onVisibilityChange={(visible) => {
+                    if (!visible) {
+                      setRevealed((current) => current.filter((id) => id !== item.id));
+                    }
+                  }}
+                  once={state.once}
+                  preset={state.preset}
+                  rootMargin={playgroundRevealRootMargins[state.revealMargin]}
+                  threshold={state.threshold}
+                >
+                  {content}
+                </ScrollReveal>
+              ) : (
+                <article className="playground-scroll-card">{content}</article>
+              )}
+            </div>
+          );
+        })}
+        <div className="playground-scroll-finish">
+          <span>End of bounded viewport</span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function Preview({
   onAccordionChange,
   onGridFilterChange,
@@ -472,6 +583,23 @@ function Preview({
   readonly replayKey: number;
   readonly state: PlaygroundState;
 }) {
+  if (state.component === "scroll-reveal") {
+    const revealReplayKey = [
+      replayKey,
+      state.delay,
+      state.distance,
+      state.duration,
+      state.easing,
+      state.once,
+      state.preset,
+      state.reducedMotion,
+      state.revealMargin,
+      state.threshold,
+    ].join(":");
+
+    return <ScrollRevealPreview key={revealReplayKey} state={state} />;
+  }
+
   if (state.component === "filter-grid") {
     const gridReplayKey = [
       replayKey,
@@ -1025,7 +1153,48 @@ export function PlaygroundWorkbench({
           ) : null}
         </ControlSection>
 
-        {state.component === "toast-stack" ? (
+        {state.component === "scroll-reveal" ? (
+          <ControlSection title="Observer">
+            <RangeControl
+              {...playgroundRanges.threshold}
+              label="Threshold"
+              onChange={(threshold) => {
+                updateState({ threshold });
+              }}
+              unit=""
+              value={state.threshold}
+            />
+            <label className="playground-checkbox">
+              <input
+                checked={state.once}
+                type="checkbox"
+                onChange={(event) => {
+                  updateState({ once: event.currentTarget.checked });
+                }}
+              />
+              <span>Reveal only once</span>
+            </label>
+            <span className="playground-control-label">Preset</span>
+            <SegmentedControl
+              label="Reveal preset"
+              onChange={(preset) => {
+                updateState({ preset });
+              }}
+              options={playgroundPresets}
+              value={state.preset}
+            />
+            <span className="playground-control-label">Trigger margin</span>
+            <SegmentedControl
+              getOptionLabel={(margin) => revealMarginNames[margin]}
+              label="Reveal trigger margin"
+              onChange={(revealMargin) => {
+                updateState({ revealMargin });
+              }}
+              options={playgroundRevealMargins}
+              value={state.revealMargin}
+            />
+          </ControlSection>
+        ) : state.component === "toast-stack" ? (
           <ControlSection title="Notifications">
             <RangeControl
               {...playgroundRanges.toastLimit}

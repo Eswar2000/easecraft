@@ -235,6 +235,34 @@ vi.mock("easecraft", () => ({
       { className, "data-announcement": announce },
       `${prefix}${value.toString()}${suffix}`,
     ),
+  ScrollReveal: ({
+    as = "div",
+    children,
+    className,
+    once,
+    preset,
+    rootMargin,
+    threshold,
+  }: {
+    readonly as?: string;
+    readonly children: ReactNode;
+    readonly className?: string;
+    readonly once?: boolean;
+    readonly preset?: string;
+    readonly rootMargin?: string;
+    readonly threshold?: number;
+  }) =>
+    createElement(
+      as,
+      {
+        className,
+        "data-once": once,
+        "data-preset": preset,
+        "data-root-margin": rootMargin,
+        "data-threshold": threshold,
+      },
+      children,
+    ),
   StaggeredList: ({
     children,
     items,
@@ -596,6 +624,49 @@ describe("PlaygroundWorkbench", () => {
     });
   });
 
+  it("configures the bounded Scroll Reveal preview and observer settings", () => {
+    const view = render(createElement(PlaygroundWorkbench));
+
+    fireEvent.change(view.getByLabelText("Preview"), { target: { value: "scroll-reveal" } });
+
+    expect(view.queryByText("Sequence")).toBeNull();
+    expect(view.getByRole("region", { name: "Scroll Reveal bounded viewport" })).toBeTruthy();
+    expect(view.getByRole("status", { name: "Scroll Reveal observation status" }).textContent).toBe(
+      "0 / 3 observed",
+    );
+    expect(view.container.querySelectorAll("article.playground-scroll-card")).toHaveLength(3);
+
+    fireEvent.change(view.getByLabelText("Delay"), { target: { value: "80" } });
+    fireEvent.change(view.getByLabelText("Threshold"), { target: { value: "0.4" } });
+    fireEvent.click(view.getByLabelText("Reveal only once"));
+    fireEvent.click(view.getByRole("button", { name: "rise" }));
+    fireEvent.click(view.getByRole("button", { name: "Late" }));
+
+    const firstReveal = view.container.querySelector("article.playground-scroll-card");
+    expect(firstReveal?.getAttribute("data-once")).toBe("false");
+    expect(firstReveal?.getAttribute("data-preset")).toBe("rise");
+    expect(firstReveal?.getAttribute("data-root-margin")).toBe("0px 0px -30% 0px");
+    expect(firstReveal?.getAttribute("data-threshold")).toBe("0.4");
+
+    const codePanel = view.getByLabelText("Generated React code");
+    expect(codePanel.textContent).toContain("<ScrollReveal");
+    expect(codePanel.textContent).toContain("delay={80}");
+    expect(codePanel.textContent).toContain("once={false}");
+    expect(codePanel.textContent).toContain('preset="rise"');
+    expect(codePanel.textContent).toContain('rootMargin="0px 0px -30% 0px"');
+    expect(codePanel.textContent).toContain("threshold={0.4}");
+    expect(
+      decodePlaygroundStorage(window.localStorage.getItem(playgroundStorageKey)),
+    ).toMatchObject({
+      component: "scroll-reveal",
+      delay: 80,
+      once: false,
+      preset: "rise",
+      revealMargin: "late",
+      threshold: 0.4,
+    });
+  });
+
   it("replays Staggered List when motion controls change", () => {
     const view = render(createElement(PlaygroundWorkbench));
 
@@ -877,6 +948,31 @@ describe("PlaygroundWorkbench", () => {
     );
     expect(view.getByLabelText("Generated React code").textContent).toContain(
       "@/components/easecraft/filter-grid",
+    );
+  });
+
+  it("restores Scroll Reveal observer settings and templates from a shared URL", async () => {
+    window.history.replaceState(
+      null,
+      "",
+      "/playground?v=1&component=scroll-reveal&codeMode=copy-source&duration=640&distance=24&easing=emphasized&reducedMotion=0&viewport=mobile&contrast=ink&delay=80&preset=rise&once=0&threshold=0.4&revealMargin=late",
+    );
+    const view = render(createElement(PlaygroundWorkbench));
+
+    await waitFor(() => {
+      expect((view.getByLabelText("Preview") as HTMLSelectElement).value).toBe("scroll-reveal");
+    });
+
+    expect((view.getByLabelText("Delay") as HTMLInputElement).value).toBe("80");
+    expect((view.getByLabelText("Threshold") as HTMLInputElement).value).toBe("0.4");
+    expect((view.getByLabelText("Reveal only once") as HTMLInputElement).checked).toBe(false);
+    expect(view.getByRole("button", { name: "rise" }).getAttribute("aria-pressed")).toBe("true");
+    expect(view.getByRole("button", { name: "Late" }).getAttribute("aria-pressed")).toBe("true");
+    expect(view.getByRole("button", { name: "Copy source" }).getAttribute("aria-pressed")).toBe(
+      "true",
+    );
+    expect(view.getByLabelText("Generated React code").textContent).toContain(
+      "@/components/easecraft/scroll-reveal",
     );
   });
 

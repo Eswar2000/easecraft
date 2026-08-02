@@ -1,6 +1,11 @@
 import { getInstallCommand, getInstallPlan, type CopySourceFile } from "easecraft-registry";
 
-import type { PlaygroundCodeMode, PlaygroundComponent, PlaygroundState } from "./playground-state";
+import {
+  playgroundRevealRootMargins,
+  type PlaygroundCodeMode,
+  type PlaygroundComponent,
+  type PlaygroundState,
+} from "./playground-state";
 
 export { playgroundCodeModes, type PlaygroundCodeMode } from "./playground-state";
 
@@ -10,6 +15,7 @@ const componentExportNames = {
   "filter-grid": "FilterGrid",
   "motion-dialog": "MotionDialog",
   "number-ticker": "NumberTicker",
+  "scroll-reveal": "ScrollReveal",
   "staggered-list": "StaggeredList",
   "text-reveal": "TextReveal",
   "toast-stack": "ToastStack",
@@ -502,10 +508,99 @@ export function Example() {
 `;
 }
 
+function generateScrollRevealImports(
+  state: Extract<PlaygroundState, { component: "scroll-reveal" }>,
+  mode: PlaygroundCodeMode,
+): string {
+  if (mode === "copy-source") {
+    const componentPath = localImportPath(getCopySourceFile(state, "component"));
+    const providerPath = localImportPath(getCopySourceFile(state, "provider"));
+
+    return `import { useState } from "react";
+
+import { ScrollReveal } from "${componentPath}";
+import { MotionProvider } from "${providerPath}";`;
+  }
+
+  const tokenType = mode === "token-override" ? ", type MotionTokenOverrides" : "";
+  return `import { useState } from "react";
+
+import { MotionProvider, ScrollReveal${tokenType} } from "easecraft";`;
+}
+
+function generateScrollRevealCode(
+  state: Extract<PlaygroundState, { component: "scroll-reveal" }>,
+  mode: PlaygroundCodeMode,
+) {
+  return `"use client";
+
+/* eslint-disable jsx-a11y/no-noninteractive-tabindex -- The bounded overflow region must accept keyboard focus. */
+
+${generateScrollRevealImports(state, mode)}${generateTokenOverrides(state, mode)}
+
+const revealItems = [
+  { id: "observe", index: "01", title: "Observe locally", note: "A bounded observer watches this scroll pane." },
+  { id: "animate", index: "02", title: "Reveal without shift", note: "Opacity and transforms preserve layout dimensions." },
+  { id: "fallback", index: "03", title: "Remain available", note: "Server-rendered content stays readable." },
+] as const;
+
+export function Example() {
+  const [viewport, setViewport] = useState<HTMLDivElement | null>(null);
+
+  return (
+    <MotionProvider ${providerProps(state, mode)}>
+      <div
+        aria-label="Scroll Reveal bounded viewport"
+        ref={setViewport}
+        role="region"
+        style={{ maxHeight: 420, overflowY: "auto" }}
+        tabIndex={0}
+      >
+        <header style={{ minHeight: 280 }}>Scroll to reveal</header>
+        {revealItems.map((item) => {
+          const content = (
+            <>
+              <span>{item.index}</span>
+              <h2>{item.title}</h2>
+              <p>{item.note}</p>
+            </>
+          );
+
+          return viewport ? (
+            <ScrollReveal
+              as="article"
+              delay={${state.delay.toString()}}
+              distance=${distanceProp(state.distance, mode)}
+              duration=${durationProp(state, mode)}
+              easing="${state.easing}"
+              key={item.id}
+              observerRoot={viewport}
+              once={${state.once.toString()}}
+              preset="${state.preset}"
+              rootMargin="${playgroundRevealRootMargins[state.revealMargin]}"
+              threshold={${state.threshold.toString()}}
+            >
+              {content}
+            </ScrollReveal>
+          ) : (
+            <article key={item.id}>{content}</article>
+          );
+        })}
+      </div>
+    </MotionProvider>
+  );
+}
+`;
+}
+
 export function generatePlaygroundCode(
   state: PlaygroundState,
   mode: PlaygroundCodeMode = state.codeMode,
 ): string {
+  if (state.component === "scroll-reveal") {
+    return generateScrollRevealCode(state, mode);
+  }
+
   if (state.component === "filter-grid") {
     return generateFilterGridCode(state, mode);
   }

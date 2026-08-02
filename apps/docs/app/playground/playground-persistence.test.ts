@@ -49,6 +49,14 @@ describe("playground persistence", () => {
         tab: "metrics",
       }),
       parsePlaygroundState({
+        component: "scroll-reveal",
+        delay: 80,
+        once: false,
+        preset: "rise",
+        revealMargin: "late",
+        threshold: 0.4,
+      }),
+      parsePlaygroundState({
         component: "filter-grid",
         filter: "archived",
         order: "reverse",
@@ -163,6 +171,19 @@ describe("playground persistence", () => {
       order: "reverse",
       preset: "rise",
       stagger: playgroundRanges.stagger.max,
+    });
+    expect(
+      decodePlaygroundSearchParams(
+        new URLSearchParams(
+          "v=1&component=scroll-reveal&delay=-20&once=0&preset=rise&threshold=9&revealMargin=missing&stagger=120",
+        ),
+      ),
+    ).toEqual({
+      ...getDefaultPlaygroundState("scroll-reveal"),
+      delay: playgroundRanges.delay.min,
+      once: false,
+      preset: "rise",
+      threshold: playgroundRanges.threshold.max,
     });
   });
 

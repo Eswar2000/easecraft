@@ -85,16 +85,19 @@ export function decodePlaygroundSearchParams(
     from: readSearchNumber(readSearchValue(params, "from")),
     locale: readSearchValue(params, "locale"),
     loop: readSearchBoolean(readSearchValue(params, "loop")),
+    once: readSearchBoolean(readSearchValue(params, "once")),
     order: readSearchValue(params, "order"),
     orientation: readSearchValue(params, "orientation"),
     preset: readSearchValue(params, "preset"),
     prefix: readSearchValue(params, "prefix"),
     reducedMotion: readSearchBoolean(readSearchValue(params, "reducedMotion")),
+    revealMargin: readSearchValue(params, "revealMargin"),
     split: readSearchValue(params, "split"),
     stagger: readSearchNumber(readSearchValue(params, "stagger")),
     suffix: readSearchValue(params, "suffix"),
     swipeDirection: readSearchValue(params, "swipeDirection"),
     tab: readSearchValue(params, "tab"),
+    threshold: readSearchNumber(readSearchValue(params, "threshold")),
     toastLimit: readSearchNumber(readSearchValue(params, "toastLimit")),
     toastTimeout: readSearchNumber(readSearchValue(params, "toastTimeout")),
     toasts: readSearchList(readSearchValue(params, "toasts")),
@@ -119,7 +122,13 @@ export function encodePlaygroundSearchParams(state: PlaygroundState): URLSearchP
   params.set("viewport", state.viewport);
   params.set("contrast", state.contrast);
 
-  if (state.component === "filter-grid") {
+  if (state.component === "scroll-reveal") {
+    params.set("delay", state.delay.toString());
+    params.set("preset", state.preset);
+    params.set("once", state.once ? "1" : "0");
+    params.set("threshold", state.threshold.toString());
+    params.set("revealMargin", state.revealMargin);
+  } else if (state.component === "filter-grid") {
     params.set("filter", state.filter);
     params.set("stagger", state.stagger.toString());
     params.set("preset", state.preset);
