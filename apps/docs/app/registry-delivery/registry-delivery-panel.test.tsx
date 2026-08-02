@@ -4,6 +4,7 @@ import { cleanup, fireEvent, render, waitFor } from "@testing-library/react";
 import { createElement } from "react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
+import { version as reactVersion } from "../../../../packages/react/package.json";
 import { getComponentDeliverySources } from "./delivery-source";
 import { serializeRegistrySources } from "./delivery-types";
 import { RegistryDeliveryPanel } from "./registry-delivery-panel";
@@ -34,7 +35,9 @@ describe("RegistryDeliveryPanel component delivery", () => {
       }),
     );
 
-    expect(view.getByLabelText("Install command").textContent).toBe("pnpm add easecraft@0.0.0");
+    expect(view.getByLabelText("Install command").textContent).toBe(
+      `pnpm add easecraft@${reactVersion}`,
+    );
     expect(view.getByRole("heading", { name: "Files / 00" })).toBeTruthy();
     expect(view.getByRole("button", { name: "Copy all" }).hasAttribute("disabled")).toBe(true);
     expect(view.getByText("The component imports stable APIs from easecraft.")).toBeTruthy();
@@ -52,7 +55,7 @@ describe("RegistryDeliveryPanel component delivery", () => {
 
     fireEvent.click(view.getByRole("button", { name: "Copy install command" }));
     await waitFor(() => {
-      expect(writeText).toHaveBeenLastCalledWith("pnpm add easecraft@0.0.0");
+      expect(writeText).toHaveBeenLastCalledWith(`pnpm add easecraft@${reactVersion}`);
     });
 
     fireEvent.click(view.getByRole("button", { name: "Copy source" }));

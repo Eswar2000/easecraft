@@ -4,6 +4,7 @@ import { cleanup, fireEvent, render, waitFor } from "@testing-library/react";
 import { createElement } from "react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
+import { version as reactVersion } from "../../../../../packages/react/package.json";
 import { CompositionDeliveryPanel } from "./composition-delivery-panel";
 import {
   serializeCompositionSources,
@@ -71,7 +72,7 @@ describe("CompositionDeliveryPanel copy actions", () => {
     fireEvent.click(view.getByRole("button", { name: "Copy install command" }));
 
     await waitFor(() => {
-      expect(writeText).toHaveBeenCalledWith("npm install easecraft@0.0.0");
+      expect(writeText).toHaveBeenCalledWith(`npm install easecraft@${reactVersion}`);
       expect(view.getByRole("status").textContent).toBe("Install command copied.");
     });
   });

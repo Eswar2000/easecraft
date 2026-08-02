@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 
+import { version as reactVersion } from "../../../packages/react/package.json";
 import {
   componentCategories,
   componentSlugs,
@@ -66,7 +67,7 @@ describe("component explorer registry consumption", () => {
       const copySourcePlan = getInstallPlan(slug, "copy-source");
 
       expect(packagePlan.files).toEqual([]);
-      expect(getInstallCommand(packagePlan)).toBe("pnpm add easecraft@0.0.0");
+      expect(getInstallCommand(packagePlan)).toBe(`pnpm add easecraft@${reactVersion}`);
       expect(copySourcePlan.files.at(-1)?.destinationPath).toBe(`components/easecraft/${slug}.tsx`);
       expect(getInstallCommand(copySourcePlan)).toMatch(/^pnpm add /u);
     });
@@ -128,7 +129,7 @@ describe("component explorer registry consumption", () => {
 
     const packagePlan = getCompositionInstallPlan("command-palette", "package");
     const copySourcePlan = getCompositionInstallPlan("command-palette", "copy-source");
-    expect(getInstallCommand(packagePlan)).toBe("pnpm add easecraft@0.0.0");
+    expect(getInstallCommand(packagePlan)).toBe(`pnpm add easecraft@${reactVersion}`);
     expect(copySourcePlan.files.at(-1)?.destinationPath).toBe(
       "components/easecraft/compositions/command-palette.tsx",
     );
