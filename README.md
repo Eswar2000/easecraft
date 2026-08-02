@@ -10,7 +10,7 @@ Easecraft is an open-source motion design system planned for React. It will comb
 
 ## Project Status
 
-Easecraft has completed its **initial playground milestone**. The motion foundation, all nine planned component vertical slices, all eight planned registry compositions, package/copy-source delivery actions, continuous integration, and Vercel deployments are implemented. The playground provides validated controls, responsive previews, reduced-motion simulation, replay/reset actions, package, copy-source, and token-override code templates, local persistence, and versioned share URLs for all nine components; no npm package has been published yet.
+Easecraft has completed its **initial playground milestone**. The motion foundation, all nine planned component vertical slices, all eight planned registry compositions, package/copy-source delivery actions, continuous integration, and Vercel deployments are implemented. Changesets, package metadata, manifest linting, and release dry-runs prepare the three public packages for an initial `0.1.0` release. No npm package has been published yet.
 
 The complete product scope, architecture, delivery plan, and initial backlog are documented in the [project proposal](PROPOSAL.md).
 
@@ -25,9 +25,9 @@ Easecraft will use unscoped npm package names.
 | `easecraft-registry` | Typed metadata and copyable component source |
 | `easecraft-cli` | Post-MVP registry CLI |
 
-These names were unregistered on npm when checked on 2026-07-25. They are planned identifiers, not reserved names, until their first publication.
+These names were unregistered on npm when checked on 2026-08-02. They are planned identifiers, not reserved names, until their first publication.
 
-`easecraft-tokens`, the first `easecraft` React APIs, and the metadata and copy-source manifest foundations of `easecraft-registry` are implemented. The Vite fixture consumes `MotionProvider`, `Motion`, `Presence`, `Stagger`, `TextReveal`, `NumberTicker`, `StaggeredList`, `AnimatedTabs`, `AnimatedAccordion`, `MotionDialog`, `ToastStack`, `FilterGrid`, and `ScrollReveal` through the public workspace export as an external application would; all packages remain private and unpublished during foundation work.
+`easecraft-tokens`, the `easecraft` React APIs, and the metadata, copy-source manifests, and compositions of `easecraft-registry` are implemented. The Vite fixture consumes `MotionProvider`, `Motion`, `Presence`, `Stagger`, `TextReveal`, `NumberTicker`, `StaggeredList`, `AnimatedTabs`, `AnimatedAccordion`, `MotionDialog`, `ToastStack`, `FilterGrid`, and `ScrollReveal` through the public workspace export as an external application would. The packages are configured for public release but remain unpublished.
 
 ## Development
 
@@ -48,6 +48,8 @@ pnpm build
 
 GitHub Actions runs a frozen pnpm install followed by formatting, lint, typecheck, tests, and the full package, docs, and consumer build on pull requests and pushes to `main`. The workflow caches both the pnpm store and Turborepo artifacts.
 
+Changesets coordinates public package versions and changelogs. See the [release guide](RELEASING.md) for the dry-run gate, Version Packages pull request, first npm publication, and trusted publishing setup.
+
 ## What Easecraft Will Provide
 
 - A small React package of motion primitives, hooks, and accessible animated components
@@ -67,7 +69,7 @@ The proposed first release includes five foundations, five hooks, and nine high-
 
 `TextReveal`, `NumberTicker`, `StaggeredList`, `AnimatedTabs`, `AnimatedAccordion`, `MotionDialog`, `ToastStack`, `FilterGrid`, and `ScrollReveal` are completed vertical slices, proving the package API, Anime.js lifecycle integration, reduced-motion behavior, accessible output, documentation, tests, and consumer build.
 
-The `Stagger` foundation is also implemented with bounded forward and reverse child sequencing, scoped cleanup, and an immediate reduced-motion fallback. The playground now covers all nine planned components with the same validated controls, templates, persistence, and sharing workflow. CI reproduces the full local quality gate and consumer build, while Vercel provides production and pull-request preview deployments. Immediate repository work returns to public identifier verification and architecture decision records.
+The `Stagger` foundation is also implemented with bounded forward and reverse child sequencing, scoped cleanup, and an immediate reduced-motion fallback. The playground now covers all nine planned components with the same validated controls, templates, persistence, and sharing workflow. CI reproduces the full local quality gate and consumer build, while Vercel provides production and pull-request preview deployments. Immediate repository work is the one-time npm publication and trusted-publisher handoff, followed by architecture decision records and remaining identity checks.
 
 ## Principles
 

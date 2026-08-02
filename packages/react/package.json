@@ -1,9 +1,25 @@
 {
   "name": "easecraft",
   "version": "0.0.0",
-  "private": true,
   "description": "Accessible React motion primitives, hooks, and components.",
+  "keywords": [
+    "accessibility",
+    "animejs",
+    "animation",
+    "components",
+    "motion",
+    "react"
+  ],
   "license": "MIT",
+  "homepage": "https://easecraft-docs.vercel.app",
+  "bugs": {
+    "url": "https://github.com/Eswar2000/easecraft/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Eswar2000/easecraft.git",
+    "directory": "packages/react"
+  },
   "type": "module",
   "sideEffects": false,
   "files": [
@@ -19,6 +35,9 @@
       "default": "./dist/index.js"
     }
   },
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "build": "vite build",
     "dev": "vite build --watch",
@@ -31,6 +50,7 @@
     "@radix-ui/react-accordion": "1.2.20",
     "@radix-ui/react-dialog": "1.1.23",
     "@radix-ui/react-toast": "1.2.23",
+    "@types/node": "26.1.1",
     "animejs": "4.5.0",
     "easecraft-tokens": "workspace:*"
   },

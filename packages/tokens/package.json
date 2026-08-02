@@ -1,9 +1,24 @@
 {
   "name": "easecraft-tokens",
   "version": "0.0.0",
-  "private": true,
   "description": "Framework-independent motion tokens for Easecraft.",
+  "keywords": [
+    "animation",
+    "design-tokens",
+    "easing",
+    "motion",
+    "typescript"
+  ],
   "license": "MIT",
+  "homepage": "https://easecraft-docs.vercel.app",
+  "bugs": {
+    "url": "https://github.com/Eswar2000/easecraft/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Eswar2000/easecraft.git",
+    "directory": "packages/tokens"
+  },
   "type": "module",
   "sideEffects": false,
   "files": [
@@ -18,6 +33,9 @@
       "import": "./dist/index.js",
       "default": "./dist/index.js"
     }
+  },
+  "publishConfig": {
+    "access": "public"
   },
   "scripts": {
     "build": "vite build",

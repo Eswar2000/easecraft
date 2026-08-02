@@ -19,6 +19,7 @@
 - [ ] The change is focused and avoids unrelated edits.
 - [ ] Documentation is updated where behavior or decisions changed.
 - [ ] Relevant tests are added or the reason they are not needed is explained.
+- [ ] A changeset is included for consumer-visible package changes, or it is not required.
 - [ ] Interactive changes define keyboard and reduced-motion behavior.
 - [ ] No credentials, private data, or generated secrets are included.
 - [ ] I have read and followed `CONTRIBUTING.md`.

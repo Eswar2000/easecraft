@@ -10,7 +10,7 @@ By participating, you agree to follow the [Code of Conduct](CODE_OF_CONDUCT.md).
 
 Easecraft has completed its core motion foundation, including `Stagger`, all nine planned component vertical slices, the typed registry, all eight planned compositions, component/composition copy actions, and playground controls, package, copy-source, and token-override code templates, local persistence, and versioned share URLs for all nine components.
 
-The initial playground milestone, continuous integration, and Vercel deployment are complete. The immediate focus is the remaining Phase 0 repository work: public identifiers and architecture decision records.
+The initial playground milestone, continuous integration, Vercel deployment, and `0.1.0` package release preparation are complete. The immediate focus is the one-time npm publication and trusted-publisher handoff, followed by architecture decision records and remaining identity checks.
 
 Useful contributions at this stage include:
 
@@ -60,6 +60,7 @@ pnpm build
 - Follow the existing style and avoid unrelated formatting changes.
 - Update documentation when behavior, setup, or public APIs change.
 - Add tests for observable behavior when implementation code is introduced.
+- Add a changeset with `pnpm changeset` for consumer-visible package changes.
 - Include reduced-motion and keyboard behavior in changes involving interaction.
 - Prefer semantic component APIs over exposing animation-engine internals.
 - Do not commit build output unless the repository explicitly begins tracking it.
@@ -82,6 +83,8 @@ A pull request should include:
 - Any follow-up work intentionally left out of scope
 
 Draft pull requests are welcome for early feedback. A pull request is ready for review when its relevant checks pass and its documentation is complete.
+
+Maintainers should follow [RELEASING.md](RELEASING.md) for package versioning and publication.
 
 ## Licensing
 

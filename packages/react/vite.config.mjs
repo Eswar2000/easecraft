@@ -21,6 +21,7 @@ export default defineConfig({
     minify: false,
     rollupOptions: {
       external: (id) =>
+        id === "@radix-ui/react-accordion" ||
         id === "@radix-ui/react-dialog" ||
         id === "@radix-ui/react-toast" ||
         id === "animejs" ||
