@@ -29,9 +29,9 @@ Repository settings must allow GitHub Actions to create pull requests:
 
 Review and merge the version pull request only after CI and deployment checks pass.
 
-## Initial npm Publication
+## Manual Publication
 
-The first release must claim the unscoped npm package names before trusted publishers can be configured. From a clean, up-to-date `main` checkout after merging the version pull request:
+Use this fallback only when automated publishing is unavailable. From a clean, up-to-date `main` checkout after merging the version pull request:
 
 ```bash
 pnpm install --frozen-lockfile
@@ -44,7 +44,13 @@ npm login
 pnpm release:publish
 ```
 
-Complete npm authentication and two-factor prompts directly in the terminal. Verify all three `0.1.0` packages afterward:
+Complete npm authentication and two-factor prompts directly in the terminal. The publisher skips versions that already exist, then publishes `easecraft-tokens`, `easecraft`, and `easecraft-registry` in dependency order. Preview its plan without publishing:
+
+```bash
+pnpm release:publish:dry-run
+```
+
+Verify the package versions afterward:
 
 ```bash
 npm view easecraft-tokens version
@@ -52,13 +58,31 @@ npm view easecraft version
 npm view easecraft-registry version
 ```
 
+After every intended version is visible on npm, create and push the annotated package tags:
+
+```bash
+pnpm changeset tag
+git push origin --follow-tags
+```
+
+The manual fallback does not create GitHub Releases. Create any required releases from the matching changelog entries after the tags are pushed.
+
 ## Trusted Publishing
 
-After the first release, configure the same GitHub Actions trusted publisher on each npm package:
+Configure the same GitHub Actions trusted publisher on `easecraft-tokens`, `easecraft`, and `easecraft-registry`:
 
 - GitHub owner: `Eswar2000`
 - Repository: `easecraft`
 - Workflow filename: `release.yml`
 - Allowed action: `npm publish`
 
-Then add OIDC publishing to the Release workflow with `id-token: write`. Do not add a long-lived npm write token. Trusted publishing automatically adds provenance for this public repository.
+The filename is case-sensitive and must not include `.github/workflows/`. Do not add an npm write token.
+
+The Release workflow separates versioning from publishing so only the publish job receives `id-token: write`. After the version pull request is merged, that job:
+
+1. Runs formatting, lint, type, test, build, Publint, and package checks.
+2. Uses npm CLI `11.6.2` to publish only versions that are not already on npm.
+3. Creates a package tag and GitHub release after each successful publish.
+4. Relies on npm Trusted Publishing to attach provenance automatically.
+
+After one OIDC release succeeds for all three packages, set each package's npm publishing access to **Require two-factor authentication and disallow tokens**, then revoke any obsolete automation tokens.
